@@ -1,6 +1,43 @@
 #playbackPanel {
-    width: 100%;
-    height: 100px;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
     background-color: #222;
+}
+
+#controlsSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+}
+
+#progressSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+}
+
+#progressSection p {
+    margin: 0;
+}
+
+#progressBar {
+    margin: 0 8px;
+
+    width: 50%;
+    height: 2px;
+
+    background-color: #666;
+}
+
+#progressBarFill {
+    height: 100%;
+    
+    background-color: #FFF;
 }

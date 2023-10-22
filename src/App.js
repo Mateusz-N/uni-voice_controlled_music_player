@@ -3,7 +3,10 @@ import './App.css';
 
 const App = () => {
   return (
-    <PlaybackPanel></PlaybackPanel>
+    <div id = 'page'>
+      <div id = 'content'></div>
+      <PlaybackPanel></PlaybackPanel>
+    </div>
   );
 }
 

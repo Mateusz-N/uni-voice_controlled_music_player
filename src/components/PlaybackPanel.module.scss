@@ -2,6 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    align-content: center;
     flex-wrap: wrap;
 
     background-color: #222;
@@ -11,6 +12,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 
     width: 100%;
 }
@@ -41,4 +43,10 @@
     height: 100%;
     
     background-color: #FFF;
+}
+
+.btnTogglePlayback {
+    height: 32px;
+
+    cursor: pointer;
 }

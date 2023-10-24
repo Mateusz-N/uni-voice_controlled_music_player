@@ -3,6 +3,11 @@ import { useEffect, useState } from 'react';
 import { millisecondsToFormattedTime, updatePlayback, togglePlayback } from '../common/auxiliaryFunctions';
 import Styles from './PlaybackPanel.module.scss'
 
+import btn_previous from '../resources/btn_previous.svg';
+import btn_play from '../resources/btn_play.svg';
+import btn_pause from '../resources/btn_pause.svg';
+import btn_next from '../resources/btn_next.svg';
+
 const PlaybackPanel = () => {
     let trackDuration_ms = 15000;
 
@@ -21,6 +26,12 @@ const PlaybackPanel = () => {
     }
     const handleUpdateTimeElapsed = (newTime) => {
         setTimeElapsed(newTime);
+    }
+    const handlePreviousTrack = () => {
+        // to-do
+    }
+    const handleNextTrack = () => {
+        // to-do
     }
 
     useEffect(() => {
@@ -44,9 +55,9 @@ const PlaybackPanel = () => {
     return(
         <div id = {Styles.playbackPanel}>
             <div id = {Styles.controlsSection}>
-                <img src = '../resources/btn_prevTrack.svg' alt = 'Previous track' />
-                <img src = {'../resources/btn_' + (paused ? 'play' : 'pause') + '.svg'} alt = {paused ? 'Play' : 'Pause'} onClick = {handleTogglePause} />
-                <img src = '../resources/btn_nextTrack.svg' alt = 'Next track' />
+                <img src = {btn_previous} alt = 'Previous track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handlePreviousTrack} />
+                <img src = {paused ? btn_play : btn_pause} alt = {paused ? 'Play' : 'Pause'} id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleTogglePause} />
+                <img src = {btn_next} alt = 'Next track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleNextTrack} />
             </div>
             <div id = {Styles.progressSection}>
                 <p id = {Styles.timeElapsed}>{timeElapsed_formatted}</p>

@@ -1,46 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { millisecondsToFormattedTime, updatePlayback, togglePlayback } from '../common/auxiliaryFunctions';
 import Styles from './PlaybackPanel.module.scss'
-
-const addLeadingZero = (time) => {
-    if (time < 10) {
-        time = '0' + time;
-    }
-    return time;
-}
-
-const millisecondsToFormattedTime = (milliseconds) => {
-    let seconds = Math.floor(milliseconds / 1000);
-    // milliseconds = milliseconds % 1000;
-    let minutes = Math.floor(seconds / 60);
-    seconds = seconds % 60;
-    return addLeadingZero(minutes) + ':' + addLeadingZero(seconds);
-}
-
-const resetPlayback = (handleUpdateTimeElapsed, handleTogglePause) => {
-    handleUpdateTimeElapsed(0);
-    handleTogglePause();
-}
-
-const updatePlayback = (trackDuration_ms, timeElapsed_ms, handleUpdateTimeElapsed, handleUpdateTimer, handleTogglePause) => {
-    if(trackDuration_ms - timeElapsed_ms >= 10) {
-        handleUpdateTimer(setTimeout(() => {
-            handleUpdateTimeElapsed(timeElapsed_ms + 10);
-        }, 10)); // odstępy niższe niż 10 mogą nie działać poprawnie ze względu na ograniczenia przeglądarki
-    }
-    else {
-        resetPlayback(handleUpdateTimeElapsed, handleTogglePause)
-    }
-}
-
-const togglePlayback = (paused, trackDuration_ms, getTimeElapsed_ms, handleUpdateTimeElapsed, handleUpdateTimer, handleTogglePause) => {
-    if(paused) {
-        handleUpdateTimer(-1);
-    }
-    else {
-        updatePlayback(trackDuration_ms, getTimeElapsed_ms, handleUpdateTimeElapsed, handleUpdateTimer, handleTogglePause);
-    }
-}
 
 const PlaybackPanel = () => {
     let trackDuration_ms = 15000;
@@ -61,6 +22,7 @@ const PlaybackPanel = () => {
     const handleUpdateTimeElapsed = (newTime) => {
         setTimeElapsed(newTime);
     }
+
     useEffect(() => {
         if(!paused) {
             updatePlayback(trackDuration_ms, timeElapsed_ms, handleUpdateTimeElapsed, handleUpdateTimer, handleTogglePause);
@@ -70,7 +32,6 @@ const PlaybackPanel = () => {
     const handleTogglePause = () => {
         setPaused(prevState => !prevState);
     }
-
     /* Oczekuje zakończenia wykonywania setPaused() */
     useEffect(() => {
         togglePlayback(paused, trackDuration_ms, timeElapsed_ms, handleUpdateTimeElapsed, handleUpdateTimer, handleTogglePause);

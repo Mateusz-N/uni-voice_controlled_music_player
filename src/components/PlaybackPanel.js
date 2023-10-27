@@ -27,6 +27,16 @@ const PlaybackPanel = () => {
             setTimer(newTimer);
         }
     }
+    const handleUpdateTargetTimestamp = (newTargetTimestamp_ms) => {
+        console.log(newTargetTimestamp_ms)
+        if(newTargetTimestamp_ms < 0) {
+            newTargetTimestamp_ms = 0;
+        }
+        if(newTargetTimestamp_ms > trackDuration_ms) {
+            newTargetTimestamp_ms = trackDuration_ms;
+        }
+        setTargetTimestamp(newTargetTimestamp_ms);
+    }
     const handleTogglePause = () => {
         setPaused(prevState => !prevState);
     }
@@ -45,7 +55,7 @@ const PlaybackPanel = () => {
             setProgressBarInDragMode(true);
             clearTimeout(timer);
             const newTime = getRelativeProgressBarPointPosition(event) * trackDuration_ms;
-            setTargetTimestamp(newTime);
+            handleUpdateTargetTimestamp(newTime);
         }
     }
     const handleProgressBarHover = (event) => {
@@ -61,7 +71,7 @@ const PlaybackPanel = () => {
         if(progressBarInDragMode) {
             // clearTimeout(timer);
             const newTime = getRelativeProgressBarPointPosition(event) * trackDuration_ms;
-            setTargetTimestamp(newTime);
+            handleUpdateTargetTimestamp(newTime);
         }
     }
     const handleProgressBarMouseUp = () => {
@@ -77,7 +87,7 @@ const PlaybackPanel = () => {
             updatePlayback(trackDuration_ms, currentTimestamp_ms, setCurrentTimestamp, handleUpdateTimer, handleTogglePause);
         }
         if(currentTimestamp_ms !== targetTimestamp_ms) {
-            setTargetTimestamp(currentTimestamp_ms);
+            handleUpdateTargetTimestamp(currentTimestamp_ms);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentTimestamp_ms])

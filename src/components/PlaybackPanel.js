@@ -59,7 +59,7 @@ const PlaybackPanel = () => {
     }
     const handleProgressBarDrag = (event) => {
         if(progressBarInDragMode) {
-            clearTimeout(timer);
+            // clearTimeout(timer);
             const newTime = getRelativeProgressBarPointPosition(event) * trackDuration_ms;
             setTargetTimestamp(newTime);
         }
@@ -67,7 +67,6 @@ const PlaybackPanel = () => {
     const handleProgressBarMouseUp = () => {
         if(progressBarInDragMode) {
             setProgressBarInDragMode(false);
-            // setCurrentTimestamp(targetTimestamp_ms);
             document.removeEventListener('mousemove', handleProgressBarDrag);
             document.removeEventListener('mouseup', handleProgressBarMouseUp);
         }
@@ -77,7 +76,9 @@ const PlaybackPanel = () => {
         if(!paused) {
             updatePlayback(trackDuration_ms, currentTimestamp_ms, setCurrentTimestamp, handleUpdateTimer, handleTogglePause);
         }
-        setTargetTimestamp(currentTimestamp_ms);
+        if(currentTimestamp_ms !== targetTimestamp_ms) {
+            setTargetTimestamp(currentTimestamp_ms);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentTimestamp_ms])
     useEffect(() => {
@@ -92,13 +93,13 @@ const PlaybackPanel = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [progressBarInDragMode]);
     useEffect(() => {
-        if(!progressBarInDragMode) {
+        if(!progressBarInDragMode && targetTimestamp_ms !== currentTimestamp_ms) {
             setCurrentTimestamp(targetTimestamp_ms);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [targetTimestamp_ms])
 
-    let currentTimestamp_formatted = millisecondsToFormattedTime(currentTimestamp_ms);
+    let targetTimestamp_formatted = millisecondsToFormattedTime(targetTimestamp_ms);
     let trackDuration_formatted = millisecondsToFormattedTime(trackDuration_ms);
     
     return(
@@ -109,7 +110,7 @@ const PlaybackPanel = () => {
                 <img src = {btn_next} alt = 'Next track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleNextTrack} />
             </div>
             <div id = {Styles.progressSection}>
-                <p id = {Styles.timeElapsed}>{currentTimestamp_formatted}</p>
+                <p id = {Styles.timeElapsed}>{targetTimestamp_formatted}</p>
                 <div
                     id = {Styles.progressBar}
                     onMouseDown = {event => handleProgressBarMouseDown(event)}

@@ -90,14 +90,13 @@ const PlaybackPanel = () => {
             document.addEventListener('mousemove', handleProgressBarDrag);
             document.addEventListener('mouseup', handleProgressBarMouseUp);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [progressBarInDragMode]);
-    useEffect(() => {
-        if(!progressBarInDragMode && targetTimestamp_ms !== currentTimestamp_ms) {
-            setCurrentTimestamp(targetTimestamp_ms);
+        else {
+            if(targetTimestamp_ms !== currentTimestamp_ms) {
+                setCurrentTimestamp(targetTimestamp_ms);
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [targetTimestamp_ms])
+    }, [progressBarInDragMode]);
 
     let targetTimestamp_formatted = millisecondsToFormattedTime(targetTimestamp_ms);
     let trackDuration_formatted = millisecondsToFormattedTime(trackDuration_ms);

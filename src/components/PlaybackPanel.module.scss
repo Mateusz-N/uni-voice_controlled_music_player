@@ -30,18 +30,28 @@
 }
 
 #progressBar {
+    position: relative;
     margin: 0 8px;
 
     width: 50%;
-    height: 3px;
+    height: 4px;
 
     background-color: #666;
     cursor: pointer;
 }
 
+#progressBarPreview, #progressBarFill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+#progressBarPreview {
+    width: 0;
+    background-color: #AAA;
+}
+
 #progressBarFill {
-    height: 100%;
-    
     background-color: #FFF;
 }
 

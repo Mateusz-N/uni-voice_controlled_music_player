@@ -20,7 +20,8 @@ const PlaybackPanel = (props) => {
     // #endregion
 
     // #region Zmienne globalne
-    const trackDuration_ms = parseInt(props.trackDuration_ms);
+    const track = props.track;
+    const trackDuration_ms = parseInt(track.duration_ms);
     let targetTimestamp_formatted = millisecondsToFormattedTime(targetTimestamp_ms);
     let trackDuration_formatted = millisecondsToFormattedTime(trackDuration_ms);
     // #endregion
@@ -122,7 +123,10 @@ const PlaybackPanel = (props) => {
     return(
         <div id = {Styles.playbackPanel}>
             <aside id = {Styles.trackDetails}>
-
+                <img src = {track.albumCoverSrc} alt = {Styles.albumTitle} id = {Styles.albumCover} />
+                <p id = {Styles.trackTitle} className = {Styles.trackProperty}>{track.trackTitle}</p>
+                <p id = {Styles.artist} className = {Styles.trackProperty}>{track.artist}</p>
+                <p id = {Styles.albumTitle} className = {Styles.trackProperty}>{track.albumTitle}</p>
             </aside>
             <main id = {Styles.mainSection}>
                 <section id = {Styles.controlsSection}>

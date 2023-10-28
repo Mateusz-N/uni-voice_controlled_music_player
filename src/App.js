@@ -5,7 +5,15 @@ const App = () => {
   return (
     <div id = 'page'>
       <div id = 'content'></div>
-      <PlaybackPanel trackDuration_ms = "15000"></PlaybackPanel>
+      <PlaybackPanel track =
+        {{
+          duration_ms: '15000',
+          trackTitle: 'Song',
+          artist: 'Artist',
+          albumTitle: 'Album',
+          albumCoverSrc: '../resources/albumCover_placeholder.png'
+        }}
+      ></PlaybackPanel>
     </div>
   );
 }

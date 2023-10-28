@@ -8,9 +8,14 @@ import btn_play from '../resources/btn_play.svg';
 import btn_pause from '../resources/btn_pause.svg';
 import btn_next from '../resources/btn_next.svg';
 
-const PlaybackPanel = () => {
-    let trackDuration_ms = 15000;
+const PlaybackPanel = (props) => {
+    // #region Zmienne globalne
+    const trackDuration_ms = parseInt(props.trackDuration_ms);
+    let targetTimestamp_formatted = millisecondsToFormattedTime(targetTimestamp_ms);
+    let trackDuration_formatted = millisecondsToFormattedTime(trackDuration_ms);
+    // #endregion
 
+    // #region Zmienne stanu (useState Hooks)
     const [timer, setTimer] = useState(null);
     const [currentTimestamp_ms, setCurrentTimestamp] = useState(0);
     const [targetTimestamp_ms, setTargetTimestamp] = useState(0);   // Docelowy punkt w czasie w przypadku przeciągania paska postępu
@@ -18,7 +23,9 @@ const PlaybackPanel = () => {
     const [paused, setPaused] = useState(true);
     const [progressBarPreviewWidth, setProgressBarPreviewWidth] = useState(0);
     const [progressBarInDragMode, setProgressBarInDragMode] = useState(false);
+    // #endregion
     
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleUpdateTimer = (newTimer) => {
         if(newTimer === -1) {
             clearTimeout(timer)
@@ -47,7 +54,7 @@ const PlaybackPanel = () => {
         // to-do
     }
     const getRelativeProgressBarPointPosition = (event) => {
-        const progressBarBoundingRect = document.getElementById(Styles.progressBar).getBoundingClientRect(); // currentTarget przechwytuje źródłowy element (progressBar) zamiast wierzchniego (progressBarFill)
+        const progressBarBoundingRect = document.getElementById(Styles.progressBar).getBoundingClientRect();
         return (event.clientX - progressBarBoundingRect.left) / progressBarBoundingRect.width; // Część całości paska na którą wskazuje zdarzenie [0, 1]
     }
     const handleProgressBarMouseDown = (event) => {
@@ -81,7 +88,9 @@ const PlaybackPanel = () => {
             document.removeEventListener('mouseup', handleProgressBarMouseUp);
         }
     }
+    // #endregion
 
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         if(!paused) {
             updatePlayback(trackDuration_ms, currentTimestamp_ms, setCurrentTimestamp, handleUpdateTimer, handleTogglePause);
@@ -107,10 +116,9 @@ const PlaybackPanel = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [progressBarInDragMode]);
-
-    let targetTimestamp_formatted = millisecondsToFormattedTime(targetTimestamp_ms);
-    let trackDuration_formatted = millisecondsToFormattedTime(trackDuration_ms);
+    // #endregion
     
+    // #region Struktura komponentu (JSX)
     return(
         <div id = {Styles.playbackPanel}>
             <div id = {Styles.controlsSection}>
@@ -138,6 +146,7 @@ const PlaybackPanel = () => {
             </div>
         </div>
     );
+    // #endregion
 }
 
 export default PlaybackPanel;

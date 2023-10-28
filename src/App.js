@@ -5,7 +5,7 @@ const App = () => {
   return (
     <div id = 'page'>
       <div id = 'content'></div>
-      <PlaybackPanel></PlaybackPanel>
+      <PlaybackPanel trackDuration_ms = "15000"></PlaybackPanel>
     </div>
   );
 }

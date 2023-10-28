@@ -9,12 +9,6 @@ import btn_pause from '../resources/btn_pause.svg';
 import btn_next from '../resources/btn_next.svg';
 
 const PlaybackPanel = (props) => {
-    // #region Zmienne globalne
-    const trackDuration_ms = parseInt(props.trackDuration_ms);
-    let targetTimestamp_formatted = millisecondsToFormattedTime(targetTimestamp_ms);
-    let trackDuration_formatted = millisecondsToFormattedTime(trackDuration_ms);
-    // #endregion
-
     // #region Zmienne stanu (useState Hooks)
     const [timer, setTimer] = useState(null);
     const [currentTimestamp_ms, setCurrentTimestamp] = useState(0);
@@ -23,6 +17,12 @@ const PlaybackPanel = (props) => {
     const [paused, setPaused] = useState(true);
     const [progressBarPreviewWidth, setProgressBarPreviewWidth] = useState(0);
     const [progressBarInDragMode, setProgressBarInDragMode] = useState(false);
+    // #endregion
+
+    // #region Zmienne globalne
+    const trackDuration_ms = parseInt(props.trackDuration_ms);
+    let targetTimestamp_formatted = millisecondsToFormattedTime(targetTimestamp_ms);
+    let trackDuration_formatted = millisecondsToFormattedTime(trackDuration_ms);
     // #endregion
     
     // #region Obsługa zdarzeń (Event Handlers)
@@ -121,29 +121,37 @@ const PlaybackPanel = (props) => {
     // #region Struktura komponentu (JSX)
     return(
         <div id = {Styles.playbackPanel}>
-            <div id = {Styles.controlsSection}>
-                <img src = {btn_previous} alt = 'Previous track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handlePreviousTrack} />
-                <img src = {paused ? btn_play : btn_pause} alt = {paused ? 'Play' : 'Pause'} id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleTogglePause} />
-                <img src = {btn_next} alt = 'Next track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleNextTrack} />
-            </div>
-            <div id = {Styles.progressSection}>
-                <p id = {Styles.timeElapsed}>{targetTimestamp_formatted}</p>
-                <div
-                    id = {Styles.progressBar}
-                    onMouseDown = {event => handleProgressBarMouseDown(event)}
-                    onMouseOver = {event => handleProgressBarHover(event)}
-                    onMouseOut = {event => handleProgressBarHover(event)}
-                    onMouseMove = {event => handleProgressBarHover(event)}
-                >
-                    <div id = {Styles.progressBarPreview} style = {{width: progressBarPreviewWidth + '%'}}>
-                        
-                    </div>
-                    <div id = {Styles.progressBarFill} style = {{width: (targetTimestamp_ms / trackDuration_ms * 100) + '%'}}>
+            <aside id = {Styles.trackDetails}>
 
+            </aside>
+            <main id = {Styles.mainSection}>
+                <section id = {Styles.controlsSection}>
+                    <img src = {btn_previous} alt = 'Previous track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handlePreviousTrack} />
+                    <img src = {paused ? btn_play : btn_pause} alt = {paused ? 'Play' : 'Pause'} id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleTogglePause} />
+                    <img src = {btn_next} alt = 'Next track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleNextTrack} />
+                </section>
+                <section id = {Styles.progressSection}>
+                    <p id = {Styles.timeElapsed}>{targetTimestamp_formatted}</p>
+                    <div
+                        id = {Styles.progressBar}
+                        onMouseDown = {event => handleProgressBarMouseDown(event)}
+                        onMouseOver = {event => handleProgressBarHover(event)}
+                        onMouseOut = {event => handleProgressBarHover(event)}
+                        onMouseMove = {event => handleProgressBarHover(event)}
+                    >
+                        <div id = {Styles.progressBarPreview} style = {{width: progressBarPreviewWidth + '%'}}>
+                            
+                        </div>
+                        <div id = {Styles.progressBarFill} style = {{width: (targetTimestamp_ms / trackDuration_ms * 100) + '%'}}>
+
+                        </div>
                     </div>
-                </div>
-                <p id = {Styles.trackDuration}>{trackDuration_formatted}</p>
-            </div>
+                    <p id = {Styles.trackDuration}>{trackDuration_formatted}</p>
+                </section>
+            </main>
+            <aside id = {Styles.trackDetails}>
+
+            </aside>
         </div>
     );
     // #endregion

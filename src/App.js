@@ -1,4 +1,5 @@
 import PlaybackPanel from './components/PlaybackPanel';
+import placeholderAlbumCoverSrc from './resources/albumCover_placeholder.png';
 import './App.css';
 
 const App = () => {
@@ -11,7 +12,7 @@ const App = () => {
           trackTitle: 'Song',
           artist: 'Artist',
           albumTitle: 'Album',
-          albumCoverSrc: '../resources/albumCover_placeholder.png'
+          albumCoverSrc: placeholderAlbumCoverSrc
         }}
       ></PlaybackPanel>
     </div>

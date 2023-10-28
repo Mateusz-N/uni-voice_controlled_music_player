@@ -124,9 +124,9 @@ const PlaybackPanel = (props) => {
         <div id = {Styles.playbackPanel}>
             <aside id = {Styles.trackDetails}>
                 <img src = {track.albumCoverSrc} alt = {Styles.albumTitle} id = {Styles.albumCover} />
-                <p id = {Styles.trackTitle} className = {Styles.trackProperty}>{track.trackTitle}</p>
-                <p id = {Styles.artist} className = {Styles.trackProperty}>{track.artist}</p>
-                <p id = {Styles.albumTitle} className = {Styles.trackProperty}>{track.albumTitle}</p>
+                <p id = {Styles.trackTitle} className = {Styles.trackProperty}><a href = '/'>{track.trackTitle}</a></p>
+                <p id = {Styles.artist} className = {Styles.trackProperty}><a href = '/'>{track.artist}</a></p>
+                <p id = {Styles.albumTitle} className = {Styles.trackProperty}><a href = '/'>{track.albumTitle}</a></p>
             </aside>
             <main id = {Styles.mainSection}>
                 <section id = {Styles.controlsSection}>

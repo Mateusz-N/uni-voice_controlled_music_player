@@ -2,6 +2,10 @@ p {
     margin: 0;
 }
 
+a {
+    color: inherit;
+}
+
 #playbackPanel {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
@@ -14,7 +18,7 @@ p {
 #trackDetails {
     display: grid;
     grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: min-content 1fr;
 
     padding: 10px;
 
@@ -28,6 +32,14 @@ p {
 
 #albumCover {
     grid-row: span 3;
+    height: 100%;
+    aspect-ratio: 1/1;
+
+    cursor: pointer;
+    
+    &:hover {
+        opacity: 0.9;
+    }
 }
 
 #mainSection {

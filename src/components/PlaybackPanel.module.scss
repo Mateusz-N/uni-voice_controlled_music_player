@@ -10,31 +10,31 @@ a {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
     grid-auto-flow: column;
-    grid-template-rows: 100%;
 
     background-color: #222;
 }
 
 #trackDetails {
-    display: grid;
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: min-content 1fr;
+    display: flex;
 
     padding: 10px;
+}
 
-    .trackProperty {
-        display: flex;
-        align-items: center;
-        
-        padding-left: 10px;
-    }
+#trackProperties {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.trackProperty {
+    display: flex;
+    align-items: center;
+    
+    padding-left: 10px;
 }
 
 #albumCover {
-    grid-row: span 3;
-    height: 100%;
-    aspect-ratio: 1/1;
-
+    height: 63px;
     cursor: pointer;
     
     &:hover {
@@ -46,7 +46,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    align-content: end;
+    align-content: flex-end;
     flex-wrap: wrap;
 
     padding: 10px;
@@ -116,8 +116,8 @@ a {
 
 #miscControls {
     display: flex;
-    justify-content: start;
-    align-items: end;
+    justify-content: flex-start;
+    align-items: flex-end;
 
     padding: 10px;
 }

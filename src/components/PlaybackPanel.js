@@ -7,6 +7,11 @@ import btn_previous from '../resources/btn_previous.svg';
 import btn_play from '../resources/btn_play.svg';
 import btn_pause from '../resources/btn_pause.svg';
 import btn_next from '../resources/btn_next.svg';
+import volume_75_100 from '../resources/volume_75_100.svg';
+import volume_50_75 from '../resources/volume_50_75.svg';
+import volume_25_50 from '../resources/volume_25_50.svg';
+import volume_0_25 from '../resources/volume_0_25.svg';
+import volume_muted from '../resources/volume_muted.svg';
 
 const PlaybackPanel = (props) => {
     // #region Zmienne stanu (useState Hooks)
@@ -17,6 +22,8 @@ const PlaybackPanel = (props) => {
     const [paused, setPaused] = useState(true);
     const [progressBarPreviewWidth, setProgressBarPreviewWidth] = useState(0);
     const [progressBarInDragMode, setProgressBarInDragMode] = useState(false);
+    const [volumePercentage, setVolumePercentage] = useState(100);
+    const [volumeBuffer, setVolumeBuffer] = useState(0);
     // #endregion
 
     // #region Zmienne globalne
@@ -89,7 +96,33 @@ const PlaybackPanel = (props) => {
             document.removeEventListener('mouseup', handleProgressBarMouseUp);
         }
     }
+    const handleChangeVolume = (event) => {
+        setVolumePercentage(event.target.value);
+    }
+    const handleToggleMute = () => {
+        const prevVolumePercentage = volumePercentage;
+        setVolumePercentage(volumeBuffer);
+        setVolumeBuffer(prevVolumePercentage);
+    }
     // #endregion
+
+    const determineVolumeIcon = () => {
+        if(volumePercentage <= 100 && volumePercentage > 75) {
+            return volume_75_100;
+        }
+        else if(volumePercentage <= 75 && volumePercentage > 50) {
+            return volume_50_75;
+        }
+        else if(volumePercentage <= 50 && volumePercentage > 25) {
+            return volume_25_50;
+        }
+        else if(volumePercentage <= 25 && volumePercentage > 0) {
+            return volume_0_25;
+        }
+        else {
+            return volume_muted;
+        }
+    }
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
@@ -153,8 +186,23 @@ const PlaybackPanel = (props) => {
                     <p id = {Styles.trackDuration}>{trackDuration_formatted}</p>
                 </section>
             </main>
-            <aside id = {Styles.trackDetails}>
-
+            <aside id = {Styles.miscControls}>
+                <section id = {Styles.volumeSection}>
+                    <label htmlFor = {Styles.volumeBar} id = {Styles.volumeLabel}>
+                        <img src = {determineVolumeIcon()} alt = {`Volume: ${volumePercentage}%`} id = {Styles.volumeIcon} onClick = {handleToggleMute}/>
+                    </label>
+                    <input
+                        type = 'range'
+                        min = '0'
+                        max = '100'
+                        step = '1'
+                        value = {volumePercentage}
+                        name = 'volumeBar'
+                        id = {Styles.volumeBar}
+                        onChange = {event => handleChangeVolume(event)}
+                        style = {{background: `linear-gradient(to right, #FFF ${volumePercentage}%, #666 ${volumePercentage}%)`}}
+                    />
+                </section>
             </aside>
         </div>
     );

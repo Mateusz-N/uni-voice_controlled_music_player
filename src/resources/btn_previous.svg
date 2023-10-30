@@ -1,48 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   width="16.933332mm"
-   height="16.933332mm"
-   viewBox="0 0 16.933332 16.933332"
-   version="1.1"
-   id="svg5"
-   sodipodiDocname="btn_previous.svg"
-   inkscapeVersion="1.2 (dc2aedaf03, 2022-05-15)"
-   xmlnsInkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlnsSodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlnsSvg="http://www.w3.org/2000/svg">
-  <sodipodiNamedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscapeShowpageshadow="2"
-     inkscapePageopacity="0.0"
-     inkscapePagecheckerboard="0"
-     inkscapeDeskcolor="#d1d1d1"
-     inkscapeDocument-units="mm"
-     showgrid="false"
-     inkscapeZoom="6.2217172"
-     inkscapeCx="22.903645"
-     inkscapeCy="22.341099"
-     inkscapeWindow-width="1920"
-     inkscapeWindow-height="1027"
-     inkscapeWindow-x="-8"
-     inkscapeWindow-y="-8"
-     inkscapeWindow-maximized="1"
-     inkscapeCurrent-layer="layer1" />
-  <defs
-     id="defs2" />
-  <g
-     inkscapeLabel="Warstwa 1"
-     inkscapeGroupmode="layer"
-     id="layer1"
-     transform="translate(-93.411386,-81.142716)">
-    <path
-       id="path462"
-       style="fill:#ffc800;fill-opacity:1;fill-rule:evenodd;stroke-width:0.211667"
-       d="m 101.87805,81.142716 a 8.4666662,8.4666662 0 0 0 -8.466664,8.466667 8.4666662,8.4666662 0 0 0 8.466664,8.466666 8.4666662,8.4666662 0 0 0 8.46667,-8.466666 8.4666662,8.4666662 0 0 0 -8.46667,-8.466667 z m -4.903574,4.233333 h 2.475301 v 4.233334 l 7.331853,-4.233334 v 8.466667 l -7.331853,-4.233333 v 4.233333 h -2.475301 z" />
-  </g>
+<svg width="16.933mm" height="16.933mm" version="1.1" viewBox="0 0 16.933 16.933" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-93.411 -81.143)">
+  <path d="m101.88 81.143a8.4667 8.4667 0 0 0-8.4667 8.4667 8.4667 8.4667 0 0 0 8.4667 8.4667 8.4667 8.4667 0 0 0 8.4667-8.4667 8.4667 8.4667 0 0 0-8.4667-8.4667zm-4.9036 4.2333h2.4753v4.2333l7.3319-4.2333v8.4667l-7.3319-4.2333v4.2333h-2.4753v-8.4667z" fill="#ffc800" fill-rule="evenodd" stroke-width=".21167"/>
+ </g>
 </svg>

@@ -46,8 +46,10 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    align-content: center;
+    align-content: end;
     flex-wrap: wrap;
+
+    padding: 10px;
 }
 
 #controlsSection {
@@ -73,6 +75,7 @@ a {
     height: 4px;
 
     background-color: #666;
+    border-radius: 1vh;
     cursor: pointer;
 }
 
@@ -80,6 +83,8 @@ a {
     position: absolute;
     top: 0;
     bottom: 0;
+
+    border-radius: inherit;
 }
 
 #progressBarPreview {
@@ -107,4 +112,46 @@ a {
     height: 32px;
 
     cursor: pointer;
+}
+
+#miscControls {
+    display: flex;
+    justify-content: start;
+    align-items: end;
+
+    padding: 10px;
+}
+
+#volumeSection {
+    display: flex;
+    align-items: center;
+}
+
+#volumeLabel {
+    height: auto;
+}
+
+#volumeIcon {
+    height: 16px;
+
+    cursor: pointer;
+}
+
+#volumeBar {
+    height: 4px;
+
+    appearance: none;
+    background-color: #666;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#volumeBar::-webkit-slider-thumb {
+    height: 12px;
+    width: 12px;
+
+    appearance: none;
+    background-color: #FFF;
+    border-radius: 50%;
+    border: none;
 }

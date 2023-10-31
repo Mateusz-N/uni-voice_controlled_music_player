@@ -1,11 +1,14 @@
 import PlaybackPanel from './components/PlaybackPanel';
+import VoiceInputButton from './components/VoiceInputButton';
 import placeholderAlbumCoverSrc from './resources/albumCover_placeholder.png';
 import './App.css';
 
 const App = () => {
   return (
     <div id = 'page'>
-      <div id = 'content'></div>
+      <div id = 'content'>
+        <VoiceInputButton></VoiceInputButton>
+      </div>
       <PlaybackPanel track =
         {{
           duration_ms: '15000',

@@ -27,7 +27,9 @@ connection.query('SELECT * FROM user', (err, rows, fields) => {
 
 connection.end();
 
-app.use('/spotify', spotifyRouter)
+app.use('/spotify', spotifyRouter);
+app.use('/discogs', discogsRouter);
+app.use('/musixmatch', musixmatchRouter);
 
 app.listen(port, () => {
   console.log(`Aplikacja nasłuchuje na porcie ${port}`);

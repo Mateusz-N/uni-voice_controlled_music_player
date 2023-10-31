@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Baza danych: `voice_controlled_music_player`
+-- Baza danych: `praca_inzynierska`
 --
 
 -- --------------------------------------------------------

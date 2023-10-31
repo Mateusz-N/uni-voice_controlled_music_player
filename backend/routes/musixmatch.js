@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
     });
 
     const lyrics = response.data.message.body.lyrics.lyrics_body;
-    console.log(lyrics)
     res.send(`<p>Tekst utworu <strong>${trackName}</strong>: <blockquote><em style="white-space: pre-line">${lyrics}</em></blockquote></p>`);
 });
 

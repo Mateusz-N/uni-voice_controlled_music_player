@@ -134,9 +134,13 @@ a {
 #volumeSection {
     display: flex;
     align-items: center;
+
+    padding: 2.25px;
 }
 
 #volumeLabel {
+    display: flex;
+
     height: auto;
 }
 

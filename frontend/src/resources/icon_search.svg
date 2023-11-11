@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="32" height="32" inkscapeVersion="1.2 (dc2aedaf03, 2022-05-15)" sodipodiDocname="btn_next.svg" version="1.1" viewBox="0 0 8.467 8.4667" xmlns="http://www.w3.org/2000/svg" xmlnsSvg="http://www.w3.org/2000/svg">
+ <sodipodiNamedview bordercolor="#000000" borderopacity="0.25" inkscapeCurrent-layer="layer1" inkscapeCx="9.4025489" inkscapeCy="22.341099" inkscapeDeskcolor="#d1d1d1" inkscapeDocument-units="mm" inkscapePagecheckerboard="0" inkscapePageopacity="0.0" inkscapeShowpageshadow="2" inkscapeWindow-height="1027" inkscapeWindow-maximized="1" inkscapeWindow-width="1920" inkscapeWindow-x="-8" inkscapeWindow-y="-8" inkscapeZoom="6.2217172" pagecolor="#ffffff" showgrid="false"/>
+ <g fill-rule="evenodd">
+  <path d="m2.1167 1e-7 8.4667 8.4667" fill="#803300"/>
+  <path d="m2.1167 1e-7 8.4667 8.4667" fill="#803300"/>
+  <path d="m2.1167 1e-7 8.4667 8.4667" fill="#ececec"/>
+  <path d="m2.1167 1e-7 8.4667 8.4667z" fill="#ececec"/>
+ </g>
+ <g fill="none" stroke="#ffc800" stroke-linecap="round" stroke-width=".50002">
+  <ellipse cx="3.1751" cy="3.175" rx="2.8956" ry="2.8956"/>
+  <path d="m5.2226 5.2225 3.0009 3.0009"/>
+ </g>
+</svg>

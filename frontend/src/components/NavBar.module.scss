@@ -1,4 +1,48 @@
 #navBar {
-    height: 83px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+
+    padding: 8px;
+
     background-color: #222;
+}
+
+#microphoneContainer {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 100%;
+    background-color: #222;
+}
+
+#microphoneIcon {
+    height: 32px;
+    padding: 10px;
+
+    cursor: pointer;
+
+    &.microphoneIcon_disabled {
+        filter: brightness(50%);
+    }
+}
+
+#btnLogin {
+    background-color: rgb(255, 200, 0);
+
+    color: #222;
+    font-size: 1rem;
+    font-weight: bolder;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+#profilePic {
+    height: 32px;
+
+    border-radius: 100%;
+    cursor: pointer;
 }

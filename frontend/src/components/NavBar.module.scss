@@ -6,6 +6,17 @@
     padding: 8px;
 
     background-color: #222;
+
+    .navBar_section {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+#homeIcon {
+    height: 32px;
+
+    cursor: pointer;
 }
 
 #microphoneContainer {
@@ -45,4 +56,41 @@
 
     border-radius: 100%;
     cursor: pointer;
+}
+
+#profileContextMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin: 0;
+
+    padding: 0;
+
+    background-color: #222;
+    overflow: hidden;
+    transition: max-height ease-in .1s;
+
+    #profileContextMenu_options {
+        margin: 0;
+
+        padding: 0;
+
+        .profileContextMenu_option {
+            padding: 8px;
+
+            list-style-type: none;
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #444;
+            }
+            &:active {
+                background-color: #555;
+            }
+            &#profileContextMenu_disconnect {
+                color: #f22;
+            }
+        }
+    }
 }

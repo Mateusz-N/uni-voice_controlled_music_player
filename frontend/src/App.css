@@ -1,13 +1,6 @@
 #page {
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
 
   width: 100%;
-}
-
-#content {
-  flex: 1;
-  
-  background-color: orange;
 }

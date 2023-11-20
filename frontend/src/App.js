@@ -1,33 +1,20 @@
-import NavBar from './components/NavBar';
-import PlaybackPanel from './components/PlaybackPanel';
-import CatalogBrowser from './components/CatalogBrowser';
+import { Route, Routes } from 'react-router-dom';
 
-import placeholderAlbumCoverSrc from './resources/albumCover_placeholder.png';
-import placeholderProfilePicSrc from './resources/profilePic_placeholder.png';
+import HomePage from './pages/Home';
+import PlaylistPage from './pages/Playlist';
+import PlaylistGeneratorPage from './pages/PlaylistGenerator';
+import SettingsPage from "./pages/Settings";
 
 import './App.css';
 
 const App = () => {
   return (
-    <div id = 'page'>
-      <NavBar loggedUser = {{
-        name: 'User',
-        profilePic: placeholderProfilePicSrc
-      }}
-      ></NavBar>
-      <CatalogBrowser>
-
-      </CatalogBrowser>
-      <PlaybackPanel track =
-        {{
-          duration_ms: '15000',
-          trackTitle: 'Song',
-          artist: 'Artist',
-          albumTitle: 'Album',
-          albumCoverSrc: placeholderAlbumCoverSrc
-        }}
-      ></PlaybackPanel>
-    </div>
+    <Routes>
+      <Route path = '/' element = {<HomePage />} />
+      <Route path = 'playlist/:id' element = {<PlaylistPage />} /> {/* "/:id" prowadzi do podstrony konkretnej listy odtwarzania */}
+      <Route path = 'generator' element = {<PlaylistGeneratorPage />} />
+      <Route path = 'settings' element = {<SettingsPage />} />
+    </Routes>
   );
 }
 

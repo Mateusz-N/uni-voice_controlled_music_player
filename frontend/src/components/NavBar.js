@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import SearchBar from './SearchBar';
 
@@ -14,9 +15,6 @@ const NavBar = (props) => {
     const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
     
-    const handleOpenHomePage = () => {
-        // to-do
-    }
     const handleToggleMicrophone = () => {
         setMicrophoneEnabled(prevState => !prevState);
     }
@@ -29,9 +27,6 @@ const NavBar = (props) => {
     const handleToggleProfileContextMenu = () => {
         setProfileContextMenuExpanded(prevState => !prevState);
     }
-    const handleOpenSettingsMenu = () => {
-        // to-do
-    }
     document.body.addEventListener("click", (event) => {
         if(profileContextMenuExpanded && event.target !== document.getElementById(Styles.profilePic)) {
             setProfileContextMenuExpanded(false);
@@ -41,7 +36,7 @@ const NavBar = (props) => {
     return(
         <nav id = {Styles.navBar}>
             <section id = {Styles.navBar_leftSection} className = {Styles.navBar_section}>
-                <img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} onClick = {handleOpenHomePage} />
+                <Link to = '/'><img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} /></Link>
                 <SearchBar>
                     
                 </SearchBar>
@@ -62,7 +57,7 @@ const NavBar = (props) => {
                 }
                 <menu id = {Styles.profileContextMenu} style = {{maxHeight: profileContextMenuExpanded ? document.getElementById(Styles.profileContextMenu_options).offsetHeight : 0}}>
                     <ul id = {Styles.profileContextMenu_options}>
-                        <li id = {Styles.profileContextMenu_settings} className = {Styles.profileContextMenu_option} onClick = {handleOpenSettingsMenu}>Settings</li>
+                        <Link to = '/settings'><li id = {Styles.profileContextMenu_settings} className = {Styles.profileContextMenu_option}>Settings</li></Link>
                         <li id = {Styles.profileContextMenu_disconnect} className = {Styles.profileContextMenu_option} onClick = {handleLogout}>Disconnect</li>
                     </ul>
                 </menu>

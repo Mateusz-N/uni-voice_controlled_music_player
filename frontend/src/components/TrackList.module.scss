@@ -1,0 +1,76 @@
+#trackList {
+    table-layout: fixed;
+    width: 80%;
+    padding: 36px 8px 36px 36px;
+
+    border-spacing: 0;
+}
+
+#trackList_header {
+    height: 48px;
+
+    th {
+        border-bottom: 1px solid #111;
+    }
+
+    th:first-of-type {
+        width: 36px;
+    }
+}
+
+.trackList_item {
+    &:hover {
+        background-color: #2a2a2a;
+    }
+
+    &:not(:last-of-type) td {
+        border-bottom: 1px solid #222;
+    }
+
+    td, td p {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    td:first-of-type {
+        width: 36px;
+    }
+}
+
+.trackList_item > td, #trackList_header > th {
+    padding: 8px;
+
+    text-align: left;
+}
+
+.trackList_item_title, .trackList_item_album {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    font-style: italic;
+}
+
+.trackList_item_titleText {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.trackList_item_btnPlay {
+    height: 24px;
+}
+
+.trackList_item_albumCover {
+    height: 32px;
+}
+
+.trackList_item_btnPlay, .trackList_item_albumCover {
+    cursor: pointer;
+
+    vertical-align: bottom;
+
+    &:hover {
+        filter: brightness(85%);
+    }
+}

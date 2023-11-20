@@ -1,0 +1,36 @@
+#yourCatalog {
+    margin: 16px 0 0 16px;
+
+    line-height: 1;
+}
+
+#btnSync {
+    vertical-align: middle;
+
+    height: 2rem;
+
+    cursor: pointer;
+}
+
+#mainSection {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(128px, max-content));
+
+    padding: 16px;
+}
+
+.catalogItem_thumbnail {
+    width: 100%;
+
+    border-radius: 8px;
+
+    &:hover {
+        filter: brightness(85%);
+    }
+}
+
+.catalogItem_name {
+    float: left;
+    margin: 0;
+}

@@ -1,23 +1,13 @@
-import { useState } from 'react';
-
-import Styles from './Playlist.module.scss';
-
 import NavBar from '../components/NavBar';
 import PlaybackPanel from '../components/PlaybackPanel';
 import CatalogBrowser from '../components/CatalogBrowser';
 import TrackList from '../components/TrackList';
+import PlaylistOverview from '../components/PlaylistOverview';
 
-import btn_play from '../resources/btn_play.svg';
-import btn_pause from '../resources/btn_pause.svg';
 import placeholderAlbumCoverSrc from '../resources/albumCover_placeholder.png';
 import placeholderProfilePicSrc from '../resources/profilePic_placeholder.png';
 
 const Playlist = () => {
-    const [playlistPaused, setPlaylistPaused] = useState(true);
-
-    const handleTogglePlaylistPlayback = () => {
-        setPlaylistPaused(prevState => !prevState);
-    }
 
     const sampleSongs = [{ id: "aR5rHG1", title: "Song 1", artist: "Artist 1", album: {coverSrc: placeholderAlbumCoverSrc, name: "Album 1"}, year: 1995, genre: "rock", duration: 240000, added: new Date("2023-07-01") },
     { id: "aR5rHG2", title: "Song 222222222222222222222222222222222222", artist: "Artist 2222222222222222222222222222", album: {coverSrc: placeholderAlbumCoverSrc, name: "Album 232ff3322343235564351"}, year: 20082222222222222222222222222222, genre: "pop2222222222222222222222222222", duration: 1800002222222222222222222222222222, added: new Date("2023-07-02") },
@@ -72,34 +62,8 @@ const Playlist = () => {
             <CatalogBrowser className = 'playlistBrowser'>
                 <TrackList tracks = {playlist.tracks}>
                 </TrackList>
-                <aside id = {Styles.playlistOverview}>
-                    <main id = {Styles.playlistOverview_mainSection}>
-                        <figure id = {Styles.playlistFigure}>
-                            <img src = {playlist.thumbnailSrc} alt = {playlist.name} id = {Styles.playlistFigure_thumbnail} />
-                            <figcaption id = {Styles.playlistFigcaption}>
-                                <img
-                                    src = {playlistPaused ? btn_play : btn_pause}
-                                    alt = {playlistPaused ? 'Play' : 'Pause'}
-                                    id = {playlistPaused ? Styles.playlist_btnPlay : Styles.playlist_btnPause}
-                                    className = {Styles.playlist_btnTogglePlayback}
-                                    onClick = {handleTogglePlaylistPlayback}
-                                />
-                                <h3 id = {Styles.playlistName}>{playlist.name}</h3>
-                            </figcaption>
-                        </figure>
-                        <hr/>
-                        <ul id = {Styles.playlistDetails}>
-                            <li><span className = {Styles.playlistDetails_detailName}>Track count:</span> {playlist.tracks.length}</li>
-                            <li><span className = {Styles.playlistDetails_detailName}>Total duration:</span> {playlist.totalDuration}</li>
-                            <li><span className = {Styles.playlistDetails_detailName}>Created:</span> {playlist.dateCreated.toDateString()}</li>
-                            <li><span className = {Styles.playlistDetails_detailName}>Last modified:</span> {playlist.dateModified.toDateString()}</li>
-                        </ul>
-                    </main>
-                    <hr/>
-                    <section id = {Styles.playlistDescription}>
-                        <p>{playlist.description}</p>
-                    </section>
-                </aside>
+                <PlaylistOverview playlist = {playlist}>
+                </PlaylistOverview>
             </CatalogBrowser>
             <PlaybackPanel track =
                 {{

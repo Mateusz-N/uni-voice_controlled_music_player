@@ -57,7 +57,7 @@
     cursor: pointer;
 }
 
-.trackList_item_btnPlay {
+.trackList_item_btnTogglePlayback {
     height: 24px;
 }
 
@@ -67,7 +67,7 @@
     border-radius: 4%;
 }
 
-.trackList_item_btnPlay, .trackList_item_albumCover {
+.trackList_item_btnTogglePlayback, .trackList_item_albumCover {
     cursor: pointer;
 
     vertical-align: bottom;

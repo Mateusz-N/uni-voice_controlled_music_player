@@ -1,14 +1,23 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Styles from './TrackList.module.scss';
 
 import btn_play from '../resources/btn_play.svg';
+import btn_pause from '../resources/btn_pause.svg';
 
 const TrackList = (props) => {
     const tracks = props.tracks;
 
-    const handlePlayTrack = () => {
-        // To-do
+    const [playingTrackID, setPlayingTrackID] = useState(null);
+
+    const handleToggleTrackPlayback = (trackID) => {
+        if(playingTrackID !== trackID) {
+            setPlayingTrackID(trackID);
+        }
+        else {
+            setPlayingTrackID(null);
+        }
     }
 
     return(
@@ -27,13 +36,19 @@ const TrackList = (props) => {
             </thead>
             <tbody>
                 {tracks.map((track, index) => {
+                    const notPlaying = playingTrackID !== index;
                     return(
                         <tr key = {index} className = {Styles.trackList_item}>
-                            <td>{index + 1000}</td>
+                            <td>{index + 1}</td>
                             <td>
                                 <div className = {Styles.trackList_item_title}>
-                                    <img src = {btn_play} alt = 'Play' className = {Styles.trackList_item_btnPlay} />
-                                    <p className = {Styles.trackList_item_titleText} onClick = {handlePlayTrack}>{track.title}</p>
+                                    <img
+                                        src = {notPlaying ? btn_play : btn_pause}
+                                        alt = {notPlaying ? 'Play' : 'Pause'}
+                                        className = {(notPlaying ? Styles.trackList_item_btnPlay : Styles.trackList_item_btnPause) + ' ' + Styles.trackList_item_btnTogglePlayback}
+                                        onClick = {() => handleToggleTrackPlayback(index)}
+                                    />
+                                    <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(index)}>{track.title}</p>
                                 </div>
                             </td>
                             <td>

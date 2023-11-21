@@ -5,6 +5,7 @@ import PlaybackPanel from '../components/PlaybackPanel';
 import CatalogBrowser from '../components/CatalogBrowser';
 import TrackList from '../components/TrackList';
 
+import btn_play from '../resources/btn_play.svg';
 import placeholderAlbumCoverSrc from '../resources/albumCover_placeholder.png';
 import placeholderProfilePicSrc from '../resources/profilePic_placeholder.png';
 
@@ -63,18 +64,22 @@ const Playlist = () => {
                 <TrackList tracks = {playlist.tracks}>
                 </TrackList>
                 <aside id = {Styles.playlistOverview}>
-                    <article id = {Styles.playlistMetadata}>
+                    <main id = {Styles.playlistOverview_mainSection}>
                         <figure id = {Styles.playlistFigure}>
                             <img src = {playlist.thumbnailSrc} alt = {playlist.name} id = {Styles.playlistFigure_thumbnail} />
-                            <figcaption><h3>{playlist.name}</h3></figcaption>
+                            <figcaption id = {Styles.playlistFigcaption}>
+                                <img src = {btn_play} alt = 'Play' id = {Styles.playlist_btnPlay} />
+                                <h3 id = {Styles.playlistName}>{playlist.name}</h3>
+                            </figcaption>
                         </figure>
+                        <hr/>
                         <ul id = {Styles.playlistDetails}>
                             <li><span className = {Styles.playlistDetails_detailName}>Track count:</span> {playlist.tracks.length}</li>
                             <li><span className = {Styles.playlistDetails_detailName}>Total duration:</span> {playlist.totalDuration}</li>
                             <li><span className = {Styles.playlistDetails_detailName}>Created:</span> {playlist.dateCreated.toDateString()}</li>
                             <li><span className = {Styles.playlistDetails_detailName}>Last modified:</span> {playlist.dateModified.toDateString()}</li>
                         </ul>
-                    </article>
+                    </main>
                     <hr/>
                     <section id = {Styles.playlistDescription}>
                         <p>{playlist.description}</p>

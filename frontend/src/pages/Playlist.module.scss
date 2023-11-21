@@ -5,21 +5,43 @@
     background-color: #3a3a3a;
 }
 
-#playlistMetadata {
-    display: flex;
-    gap: 8px;
-}
-
 #playlistFigure {
     margin: 0;
 }
 
 #playlistFigure_thumbnail {
     width: 100%;
+
+    border-radius: 4%;
 }
 
 #playlistFigure, #playlistDetails {
     flex: 1;
+}
+
+#playlistFigcaption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    margin: 8px;
+}
+
+#playlist_btnPlay {
+    height: 32px;
+
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(85%);
+    }
+}
+
+#playlistName {
+    margin: 0;
+
+    overflow: hidden;
+    word-wrap: break-word;
 }
 
 #playlistDetails {

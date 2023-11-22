@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import Styles from './PlaylistOverview.module.scss';
 
@@ -33,7 +34,17 @@ const PlaylistOverview = (props) => {
                 <hr/>
                 <ul id = {Styles.playlistDetails}>
                     {props.for === 'album' ?
-                        <li><span className = {Styles.playlistDetails_detailName}>Artist(s):</span> {playlist.artists.join(', ')} {/* Zapytanie do bazy? */}</li>
+                        <li>
+                            <span className = {Styles.playlistDetails_detailName}>Artist(s): </span>
+                            {playlist.artists.map((artist, index) => {
+                                return(
+                                    <>
+                                        <Link key = {index} to = {'./artist/' + artist.id}>{artist}</Link>
+                                        {index === playlist.artists.length - 1 ? '' : ', '}
+                                    </>
+                                )
+                            })}
+                        </li>
                     : null}
                     <li><span className = {Styles.playlistDetails_detailName}>Track count:</span> {playlist.tracks.length}</li>
                     <li><span className = {Styles.playlistDetails_detailName}>Total duration:</span> {playlist.totalDuration}</li>

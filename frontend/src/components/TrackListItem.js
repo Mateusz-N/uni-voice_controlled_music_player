@@ -29,7 +29,12 @@ const TrackListItem = (props) => {
                 <>
                     <td>
                         {track.artists.map((artist, index) => {
-                            return <Link key = {index} to = {'./artist/' + artist.id}>{artist + ' '}</Link>
+                            return(
+                                <>
+                                    <Link key = {index} to = {'./artist/' + artist.id}>{artist}</Link>
+                                    {index === track.artists.length - 1 ? '' : ', '}
+                                </>
+                            )
                         })}
                     </td>
                     <td>

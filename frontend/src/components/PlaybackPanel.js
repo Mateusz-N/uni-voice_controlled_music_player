@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { millisecondsToFormattedTime, updatePlayback, togglePlayback } from '../common/auxiliaryFunctions';
 import Styles from './PlaybackPanel.module.scss'
@@ -158,9 +159,16 @@ const PlaybackPanel = (props) => {
             <aside id = {Styles.trackDetails}>
                 <img src = {track.albumCoverSrc} alt = {Styles.albumTitle} id = {Styles.albumCover} />
                 <section id = {Styles.trackProperties}>
-                    <p id = {Styles.trackTitle} className = {Styles.trackProperty}><a href = '/'>{track.trackTitle}</a></p>
-                    <p id = {Styles.artist} className = {Styles.trackProperty}><a href = '/'>{track.artist}</a></p>
-                    <p id = {Styles.albumTitle} className = {Styles.trackProperty}><a href = '/'>{track.albumTitle}</a></p>
+                    <p id = {Styles.trackTitle} className = {Styles.trackProperty}><Link to = {'./track/' + track.trackID}>{track.trackTitle}</Link></p>
+                    {track.artists.map((artist, index) => {
+                        return(
+                            <>
+                                <p id = {Styles.artist} className = {Styles.trackProperty}><Link key = {index} to = {'./artist/' + artist.id}>{artist}</Link></p>
+                                {index === track.artists.length - 1 ? '' : ', '}
+                            </>
+                        )
+                    })}
+                    <p id = {Styles.albumTitle} className = {Styles.trackProperty}><Link to = {'./album/' + track.albumID}>{track.albumTitle}</Link></p>
                 </section>
             </aside>
             <main id = {Styles.mainSection}>

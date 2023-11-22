@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 30 Paź 2023, 12:01
+-- Czas generowania: 22 Lis 2023, 19:19
 -- Wersja serwera: 10.4.24-MariaDB
 -- Wersja PHP: 8.1.6
 
@@ -29,10 +29,20 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `album` (
   `id` int(11) NOT NULL,
-  `artist_id` int(11) NOT NULL,
   `playlist_id` int(11) NOT NULL,
   `name` varchar(128) COLLATE utf8_polish_ci NOT NULL,
-  `release_year` year(4) NOT NULL
+  `release_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `album_artists`
+--
+
+CREATE TABLE `album_artists` (
+  `album_id` int(11) NOT NULL,
+  `artist_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- --------------------------------------------------------
@@ -175,8 +185,14 @@ CREATE TABLE `user_preferences` (
 --
 ALTER TABLE `album`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_album_artist` (`artist_id`),
   ADD KEY `FK_album_playlist` (`playlist_id`);
+
+--
+-- Indeksy dla tabeli `album_artists`
+--
+ALTER TABLE `album_artists`
+  ADD PRIMARY KEY (`album_id`,`artist_id`),
+  ADD KEY `FK_album_artists_artist` (`artist_id`) USING BTREE;
 
 --
 -- Indeksy dla tabeli `artist`
@@ -298,7 +314,6 @@ ALTER TABLE `user`
 -- Ograniczenia dla tabeli `album`
 --
 ALTER TABLE `album`
-  ADD CONSTRAINT `FK_album_artist` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`id`),
   ADD CONSTRAINT `FK_album_playlist` FOREIGN KEY (`playlist_id`) REFERENCES `playlist` (`id`);
 
 --

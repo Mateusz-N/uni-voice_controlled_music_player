@@ -32,10 +32,19 @@ const PlaylistOverview = (props) => {
                 </figure>
                 <hr/>
                 <ul id = {Styles.playlistDetails}>
+                    {props.for === 'album' ?
+                        <li><span className = {Styles.playlistDetails_detailName}>Artist(s):</span> {playlist.artists.join(', ')} {/* Zapytanie do bazy? */}</li>
+                    : null}
                     <li><span className = {Styles.playlistDetails_detailName}>Track count:</span> {playlist.tracks.length}</li>
                     <li><span className = {Styles.playlistDetails_detailName}>Total duration:</span> {playlist.totalDuration}</li>
-                    <li><span className = {Styles.playlistDetails_detailName}>Created:</span> {playlist.dateCreated.toDateString()}</li>
-                    <li><span className = {Styles.playlistDetails_detailName}>Last modified:</span> {playlist.dateModified.toDateString()}</li>
+                    {props.for === 'playlist' ?
+                        <>
+                            <li><span className = {Styles.playlistDetails_detailName}>Created:</span> {playlist.dateCreated.toDateString()}</li>
+                            <li><span className = {Styles.playlistDetails_detailName}>Last modified:</span> {playlist.dateModified.toDateString()}</li>
+                        </>
+                        :
+                        <li><span className = {Styles.playlistDetails_detailName}>Released:</span> {playlist.releaseDate.toDateString()}</li>
+                    }
                 </ul>
             </main>
             <hr/>

@@ -7,7 +7,7 @@ import PlaylistOverview from '../components/PlaylistOverview';
 import placeholderAlbumCoverSrc from '../resources/albumCover_placeholder.png';
 import placeholderProfilePicSrc from '../resources/profilePic_placeholder.png';
 
-const Playlist = () => {
+const Album = () => {
 
     const sampleSongs = [{ id: "aR5rHG1", title: "Song 1", artists: ["Artist 1"], album: {coverSrc: placeholderAlbumCoverSrc, name: "Album 1"}, year: 1995, genre: "rock", duration: 240000, added: new Date("2023-07-01") },
     { id: "aR5rHG2", title: "Song 222222222222222222222222222222222222", artists: ["Artist 2222222222222222222222222222"], album: {coverSrc: placeholderAlbumCoverSrc, name: "Album 232ff3322343235564351"}, year: 20082222222222222222222222222222, genre: "pop2222222222222222222222222222", duration: 1800002222222222222222222222222222, added: new Date("2023-07-02") },
@@ -50,8 +50,8 @@ const Playlist = () => {
     { id: "aR5rHG39", title: "Song 39", artists: ["Artist 39"], album: "Album 39", year: 1998, genre: "jazz", duration: 300000, added: new Date("2023-08-08") },
     { id: "aR5rHG40", title: "Song 40", artists: ["Artist 40"], album: "Album 40", year: 2007, genre: "pop", duration: 190000, added: new Date("2023-08-09") },
     { id: "aR5rHG41", title: "Song 41", artists: ["Artist 41"], album: "Album 41", year: 1999, genre: "rock", duration: 250000, added: new Date("2023-08-10") }];
-    const playlist = {id: 'ABC123', thumbnailSrc: placeholderAlbumCoverSrc, name: 'playlist2', description: 'Lorem ipsum dolor sit amet. Eos corporis natus ut incidunt quas eos placeat excepturi qui Quis suscipit ut illum mollitia? Et debitis nobis qui dolores maxime est galisum placeat sed explicabo pariatur ut saepe Quis. Et ratione quam hic dolor cupiditate qui cupiditate quam. Qui veritatis libero et tenetur aperiam qui omnis dolorum aut perspiciatis nemo non temporibus delectus. In voluptates soluta non beatae temporibus est vero mollitia rem debitis pariatur. Qui quia voluptas ut voluptatum esse qui perspiciatis voluptate et labore debitis ut perspiciatis quia sed enim Quis! Ut autem magni sit provident amet qui voluptatem quia eos sint perferendis. Quo sint aspernatur est nostrum ducimus a eveniet temporibus et alias quibusdam ut quia consequatur.',
-    totalDuration: 4323432, tracks: sampleSongs, dateCreated: new Date(), dateModified: new Date()};
+    const playlist = {id: 'ABC123', artists: ["Artist1", "Artist2"], thumbnailSrc: placeholderAlbumCoverSrc, name: 'playlist2', description: 'Lorem ipsum dolor sit amet. Eos corporis natus ut incidunt quas eos placeat excepturi qui Quis suscipit ut illum mollitia? Et debitis nobis qui dolores maxime est galisum placeat sed explicabo pariatur ut saepe Quis. Et ratione quam hic dolor cupiditate qui cupiditate quam. Qui veritatis libero et tenetur aperiam qui omnis dolorum aut perspiciatis nemo non temporibus delectus. In voluptates soluta non beatae temporibus est vero mollitia rem debitis pariatur. Qui quia voluptas ut voluptatum esse qui perspiciatis voluptate et labore debitis ut perspiciatis quia sed enim Quis! Ut autem magni sit provident amet qui voluptatem quia eos sint perferendis. Quo sint aspernatur est nostrum ducimus a eveniet temporibus et alias quibusdam ut quia consequatur.',
+    totalDuration: 4323432, tracks: sampleSongs, releaseDate: new Date()};
 
     return (
         <div id = 'page'>
@@ -61,9 +61,9 @@ const Playlist = () => {
             }}
             ></NavBar>
             <CatalogBrowser className = 'playlistBrowser'>
-                <TrackList tracks = {playlist.tracks} for = 'playlist'>
+                <TrackList tracks = {playlist.tracks} for = 'album'>
                 </TrackList>
-                <PlaylistOverview playlist = {playlist} for = 'playlist'>
+                <PlaylistOverview playlist = {playlist} for = 'album'>
                 </PlaylistOverview>
             </CatalogBrowser>
             <PlaybackPanel track =
@@ -79,4 +79,4 @@ const Playlist = () => {
     );
 }
 
-export default Playlist;
+export default Album;

@@ -46,15 +46,30 @@ const PlaylistOverview = (props) => {
                             })}
                         </li>
                     : null}
-                    <li><span className = {Styles.playlistDetails_detailName}>Track count:</span> {playlist.tracks.length}</li>
-                    <li><span className = {Styles.playlistDetails_detailName}>Total duration:</span> {playlist.totalDuration}</li>
+                    <li>
+                        <span className = {Styles.playlistDetails_detailName}>Track count: </span>
+                        {playlist.tracks.length}
+                    </li>
+                    <li>
+                        <span className = {Styles.playlistDetails_detailName}>Total duration: </span>
+                        {playlist.totalDuration}
+                    </li>
                     {props.for === 'playlist' ?
                         <>
-                            <li><span className = {Styles.playlistDetails_detailName}>Created:</span> {playlist.dateCreated.toDateString()}</li>
-                            <li><span className = {Styles.playlistDetails_detailName}>Last modified:</span> {playlist.dateModified.toDateString()}</li>
+                            <li>
+                                <span className = {Styles.playlistDetails_detailName}>Created: </span>
+                                {playlist.dateCreated.toDateString()}
+                            </li>
+                            <li>
+                                <span className = {Styles.playlistDetails_detailName}>Last modified: </span>
+                                {playlist.dateModified.toDateString()}
+                            </li>
                         </>
                         :
-                        <li><span className = {Styles.playlistDetails_detailName}>Released:</span> {playlist.releaseDate.toDateString()}</li>
+                        <li>
+                            <span className = {Styles.playlistDetails_detailName}>Released: </span>
+                            {playlist.releaseDate.toDateString()}
+                        </li>
                     }
                 </ul>
             </main>

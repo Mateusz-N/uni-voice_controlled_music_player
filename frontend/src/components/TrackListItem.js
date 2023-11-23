@@ -39,8 +39,12 @@ const TrackListItem = (props) => {
                     </td>
                     <td>
                         <div className = {Styles.trackList_item_album}>
-                            <Link to = {'/album/' + track.album.id}><img src = {track.album.coverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/></Link>
-                            <p><Link to = {'/album/' + track.album.id}>{track.album.name}</Link></p>
+                            <Link to = {'/album/' + track.album.id}>
+                                <img src = {track.album.coverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/>
+                            </Link>
+                            <p>
+                                <Link to = {'/album/' + track.album.id}>{track.album.name}</Link>
+                            </p>
                         </div>
                     </td>
                     <td>{track.year}</td>

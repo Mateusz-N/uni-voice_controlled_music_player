@@ -159,25 +159,45 @@ const PlaybackPanel = (props) => {
             <aside id = {Styles.trackDetails}>
                 <img src = {track.albumCoverSrc} alt = {Styles.albumTitle} id = {Styles.albumCover} />
                 <section id = {Styles.trackProperties}>
-                    <p id = {Styles.trackTitle} className = {Styles.trackProperty}><Link to = {'./track/' + track.trackID}>{track.trackTitle}</Link></p>
+                    <p id = {Styles.trackTitle} className = {Styles.trackProperty}>
+                        <Link to = {'./track/' + track.trackID}>{track.trackTitle}</Link>
+                    </p>
                     <p id = {Styles.artists} className = {Styles.trackProperty}>
-                    {track.artists.map((artist, index) => {
-                        return(
-                            <Fragment key = {index}>
-                                <Link to = {'./artist/' + artist.id}>{artist}</Link>
-                                {index === track.artists.length - 1 ? '' : ', '}
-                            </Fragment>
-                        )
-                    })}
+                        {track.artists.map((artist, index) => {
+                            return(
+                                <Fragment key = {index}>
+                                    <Link to = {'./artist/' + artist.id}>{artist}</Link>
+                                    {index === track.artists.length - 1 ? '' : ', '}
+                                </Fragment>
+                            )
+                        })}
                     </p>
                     <p id = {Styles.albumTitle} className = {Styles.trackProperty}><Link to = {'./album/' + track.albumID}>{track.albumTitle}</Link></p>
                 </section>
             </aside>
             <main id = {Styles.mainSection}>
                 <section id = {Styles.controlsSection}>
-                    <img src = {btn_previous} alt = 'Previous track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handlePreviousTrack} />
-                    <img src = {paused ? btn_play : btn_pause} alt = {paused ? 'Play' : 'Pause'} id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleTogglePause} />
-                    <img src = {btn_next} alt = 'Next track' id = {paused ? Styles.btnPlay : Styles.btnPause} className = {Styles.btnTogglePlayback} onClick = {handleNextTrack} />
+                    <img
+                        src = {btn_previous}
+                        alt = 'Previous track'
+                        id = {paused ? Styles.btnPlay : Styles.btnPause}
+                        className = {Styles.btnTogglePlayback}
+                        onClick = {handlePreviousTrack}
+                    />
+                    <img
+                        src = {paused ? btn_play : btn_pause}
+                        alt = {paused ? 'Play' : 'Pause'}
+                        id = {paused ? Styles.btnPlay : Styles.btnPause}
+                        className = {Styles.btnTogglePlayback}
+                        onClick = {handleTogglePause}
+                    />
+                    <img
+                        src = {btn_next}
+                        alt = 'Next track'
+                        id = {paused ? Styles.btnPlay : Styles.btnPause}
+                        className = {Styles.btnTogglePlayback}
+                        onClick = {handleNextTrack}
+                    />
                 </section>
                 <section id = {Styles.progressSection}>
                     <p id = {Styles.timeElapsed}>{targetTimestamp_formatted}</p>
@@ -188,12 +208,8 @@ const PlaybackPanel = (props) => {
                         onMouseOut = {event => handleProgressBarHover(event)}
                         onMouseMove = {event => handleProgressBarHover(event)}
                     >
-                        <div id = {Styles.progressBarPreview} style = {{width: progressBarPreviewWidth + '%'}}>
-                            
-                        </div>
-                        <div id = {Styles.progressBarFill} style = {{width: (targetTimestamp_ms / trackDuration_ms * 100) + '%'}}>
-
-                        </div>
+                        <div id = {Styles.progressBarPreview} style = {{width: progressBarPreviewWidth + '%'}} />
+                        <div id = {Styles.progressBarFill} style = {{width: (targetTimestamp_ms / trackDuration_ms * 100) + '%'}} />
                     </div>
                     <p id = {Styles.trackDuration}>{trackDuration_formatted}</p>
                 </section>

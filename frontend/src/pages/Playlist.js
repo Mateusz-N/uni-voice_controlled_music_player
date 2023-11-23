@@ -58,23 +58,18 @@ const Playlist = () => {
             <NavBar loggedUser = {{
                 name: 'User',
                 profilePic: placeholderProfilePicSrc
-            }}
-            ></NavBar>
+            }} />
             <CatalogBrowser className = 'playlistBrowser'>
-                <TrackList tracks = {playlist.tracks} for = 'playlist'>
-                </TrackList>
-                <PlaylistOverview playlist = {playlist} for = 'playlist'>
-                </PlaylistOverview>
+                <TrackList tracks = {playlist.tracks} for = 'playlist' />
+                <PlaylistOverview playlist = {playlist} for = 'playlist' />
             </CatalogBrowser>
-            <PlaybackPanel track =
-                {{
+            <PlaybackPanel track = {{
                 duration_ms: '15000',
                 trackTitle: 'Song',
                 artists: ['Artist'],
                 albumTitle: 'Album',
                 albumCoverSrc: placeholderAlbumCoverSrc
-                }}
-            ></PlaybackPanel>
+            }} />
         </div>
     );
 }

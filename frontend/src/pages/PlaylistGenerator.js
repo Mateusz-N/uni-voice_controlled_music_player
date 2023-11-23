@@ -11,20 +11,17 @@ const PlaylistGenerator = () => {
             <NavBar loggedUser = {{
                 name: 'User',
                 profilePic: placeholderProfilePicSrc
-            }}
-            ></NavBar>
+            }} />
             <CatalogBrowser>
 
             </CatalogBrowser>
-            <PlaybackPanel track =
-                {{
+            <PlaybackPanel track = {{
                 duration_ms: '15000',
                 trackTitle: 'Song',
                 artists: ['Artist'],
                 albumTitle: 'Album',
                 albumCoverSrc: placeholderAlbumCoverSrc
-                }}
-            ></PlaybackPanel>
+            }} />
         </div>
     );
 }

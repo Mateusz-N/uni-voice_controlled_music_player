@@ -31,8 +31,7 @@ const Home = () => {
             <NavBar loggedUser = {{
                 name: 'User',
                 profilePic: placeholderProfilePicSrc
-            }}
-            ></NavBar>
+            }} />
             <CatalogBrowser className = 'homeBrowser'>
                 <h1 id = {Styles.yourCatalog}>
                     Your catalog&nbsp;
@@ -51,15 +50,13 @@ const Home = () => {
                     }
                 </main>
             </CatalogBrowser>
-            <PlaybackPanel track =
-                {{
+            <PlaybackPanel track = {{
                 duration_ms: '15000',
                 trackTitle: 'Song',
                 artists: ['Artist'],
                 albumTitle: 'Album',
                 albumCoverSrc: placeholderAlbumCoverSrc
-                }}
-            ></PlaybackPanel>
+            }} />
         </div>
     );
 }

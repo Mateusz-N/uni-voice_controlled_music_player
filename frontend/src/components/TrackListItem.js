@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import Styles from './TrackListItem.module.scss';
@@ -30,10 +31,10 @@ const TrackListItem = (props) => {
                     <td>
                         {track.artists.map((artist, index) => {
                             return(
-                                <>
-                                    <Link key = {index} to = {'./artist/' + artist.id}>{artist}</Link>
+                                <Fragment key = {index}>
+                                    <Link to = {'./artist/' + artist.id}>{artist}</Link>
                                     {index === track.artists.length - 1 ? '' : ', '}
-                                </>
+                                </Fragment>
                             )
                         })}
                     </td>

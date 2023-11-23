@@ -41,7 +41,7 @@ const TrackList = (props) => {
             <tbody>
                 {tracks.map((track, index) => {
                     const playing = playingTrackID == index;
-                    return <TrackListItem track = {track} index = {index} for = {props.for} playing = {playing} trackPlaybackToggleHandler = {handleToggleTrackPlayback} />
+                    return <TrackListItem key = {index} track = {track} index = {index} for = {props.for} playing = {playing} trackPlaybackToggleHandler = {handleToggleTrackPlayback} />
                 })}
             </tbody>
         </table>

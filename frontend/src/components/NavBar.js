@@ -10,11 +10,14 @@ import microphone_active from '../resources/microphone_active.svg';
 import Styles from './NavBar.module.scss';
 
 const NavBar = (props) => {
+    // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(false);
     const [microphoneActive, setMicrophoneActive] = useState(false);
     const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
+    // #endregion
     
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleMicrophone = () => {
         setMicrophoneEnabled(prevState => !prevState);
     }
@@ -32,7 +35,9 @@ const NavBar = (props) => {
             setProfileContextMenuExpanded(false);
         }
     })
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <nav id = {Styles.navBar}>
             <section id = {Styles.navBar_leftSection} className = {Styles.navBar_section}>
@@ -67,6 +72,7 @@ const NavBar = (props) => {
             </section>
         </nav>
     );
+    // #endregion
 }
 
 export default NavBar;

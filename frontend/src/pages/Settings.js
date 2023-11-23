@@ -20,7 +20,7 @@ const Settings = () => {
                 {{
                 duration_ms: '15000',
                 trackTitle: 'Song',
-                artist: 'Artist',
+                artists: ['Artist'],
                 albumTitle: 'Album',
                 albumCoverSrc: placeholderAlbumCoverSrc
                 }}

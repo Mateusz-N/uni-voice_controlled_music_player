@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { millisecondsToFormattedTime, updatePlayback, togglePlayback } from '../common/auxiliaryFunctions';
@@ -160,14 +160,16 @@ const PlaybackPanel = (props) => {
                 <img src = {track.albumCoverSrc} alt = {Styles.albumTitle} id = {Styles.albumCover} />
                 <section id = {Styles.trackProperties}>
                     <p id = {Styles.trackTitle} className = {Styles.trackProperty}><Link to = {'./track/' + track.trackID}>{track.trackTitle}</Link></p>
+                    <p id = {Styles.artists} className = {Styles.trackProperty}>
                     {track.artists.map((artist, index) => {
                         return(
-                            <>
-                                <p id = {Styles.artist} className = {Styles.trackProperty}><Link key = {index} to = {'./artist/' + artist.id}>{artist}</Link></p>
+                            <Fragment key = {index}>
+                                <Link to = {'./artist/' + artist.id}>{artist}</Link>
                                 {index === track.artists.length - 1 ? '' : ', '}
-                            </>
+                            </Fragment>
                         )
                     })}
+                    </p>
                     <p id = {Styles.albumTitle} className = {Styles.trackProperty}><Link to = {'./album/' + track.albumID}>{track.albumTitle}</Link></p>
                 </section>
             </aside>

@@ -1,5 +1,6 @@
-import icon_search from '../resources/icon_search.svg';
-import Styles from './SearchBar.module.scss';
+import icon_search from 'resources/icon_search.svg';
+
+import Styles from 'components/SearchBar.module.scss';
 
 const SearchBar = () => {
     return(

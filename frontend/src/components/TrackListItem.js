@@ -1,10 +1,10 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import Styles from './TrackListItem.module.scss';
+import btn_play from 'resources/btn_play.svg';
+import btn_pause from 'resources/btn_pause.svg';
 
-import btn_play from '../resources/btn_play.svg';
-import btn_pause from '../resources/btn_pause.svg';
+import Styles from 'components/TrackListItem.module.scss';
 
 const TrackListItem = (props) => {
     const track = props.track

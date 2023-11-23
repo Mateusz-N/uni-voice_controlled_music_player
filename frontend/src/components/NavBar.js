@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import SearchBar from './SearchBar';
+import homeIcon from 'resources/home.svg';
+import microphone_idle from 'resources/microphone_idle.svg';
+import microphone_active from 'resources/microphone_active.svg';
 
-import homeIcon from '../resources/home.svg';
-import microphone_idle from '../resources/microphone_idle.svg';
-import microphone_active from '../resources/microphone_active.svg';
+import SearchBar from 'components/SearchBar';
 
-import Styles from './NavBar.module.scss';
+import Styles from 'components/NavBar.module.scss';
 
 const NavBar = (props) => {
     // #region Zmienne stanu (useState Hooks)

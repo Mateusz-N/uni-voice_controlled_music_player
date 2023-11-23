@@ -1,12 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 
-import HomePage from './pages/Home';
-import PlaylistPage from './pages/Playlist';
-import PlaylistGeneratorPage from './pages/PlaylistGenerator';
-import AlbumPage from './pages/Album';
-import SettingsPage from "./pages/Settings";
+import HomePage from 'pages/Home';
+import PlaylistPage from 'pages/Playlist';
+import PlaylistGeneratorPage from 'pages/PlaylistGenerator';
+import AlbumPage from 'pages/Album';
+import SettingsPage from "pages/Settings";
 
-import './App.css';
+import 'App.css';
 
 const App = () => {
   return (

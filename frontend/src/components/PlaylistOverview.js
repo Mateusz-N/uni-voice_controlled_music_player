@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import Styles from './PlaylistOverview.module.scss';
+import btn_play from 'resources/btn_play.svg';
+import btn_pause from 'resources/btn_pause.svg';
 
-import btn_play from '../resources/btn_play.svg';
-import btn_pause from '../resources/btn_pause.svg';
+import Styles from 'components/PlaylistOverview.module.scss';
 
 const PlaylistOverview = (props) => {
     const [playlistPaused, setPlaylistPaused] = useState(true);

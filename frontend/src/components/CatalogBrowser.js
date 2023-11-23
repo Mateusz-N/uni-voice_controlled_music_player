@@ -1,4 +1,4 @@
-import Styles from './CatalogBrowser.module.scss';
+import Styles from 'components/CatalogBrowser.module.scss';
 
 const CatalogBrowser = (props) => {
 

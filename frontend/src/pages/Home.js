@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
 
-import Styles from './Home.module.scss';
+import btn_sync from 'resources/btn_sync.svg';
+import btn_generate from 'resources/btn_generate.svg';
+import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
+import placeholderProfilePicSrc from 'resources/profilePic_placeholder.png';
 
-import NavBar from '../components/NavBar';
-import PlaybackPanel from '../components/PlaybackPanel';
-import CatalogBrowser from '../components/CatalogBrowser';
+import NavBar from 'components/NavBar';
+import PlaybackPanel from 'components/PlaybackPanel';
+import CatalogBrowser from 'components/CatalogBrowser';
 
-import btn_sync from '../resources/btn_sync.svg';
-import btn_generate from '../resources/btn_generate.svg';
-import placeholderAlbumCoverSrc from '../resources/albumCover_placeholder.png';
-import placeholderProfilePicSrc from '../resources/profilePic_placeholder.png';
+import Styles from 'pages/Home.module.scss';
 
 const Home = () => {
     const playlists = [{id: 'ABC', thumbnailSrc: btn_generate, name: 'Generate new...'},

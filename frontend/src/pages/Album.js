@@ -1,11 +1,11 @@
-import NavBar from '../components/NavBar';
-import PlaybackPanel from '../components/PlaybackPanel';
-import CatalogBrowser from '../components/CatalogBrowser';
-import TrackList from '../components/TrackList';
-import PlaylistOverview from '../components/PlaylistOverview';
+import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
+import placeholderProfilePicSrc from 'resources/profilePic_placeholder.png';
 
-import placeholderAlbumCoverSrc from '../resources/albumCover_placeholder.png';
-import placeholderProfilePicSrc from '../resources/profilePic_placeholder.png';
+import NavBar from 'components/NavBar';
+import PlaybackPanel from 'components/PlaybackPanel';
+import CatalogBrowser from 'components/CatalogBrowser';
+import TrackList from 'components/TrackList';
+import PlaylistOverview from 'components/PlaylistOverview';
 
 const Album = () => {
 

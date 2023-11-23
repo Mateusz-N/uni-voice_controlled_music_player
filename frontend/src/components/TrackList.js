@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import TrackListItem from './TrackListItem';
+import TrackListItem from 'components/TrackListItem';
 
-import Styles from './TrackList.module.scss';
+import Styles from 'components/TrackList.module.scss';
 
 const TrackList = (props) => {
     const tracks = props.tracks;
@@ -40,7 +40,7 @@ const TrackList = (props) => {
             </thead>
             <tbody>
                 {tracks.map((track, index) => {
-                    const playing = playingTrackID == index;
+                    const playing = playingTrackID === index;
                     return <TrackListItem key = {index} track = {track} index = {index} for = {props.for} playing = {playing} trackPlaybackToggleHandler = {handleToggleTrackPlayback} />
                 })}
             </tbody>

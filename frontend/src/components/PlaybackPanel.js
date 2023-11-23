@@ -1,18 +1,19 @@
 import { useEffect, useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { millisecondsToFormattedTime, updatePlayback, togglePlayback } from '../common/auxiliaryFunctions';
-import Styles from './PlaybackPanel.module.scss'
+import { millisecondsToFormattedTime, updatePlayback, togglePlayback } from 'common/auxiliaryFunctions';
 
-import btn_previous from '../resources/btn_previous.svg';
-import btn_play from '../resources/btn_play.svg';
-import btn_pause from '../resources/btn_pause.svg';
-import btn_next from '../resources/btn_next.svg';
-import volume_75_100 from '../resources/volume_75_100.svg';
-import volume_50_75 from '../resources/volume_50_75.svg';
-import volume_25_50 from '../resources/volume_25_50.svg';
-import volume_0_25 from '../resources/volume_0_25.svg';
-import volume_muted from '../resources/volume_muted.svg';
+import btn_previous from 'resources/btn_previous.svg';
+import btn_play from 'resources/btn_play.svg';
+import btn_pause from 'resources/btn_pause.svg';
+import btn_next from 'resources/btn_next.svg';
+import volume_75_100 from 'resources/volume_75_100.svg';
+import volume_50_75 from 'resources/volume_50_75.svg';
+import volume_25_50 from 'resources/volume_25_50.svg';
+import volume_0_25 from 'resources/volume_0_25.svg';
+import volume_muted from 'resources/volume_muted.svg';
+
+import Styles from 'components/PlaybackPanel.module.scss'
 
 const PlaybackPanel = (props) => {
     // #region Zmienne stanu (useState Hooks)

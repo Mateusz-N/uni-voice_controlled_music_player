@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import homeIcon from 'resources/home.svg';
@@ -9,20 +9,22 @@ import SearchBar from 'components/SearchBar';
 
 import Styles from 'components/NavBar.module.scss';
 
-const NavBar = (props) => {
+const NavBar = () => {
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(false);
     const [microphoneActive, setMicrophoneActive] = useState(false);
     const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
+    const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
+    const [activeSession, setActiveSeesion] = useState({});
     // #endregion
-    
+
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleMicrophone = () => {
         setMicrophoneEnabled(prevState => !prevState);
     }
     const handleLogin = () => {
-        setLoggedIn(true);
+        window.location.href = spotifyAuthURL;
     }
     const handleLogout = () => {
         setLoggedIn(false);
@@ -35,6 +37,30 @@ const NavBar = (props) => {
             setProfileContextMenuExpanded(false);
         }
     })
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(spotifyAuthURL === '') {
+            fetch('http://localhost:3030/spotify/auth-url')
+                .then((response) => response.json())
+                .then((data) => setSpotifyAuthURL(data.authURL))
+                .catch(console.error);
+        }
+        fetch('http://localhost:3030/spotify/user', {
+            method: 'GET',
+            credentials: 'include'
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setLoggedIn(true);
+                setActiveSeesion({
+                    userName: data.userName,
+                    profilePicURL: data.profilePicURL
+                });
+            })
+            .catch(console.error);
+    },[])
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -57,7 +83,7 @@ const NavBar = (props) => {
             </div>
             <section id = {Styles.navBar_rightSection} className = {Styles.navBar_section}>
                 {loggedIn ?
-                    <img src = {props.loggedUser.profilePic} alt = {props.loggedUser.name} id = {Styles.profilePic} onClick = {handleToggleProfileContextMenu} />
+                    <img src = {activeSession.profilePicURL} alt = {activeSession.userName} id = {Styles.profilePic} onClick = {handleToggleProfileContextMenu} />
                     :
                     <button id = {Styles.btnLogin} onClick = {handleLogin}>Connect with Spotify</button>
                 }

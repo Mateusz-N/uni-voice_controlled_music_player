@@ -28,10 +28,7 @@ const Home = () => {
 
     return (
         <div id = 'page'>
-            <NavBar loggedUser = {{
-                name: 'User',
-                profilePic: placeholderProfilePicSrc
-            }} />
+            <NavBar />
             <CatalogBrowser className = 'homeBrowser'>
                 <h1 id = {Styles.yourCatalog}>
                     Your catalog&nbsp;

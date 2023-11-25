@@ -8,10 +8,7 @@ import CatalogBrowser from 'components/CatalogBrowser';
 const Settings = () => {
     return (
         <div id = 'page'>
-            <NavBar loggedUser = {{
-                name: 'User',
-                profilePic: placeholderProfilePicSrc
-            }} />
+            <NavBar />
             <CatalogBrowser>
 
             </CatalogBrowser>

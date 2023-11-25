@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const cors = require('cors')
+const session = require('express-session')
+const cookieParser = require('cookie-parser')
+const crypto = require('crypto');
+
+const { SERVER_PORT, CLIENT_PORT } = require('./config');
 
 const spotifyRouter = require('./routes/spotify');
 const discogsRouter = require('./routes/discogs');
@@ -27,10 +32,28 @@ connection.query('SELECT * FROM user', (err, rows, fields) => {
 
 connection.end();
 
+app.use(cors({
+  origin: [`http://localhost:${CLIENT_PORT}`],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+app.use(cookieParser());
+app.use(session({
+  key: 'auth',
+  secret: crypto.randomBytes(64).toString('hex'),
+  resave: false,
+  saveUninitialized: true,
+  accessToken: null,
+  userName: null,
+  userProfilePicURL: null,
+  cookie: {
+    expires: 24 * 60 * 60 * 1000
+  }
+}));
 app.use('/spotify', spotifyRouter);
 app.use('/discogs', discogsRouter);
 app.use('/musixmatch', musixmatchRouter);
 
-app.listen(port, () => {
-  console.log(`Aplikacja nasłuchuje na porcie ${port}`);
+app.listen(SERVER_PORT, () => {
+  console.log(`Aplikacja nasłuchuje na porcie ${SERVER_PORT}`);
 })

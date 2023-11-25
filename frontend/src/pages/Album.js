@@ -55,10 +55,7 @@ const Album = () => {
 
     return (
         <div id = 'page'>
-            <NavBar loggedUser = {{
-                name: 'User',
-                profilePic: placeholderProfilePicSrc
-            }} />
+            <NavBar />
             <CatalogBrowser className = 'playlistBrowser'>
                 <TrackList tracks = {playlist.tracks} for = 'album' />
                 <PlaylistOverview playlist = {playlist} for = 'album' />

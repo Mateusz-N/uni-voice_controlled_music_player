@@ -15,7 +15,7 @@ const STATE = crypto.randomBytes(10).toString('hex');
 const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${SCOPE}&state=${STATE}&show_dialog=true`;
 
 router.get('/auth-url', (req, res) => {
-  res.send({authURL: AUTH_URL});
+  res.status(200).send({authURL: AUTH_URL});
 });
 
 router.get('/auth', async (req, res) => {
@@ -57,9 +57,8 @@ router.get('/auth', async (req, res) => {
 });
 
 router.get('/user', (req, res) => {
-  console.log(req.session)
   if(req.session.accessToken) {
-    res.send({
+    res.status(200).send({
       userName: req.session.userName,
       profilePicURL: req.session.profilePicURL
     });

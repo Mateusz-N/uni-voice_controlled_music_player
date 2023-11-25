@@ -43,7 +43,11 @@ const NavBar = () => {
     useEffect(() => {
         if(spotifyAuthURL === '') {
             fetch('http://localhost:3030/spotify/auth-url')
-                .then((response) => response.json())
+                .then((response) => {
+                    if(response.ok) {
+                        return response.json()
+                    }
+                })
                 .then((data) => setSpotifyAuthURL(data.authURL))
                 .catch(console.error);
         }
@@ -51,13 +55,19 @@ const NavBar = () => {
             method: 'GET',
             credentials: 'include'
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if(response.ok) {
+                    return response.json()
+                }
+            })
             .then((data) => {
-                setLoggedIn(true);
-                setActiveSeesion({
-                    userName: data.userName,
-                    profilePicURL: data.profilePicURL
-                });
+                if(data) {
+                    setLoggedIn(true);
+                    setActiveSeesion({
+                        userName: data.userName,
+                        profilePicURL: data.profilePicURL
+                    });
+                }
             })
             .catch(console.error);
         // eslint-disable-next-line react-hooks/exhaustive-deps

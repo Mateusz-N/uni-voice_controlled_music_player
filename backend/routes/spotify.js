@@ -2,7 +2,6 @@ const express = require('express')
 const queryString = require('node:querystring');
 const axios = require('axios');
 const router = express.Router();
-const session = require('express-session')
 const crypto = require('crypto');
 
 const { CLIENT_PORT, SERVER_PORT } = require('../config');
@@ -41,34 +40,40 @@ router.get('/auth', async (req, res) => {
         }
       }
     );
-    req.session.accessToken =  res_token.data.access_token
-    const res_profile = await axios.get(
-      'https://api.spotify.com/v1/me',
-      {
-        headers: {
-          'Authorization': `Bearer ${req.session.accessToken}`
-        }
-      }
-    );
-    req.session.userName = res_profile.data.display_name;
-    req.session.profilePicURL = res_profile.data.images[0].url;
-    res.redirect(`http://localhost:${CLIENT_PORT}`);
+    res.status(302).redirect(`http://localhost:${CLIENT_PORT}?accessToken=${res_token.data.access_token}`);
   }
 });
 
-router.get('/user', (req, res) => {
-  if(req.session.accessToken) {
+router.get('/user', async (req, res) => {
+  const accessToken = req.headers.authorization.split(' ')[1];
+  const res_profile = await axios.get(
+    'https://api.spotify.com/v1/me',
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+  );
+  if(res_profile.status === 200) {
     res.status(200).send({
-      userName: req.session.userName,
-      profilePicURL: req.session.profilePicURL
+      userName: res_profile.data.display_name,
+      profilePicURL: res_profile.data.images[0].url
     });
   }
   else {
-    res.status(400).send({
-      error: 'Session inactive!'
-    })
+    res.status(res_profile.status).send({
+      error: 'Something went wrong!'
+    });
   }
-})
+});
+
+router.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.status(200).send({
+      message: 'Logged out successfully!'
+    });
+  });
+});
 
 router.get('/top10', async (req, res) => {
   const spotifyAuthorization = await axios.post(

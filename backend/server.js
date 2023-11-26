@@ -1,9 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors')
-const session = require('express-session')
 const cookieParser = require('cookie-parser')
-const crypto = require('crypto');
 
 const { SERVER_PORT, CLIENT_PORT } = require('./config');
 
@@ -38,18 +36,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser());
-app.use(session({
-  key: 'auth',
-  secret: crypto.randomBytes(64).toString('hex'),
-  resave: false,
-  saveUninitialized: true,
-  accessToken: null,
-  userName: null,
-  userProfilePicURL: null,
-  cookie: {
-    expires: 24 * 60 * 60 * 1000
-  }
-}));
 app.use('/spotify', spotifyRouter);
 app.use('/discogs', discogsRouter);
 app.use('/musixmatch', musixmatchRouter);

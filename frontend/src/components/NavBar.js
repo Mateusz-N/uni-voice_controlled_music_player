@@ -81,7 +81,7 @@ const NavBar = (props) => {
                     Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
                     Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
                     Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
-                    // window.location.href = Cookies.get('urlBeforeAuth');
+                    window.location.href = Cookies.get('urlBeforeAuth');
                 })
                 .catch(console.error);
         }

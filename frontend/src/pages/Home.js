@@ -23,8 +23,7 @@ const Home = () => {
     const onLogout = () => {
         setPlaylists([playlistGenerator]);
     }
-    
-    useEffect(() => {
+    const getPlaylists = () => {
         if(Cookies.get('userID')) {
             fetch('http://localhost:3030/spotify/playlists', {
                 method: 'GET',
@@ -41,11 +40,14 @@ const Home = () => {
                 })
                 .catch(console.error);
         }
-    },[])
-
-    const handleSyncWithSpotify = () => {
-        // to-do
     }
+    const handleSyncWithSpotify = () => {
+        getPlaylists();
+    }
+    
+    useEffect(() => {
+        getPlaylists();
+    },[])
 
     return (
         <div id = 'page'>

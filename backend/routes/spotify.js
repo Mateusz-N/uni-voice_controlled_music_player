@@ -9,7 +9,7 @@ const CLIENT_ID = '***REMOVED***';
 const CLIENT_SECRET = '***REMOVED***';
 const RESPONSE_TYPE = 'code';
 const REDIRECT_URI = `http://localhost:${SERVER_PORT}/spotify/auth`;
-const SCOPE = 'user-read-private user-read-email';
+const SCOPE = 'playlist-read-private playlist-read-collaborative';
 const STATE = crypto.randomBytes(10).toString('hex');
 const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${SCOPE}&state=${STATE}&show_dialog=true`;
 
@@ -56,6 +56,7 @@ router.get('/user', async (req, res) => {
   );
   if(res_profile.status === 200) {
     res.status(200).send({
+      userID: res_profile.data.id,
       userName: res_profile.data.display_name,
       profilePicURL: res_profile.data.images[0].url
     });
@@ -67,43 +68,30 @@ router.get('/user', async (req, res) => {
   }
 });
 
-router.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.status(200).send({
-      message: 'Logged out successfully!'
-    });
-  });
-});
-
-router.get('/top10', async (req, res) => {
-  const spotifyAuthorization = await axios.post(
-      'https://accounts.spotify.com/api/token',
-      queryString.stringify({
-        grant_type: 'authorization_code',
-        code: req.query.code,
-        redirect_uri: REDIRECT_URI
-      }),
-      {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+router.get('/playlists', async (req, res) => {
+  const accessToken = req.cookies.accessToken;
+  const userID = req.cookies.userID;
+  const res_playlists = await axios.get(
+    `https://api.spotify.com/v1/users/${userID}/playlists`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  if(res_playlists.status === 200) {
+    console.log(res_playlists.data.items)
+    const playlists = res_playlists.data.items.map(playlist => {
+      return {
+        id: playlist.id,
+        name: playlist.name,
+        thumbnailSrc: playlist.images[0].url,
+        description: playlist.description
       }
-    );
-
-  // const usersTop10TracksResponse = await axios.get(
-  //   'https://api.spotify.com/v1/me/top/tracks?limit=10',
-  //   {
-  //     headers: {
-  //       Authorization: `Bearer ${spotifyAuthorization.data.access_token}`,
-  //     },
-  //   }
-  // );
-  // const usersTop10Tracks = usersTop10TracksResponse.data.items;
-  // const trackTitles = usersTop10Tracks.map((track) => track.name);
-  // const trackList = `<ol>${trackTitles.map((title) => `<li>${title}</li>`).join('')}</ol>`;
-  // res.send(`<p>Twoje top 10 utworów: ${trackList}</p>`);
-  // return trackList;
+    });
+    console.log(playlists)
+    res.status(200).send(playlists);
+  }
 });
 
 module.exports = router;

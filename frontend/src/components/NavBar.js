@@ -10,7 +10,7 @@ import SearchBar from 'components/SearchBar';
 
 import Styles from 'components/NavBar.module.scss';
 
-const NavBar = () => {
+const NavBar = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(false);
     const [microphoneActive, setMicrophoneActive] = useState(false);
@@ -29,8 +29,10 @@ const NavBar = () => {
     }
     const handleLogout = () => {
         Cookies.remove('accessToken');
+        Cookies.remove('userID');
         Cookies.remove('userName');
         Cookies.remove('profilePicURL');
+        props.handleLogout();
         setLoggedIn(false);
     }
     const handleToggleProfileContextMenu = () => {
@@ -45,7 +47,7 @@ const NavBar = () => {
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        if(Cookies.get('userName')) {
+        if(Cookies.get('userID')) {
             setLoggedIn(true);
         }
         if(spotifyAuthURL === '') {
@@ -75,10 +77,11 @@ const NavBar = () => {
                     }
                 })
                 .then((data) => {
-                    Cookies.set('accessToken', accessToken, {secure: true, httpOnly: true, sameSite: 'strict'});
+                    Cookies.set('accessToken', accessToken, {secure: true, sameSite: 'strict'});
+                    Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
                     Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
                     Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
-                    window.location.href = Cookies.get('urlBeforeAuth');
+                    // window.location.href = Cookies.get('urlBeforeAuth');
                 })
                 .catch(console.error);
         }

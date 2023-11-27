@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 
 import btn_sync from 'resources/btn_sync.svg';
@@ -21,6 +21,7 @@ const Home = () => {
     }
 
     const [playlists, setPlaylists] = useState([playlistGenerator]);
+    const btnSync = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
     const onLogout = () => {
@@ -28,6 +29,7 @@ const Home = () => {
     }
     const getPlaylists = () => {
         if(Cookies.get('userID')) {
+            btnSync.current.classList.add(Styles.spinning);
             fetch('http://localhost:3030/spotify/playlists', {
                 method: 'GET',
                 credentials: 'include'
@@ -39,6 +41,7 @@ const Home = () => {
                 })
                 .then((data) => {
                     setPlaylists([playlistGenerator, ...data])
+                    btnSync.current.classList.remove(Styles.spinning);
                 })
                 .catch(console.error);
         }
@@ -61,7 +64,7 @@ const Home = () => {
             <CatalogBrowser className = 'homeBrowser'>
                 <h1 id = {Styles.yourCatalog}>
                     Your catalog&nbsp;
-                    <img src = {btn_sync} alt = 'Sync with Spotify' id = {Styles.btnSync} onClick = {handleSyncWithSpotify} />
+                    <img src = {btn_sync} alt = 'Sync with Spotify' id = {Styles.btnSync} onClick = {handleSyncWithSpotify} ref = {btnSync} />
                 </h1>
                 <main id = {Styles.mainSection}>
                     {

@@ -14,12 +14,15 @@ import Styles from 'pages/Home.module.scss';
 
 const Home = () => {
     const playlistGenerator = {
-        id: 'ABC',
+        id: '0',
+        type: 'generator',
         thumbnailSrc: btn_generate,
         name: 'Generate new...'
     }
+
     const [playlists, setPlaylists] = useState([playlistGenerator]);
 
+    // #region Obsługa zdarzeń (Event Handlers)
     const onLogout = () => {
         setPlaylists([playlistGenerator]);
     }
@@ -35,7 +38,6 @@ const Home = () => {
                     }
                 })
                 .then((data) => {
-                    console.log(data)
                     setPlaylists([playlistGenerator, ...data])
                 })
                 .catch(console.error);
@@ -44,11 +46,15 @@ const Home = () => {
     const handleSyncWithSpotify = () => {
         getPlaylists();
     }
+    // #endregion
     
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getPlaylists();
     },[])
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
             <NavBar handleLogout = {onLogout} />
@@ -62,7 +68,7 @@ const Home = () => {
                         playlists.map((playlist, index) => {
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
-                                    <Link to = {playlist.id === 'ABC' ? './generator' : './playlist/' + playlist.id}>
+                                    <Link to = {playlist.type === 'generator' ? './generator' : './playlist/' + playlist.id}>
                                         <img src = {playlist.thumbnailSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnail} />
                                     </Link>
                                     <Link to = {'./playlist/' + playlist.id}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
@@ -81,6 +87,7 @@ const Home = () => {
             }} />
         </div>
     );
+    // #endregion
 }
 
 export default Home;

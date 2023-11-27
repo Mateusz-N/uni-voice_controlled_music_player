@@ -1,9 +1,12 @@
+// #region Import bibliotek
 const express = require('express')
 const queryString = require('node:querystring');
 const axios = require('axios');
 const router = express.Router();
 const crypto = require('crypto');
+// #endregion
 
+// #region Zmiene konfiguracyjne
 const { CLIENT_PORT, SERVER_PORT } = require('../config');
 const CLIENT_ID = '***REMOVED***';
 const CLIENT_SECRET = '***REMOVED***';
@@ -12,11 +15,15 @@ const REDIRECT_URI = `http://localhost:${SERVER_PORT}/spotify/auth`;
 const SCOPE = 'playlist-read-private playlist-read-collaborative';
 const STATE = crypto.randomBytes(10).toString('hex');
 const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${SCOPE}&state=${STATE}&show_dialog=true`;
+// #endregion
 
+// #region Punkty końcowe
+/* Generowanie linku do autoryzacji użytkownika w serwisie Spotify */
 router.get('/auth-url', (req, res) => {
   res.status(200).send({authURL: AUTH_URL});
 });
 
+/* Pozyskanie i przekazanie klientowi tokenu dostępu na podstawie kodu dostarczonego przez serwis Spotify po pomyślnej autoryzacji */
 router.get('/auth', async (req, res) => {
   const returnedCode = req.query.code || null;
   const returnedState = req.query.state || null;
@@ -44,6 +51,7 @@ router.get('/auth', async (req, res) => {
   }
 });
 
+/* Pobranie informacji o profilu w serwisie Spotify zalogowanego użytkownika */
 router.get('/user', async (req, res) => {
   const accessToken = req.headers.authorization.split(' ')[1];
   const res_profile = await axios.get(
@@ -68,6 +76,7 @@ router.get('/user', async (req, res) => {
   }
 });
 
+/* Pobranie list odtwarzania w serwisie Spotify zalogowanego użytkownika */
 router.get('/playlists', async (req, res) => {
   const accessToken = req.cookies.accessToken;
   const userID = req.cookies.userID;
@@ -80,18 +89,18 @@ router.get('/playlists', async (req, res) => {
     }
   );
   if(res_playlists.status === 200) {
-    console.log(res_playlists.data.items)
     const playlists = res_playlists.data.items.map(playlist => {
       return {
         id: playlist.id,
+        type: 'playlist',
         name: playlist.name,
         thumbnailSrc: playlist.images[0].url,
         description: playlist.description
       }
     });
-    console.log(playlists)
     res.status(200).send(playlists);
   }
 });
+// #endregion
 
 module.exports = router;

@@ -52,6 +52,7 @@ const Album = () => {
     const playlist = {id: 'ABC123', artists: ["Artist1", "Artist2"], thumbnailSrc: placeholderAlbumCoverSrc, name: 'playlist2', description: 'Lorem ipsum dolor sit amet. Eos corporis natus ut incidunt quas eos placeat excepturi qui Quis suscipit ut illum mollitia? Et debitis nobis qui dolores maxime est galisum placeat sed explicabo pariatur ut saepe Quis. Et ratione quam hic dolor cupiditate qui cupiditate quam. Qui veritatis libero et tenetur aperiam qui omnis dolorum aut perspiciatis nemo non temporibus delectus. In voluptates soluta non beatae temporibus est vero mollitia rem debitis pariatur. Qui quia voluptas ut voluptatum esse qui perspiciatis voluptate et labore debitis ut perspiciatis quia sed enim Quis! Ut autem magni sit provident amet qui voluptatem quia eos sint perferendis. Quo sint aspernatur est nostrum ducimus a eveniet temporibus et alias quibusdam ut quia consequatur.',
     totalDuration: 4323432, tracks: sampleSongs, releaseDate: new Date()};
 
+    // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
             <NavBar />
@@ -68,6 +69,7 @@ const Album = () => {
             }} />
         </div>
     );
+    // #endregion
 }
 
 export default Album;

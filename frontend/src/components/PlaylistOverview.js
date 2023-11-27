@@ -9,12 +9,15 @@ import Styles from 'components/PlaylistOverview.module.scss';
 const PlaylistOverview = (props) => {
     const [playlistPaused, setPlaylistPaused] = useState(true);
 
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleTogglePlaylistPlayback = () => {
         setPlaylistPaused(prevState => !prevState);
     }
+    // #endregion
 
     const playlist = props.playlist;
 
+    // #region Struktura komponentu (JSX)
     return(
         <aside id = {Styles.playlistOverview}>
             <main id = {Styles.playlistOverview_mainSection}>
@@ -79,6 +82,7 @@ const PlaylistOverview = (props) => {
             </section>
         </aside>
     );
+    // #endregion
 }
 
 export default PlaylistOverview;

@@ -7,11 +7,14 @@ import btn_pause from 'resources/btn_pause.svg';
 import Styles from 'components/TrackListItem.module.scss';
 
 const TrackListItem = (props) => {
+    // #region Zmienne globalne
     const track = props.track
     const index = props.index;
     const playing = props.playing;
     const handleToggleTrackPlayback = props.trackPlaybackToggleHandler;
+    // #endregion
     
+    // #region Struktura komponentu (JSX)
     return(
         <tr key = {index} className = {Styles.trackList_item}>
             <td>{index + 1}</td>
@@ -58,6 +61,7 @@ const TrackListItem = (props) => {
             : null}
         </tr>
     );
+    // #endregion
 }
 
 export default TrackListItem;

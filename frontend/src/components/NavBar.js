@@ -24,10 +24,15 @@ const NavBar = (props) => {
         setMicrophoneEnabled(prevState => !prevState);
     }
     const handleLogin = () => {
+    /*  Przekierowanie do strony z autoryzacją w serwisie Spotify 
+        z zachowaniem strony, z której użytkownik inicjuje logowanie
+        w celu późniejszego przekierowania powrotnego po zakończeniu autoryzacji */
         Cookies.set('urlBeforeAuth', window.location.href, {secure: true, sameSite: 'strict'});
         window.location.href = spotifyAuthURL;
     }
     const handleLogout = () => {
+    /*  Logika związana z sesją użytkownika opiera się
+        na ciasteczkach po stronie klienta, więc wystarczy je usunąć */
         Cookies.remove('accessToken');
         Cookies.remove('userID');
         Cookies.remove('userName');
@@ -61,6 +66,8 @@ const NavBar = (props) => {
                 .catch(console.error);
         }
 
+    /*  Pobranie tokenu dostępu przekazanego poprzez parametr adresu URL,
+        pobranie informacji o użytkowniku i ustawienie ciasteczek */
         const urlSearchParams = new URLSearchParams(window.location.search);
         const accessToken = urlSearchParams.get('accessToken');
         if(accessToken) {

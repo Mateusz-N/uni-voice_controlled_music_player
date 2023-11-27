@@ -5,10 +5,11 @@ import TrackListItem from 'components/TrackListItem';
 import Styles from 'components/TrackList.module.scss';
 
 const TrackList = (props) => {
-    const tracks = props.tracks;
-
     const [playingTrackID, setPlayingTrackID] = useState(null);
 
+    const tracks = props.tracks;
+
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackPlayback = (trackID) => {
         if(playingTrackID !== trackID) {
             setPlayingTrackID(trackID);
@@ -17,7 +18,9 @@ const TrackList = (props) => {
             setPlayingTrackID(null);
         }
     }
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <table id = {Styles.trackList}>
             <thead>
@@ -46,6 +49,7 @@ const TrackList = (props) => {
             </tbody>
         </table>
     );
+    // #endregion
 }
 
 export default TrackList;

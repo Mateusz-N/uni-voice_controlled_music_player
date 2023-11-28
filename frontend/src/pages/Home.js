@@ -19,8 +19,15 @@ const Home = () => {
         thumbnailSrc: btn_generate,
         name: 'Generate new...'
     }
+    const savedTracks =  {
+        id: '1',
+        type: 'playlist',
+        name: 'Saved tracks',
+        thumbnailSrc: placeholderAlbumCoverSrc,
+        description: ''   
+    }
 
-    const [playlists, setPlaylists] = useState([playlistGenerator]);
+    const [playlists, setPlaylists] = useState([savedTracks, playlistGenerator]);
     const btnSync = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -40,7 +47,7 @@ const Home = () => {
                     }
                 })
                 .then((data) => {
-                    setPlaylists([playlistGenerator, ...data])
+                    setPlaylists([playlistGenerator, savedTracks, ...data])
                     btnSync.current.classList.remove(Styles.spinning);
                 })
                 .catch(console.error);

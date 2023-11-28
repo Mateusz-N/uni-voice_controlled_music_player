@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
+
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
@@ -55,17 +57,17 @@ const PlaylistOverview = (props) => {
                     </li>
                     <li>
                         <span className = {Styles.playlistDetails_detailName}>Total duration: </span>
-                        {playlist.totalDuration}
+                        {millisecondsToFormattedTime(playlist.totalDuration_ms)}
                     </li>
                     {props.for === 'playlist' ?
                         <>
                             <li>
-                                <span className = {Styles.playlistDetails_detailName}>Created: </span>
-                                {playlist.dateCreated.toDateString()}
+                                <span className = {Styles.playlistDetails_detailName}>Owner: </span>
+                                {playlist.owner}
                             </li>
                             <li>
-                                <span className = {Styles.playlistDetails_detailName}>Last modified: </span>
-                                {playlist.dateModified.toDateString()}
+                                <span className = {Styles.playlistDetails_detailName}>Public: </span>
+                                {playlist.public ? 'yes' : 'no'}
                             </li>
                         </>
                         :

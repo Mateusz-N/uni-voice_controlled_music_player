@@ -3,6 +3,12 @@ const express = require('express');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const mysql = require('mysql');
+const bcrypt = require('bcrypt');
+bcrypt.genSalt(2, function(err, salt) {
+  bcrypt.hash("myPlaintextPassword", salt, function(err, hash) {
+      // Store hash in your password DB.
+  });
+});
 // #endregion
 
 // #region Importy plików

@@ -14,12 +14,31 @@ const RESPONSE_TYPE = 'code';
 const REDIRECT_URI = `http://localhost:${SERVER_PORT}/spotify/auth`;
 const SCOPE = 'playlist-read-private playlist-read-collaborative';
 const STATE = crypto.randomBytes(10).toString('hex');
-const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${SCOPE}&state=${STATE}&show_dialog=true`;
+const AUTH_URL = new URL('https://accounts.spotify.com/authorize');
+const CODE_VERIFIER = crypto.randomBytes(32).toString('hex');
+const CODE_CHALLENGE = crypto
+  .createHash('sha256')
+  .update(CODE_VERIFIER)
+  .digest('base64')
+  .replace(/\+/g, '-')
+  .replace(/\//g, '_')
+  .replace(/=+$/, '')
 // #endregion
 
 // #region Punkty końcowe
 /* Generowanie linku do autoryzacji użytkownika w serwisie Spotify */
-router.get('/auth-url', (req, res) => {
+router.get('/auth-url', async (req, res) => {    
+  const AUTH_URL_PARAMS = new URLSearchParams({
+    client_id: CLIENT_ID,
+    response_type: RESPONSE_TYPE,
+    redirect_uri: REDIRECT_URI,
+    scope: SCOPE,
+    state: STATE,
+    code_challenge_method: 'S256',
+    code_challenge: CODE_CHALLENGE,
+    show_dialog: true
+  });
+  AUTH_URL.search = AUTH_URL_PARAMS.toString();
   res.status(200).send({authURL: AUTH_URL});
 });
 
@@ -38,7 +57,9 @@ router.get('/auth', async (req, res) => {
       queryString.stringify({
         code: returnedCode,
         redirect_uri: REDIRECT_URI,
-        grant_type: 'authorization_code'
+        grant_type: 'authorization_code',
+        client_id: CLIENT_ID,
+        code_verifier: CODE_VERIFIER
       }),
       {
         headers: {

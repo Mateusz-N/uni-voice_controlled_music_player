@@ -32,6 +32,9 @@ const Home = () => {
             btnSync.current.classList.add(Styles.spinning);
             fetch('http://localhost:3030/spotify/playlists', {
                 method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'include'
             })
                 .then((response) => {

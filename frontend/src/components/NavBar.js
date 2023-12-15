@@ -33,7 +33,6 @@ const NavBar = (props) => {
     const handleLogout = () => {
     /*  Logika związana z sesją użytkownika opiera się
         na ciasteczkach po stronie klienta, więc wystarczy je usunąć */
-        Cookies.remove('accessToken');
         Cookies.remove('userID');
         Cookies.remove('userName');
         Cookies.remove('profilePicURL');
@@ -55,6 +54,30 @@ const NavBar = (props) => {
         if(Cookies.get('userID')) {
             setLoggedIn(true);
         }
+        else {
+        /*  Próba pobrania informacji o użytkowniku jeśli nie ma ich w ciasteczkach.
+            Żądanie wysyłane jest bez względu na to, czy otrzymano już token dostępu.
+            Jeśli nie otrzymano, serwer po prostu zwróci błąd. */
+            fetch('http://localhost:3030/spotify/user', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then((response) => {
+                    if(response.ok) {
+                        return response.json()
+                    }
+                })
+                .then((data) => {
+                    Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
+                    Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
+                    Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
+                    window.location.href = Cookies.get('urlBeforeAuth');
+                })
+                .catch(console.error);
+        }
         if(spotifyAuthURL === '') {
             fetch('http://localhost:3030/spotify/auth-url')
                 .then((response) => {
@@ -63,33 +86,6 @@ const NavBar = (props) => {
                     }
                 })
                 .then((data) => setSpotifyAuthURL(data.authURL))
-                .catch(console.error);
-        }
-
-    /*  Pobranie tokenu dostępu przekazanego poprzez parametr adresu URL,
-        pobranie informacji o użytkowniku i ustawienie ciasteczek */
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const accessToken = urlSearchParams.get('accessToken');
-        if(accessToken) {
-            fetch('http://localhost:3030/spotify/user', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + accessToken,
-                    'Content-Type': 'application/json',
-                }
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json()
-                    }
-                })
-                .then((data) => {
-                    Cookies.set('accessToken', accessToken, {secure: true, sameSite: 'strict'});
-                    Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
-                    Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
-                    Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
-                    window.location.href = Cookies.get('urlBeforeAuth');
-                })
                 .catch(console.error);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -6,7 +6,7 @@ const router = express.Router();
 const crypto = require('crypto');
 // #endregion
 
-// #region Zmiene konfiguracyjne
+// #region Zmienne konfiguracyjne
 const { CLIENT_PORT, SERVER_PORT } = require('../config');
 const CLIENT_ID = '***REMOVED***';
 const CLIENT_SECRET = '***REMOVED***';
@@ -68,13 +68,18 @@ router.get('/auth', async (req, res) => {
         }
       }
     );
-    res.status(302).redirect(`http://localhost:${CLIENT_PORT}?accessToken=${res_token.data.access_token}`);
+    res.cookie("accessToken", res_token.data.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    });
+    res.status(302).redirect(`http://localhost:${CLIENT_PORT}`);
   }
 });
 
 /* Pobranie informacji o profilu w serwisie Spotify zalogowanego użytkownika */
 router.get('/user', async (req, res) => {
-  const accessToken = req.headers.authorization.split(' ')[1];
+  const accessToken = req.cookies.accessToken;
   const res_profile = await axios.get(
     'https://api.spotify.com/v1/me',
     {

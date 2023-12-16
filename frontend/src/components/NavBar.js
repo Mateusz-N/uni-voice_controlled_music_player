@@ -19,6 +19,10 @@ const NavBar = (props) => {
     const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
     // #endregion
 
+    // #region Zmienne konfiguracyjne
+    const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
+    // #endregion
+
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleMicrophone = () => {
         setMicrophoneEnabled(prevState => !prevState);
@@ -58,7 +62,7 @@ const NavBar = (props) => {
         /*  Próba pobrania informacji o użytkowniku jeśli nie ma ich w ciasteczkach.
             Żądanie wysyłane jest bez względu na to, czy otrzymano już token dostępu.
             Jeśli nie otrzymano, serwer po prostu zwróci błąd. */
-            fetch('https://localhost:3060/spotify/user', {
+            fetch(`https://localhost:${SERVER_PORT_HTTPS}/spotify/user`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -79,7 +83,7 @@ const NavBar = (props) => {
                 .catch(console.error);
         }
         if(spotifyAuthURL === '') {
-            fetch('https://localhost:3060/spotify/auth-url')
+            fetch(`https://localhost:${SERVER_PORT_HTTPS}/spotify/auth-url`)
                 .then((response) => {
                     if(response.ok) {
                         return response.json()

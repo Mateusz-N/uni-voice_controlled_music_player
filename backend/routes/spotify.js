@@ -68,13 +68,32 @@ router.get('/auth', async (req, res) => {
         }
       }
     );
-    res.cookie("accessToken", res_token.data.access_token, {
+    res.cookie('accessToken', res_token.data.access_token, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict'
     });
-    res.status(302).redirect(`https://localhost:${CLIENT_PORT}`);
+    const closePopupScript = `
+      <script>
+        window.close();
+      </script>
+    `
+    res.status(200).send(closePopupScript);
   }
+});
+
+router.post('/logout', async (req, res) => {
+  const accessToken = req.cookies.accessToken;
+  if(!accessToken) {
+    res.status(401).send({
+      error: 'Invalid access token!'
+    });
+    return;
+  }
+  res.clearCookie('accessToken');
+  res.status(200).send({
+    message: "Logged out successfully!"
+  });
 });
 
 /* Pobranie informacji o profilu w serwisie Spotify zalogowanego użytkownika */
@@ -84,6 +103,7 @@ router.get('/user', async (req, res) => {
     res.status(401).send({
       error: 'Invalid access token!'
     });
+    return;
   }
   const res_profile = await axios.get(
     'https://api.spotify.com/v1/me',

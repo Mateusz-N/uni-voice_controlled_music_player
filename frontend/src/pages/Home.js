@@ -24,6 +24,9 @@ const Home = () => {
     const btnSync = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
+    const onLogin = () => {
+        getPlaylists();
+    }
     const onLogout = () => {
         setPlaylists([playlistGenerator]);
     }
@@ -56,6 +59,7 @@ const Home = () => {
     
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
+        console.log("I've been re-rendered!")
         getPlaylists();
     },[])
     // #endregion
@@ -63,7 +67,7 @@ const Home = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar handleLogout = {onLogout} />
+            <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
             <CatalogBrowser className = 'homeBrowser'>
                 <h1 id = {Styles.yourCatalog}>
                     Your catalog&nbsp;

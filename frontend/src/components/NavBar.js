@@ -24,19 +24,64 @@ const NavBar = (props) => {
         setMicrophoneEnabled(prevState => !prevState);
     }
     const handleLogin = () => {
-    /*  Przekierowanie do strony z autoryzacją w serwisie Spotify 
-        z zachowaniem strony, z której użytkownik inicjuje logowanie
-        w celu późniejszego przekierowania powrotnego po zakończeniu autoryzacji */
-        Cookies.set('urlBeforeAuth', window.location.href, {secure: true, sameSite: 'strict'});
-        window.location.href = spotifyAuthURL;
+    /*  Otwarcie wyskakującego okienka z autoryzacją w serwisie Spotify */
+        const popup = window.open(spotifyAuthURL, 'popup', 'popup=true');
+        const checkPopup = setInterval(() => {
+            if(popup.closed) {
+                clearInterval(checkPopup);
+                fetch('https://localhost:3060/spotify/user', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                    .then((response) => {
+                        if(response.ok) {
+                            console.log('Logged in successfully!');
+                            return response.json();
+                        }
+                        if(response.status === 401) {
+                            throw new Error('Invalid access token!');
+                        }
+                    })
+                    .then((data) => {
+                        Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
+                        Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
+                        Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
+                        setLoggedIn(true);
+                        props.handleLogin();
+                    })
+                    .catch(console.error);
+            }
+        }, 100);
     }
     const handleLogout = () => {
     /*  Logika związana z sesją użytkownika opiera się
         na ciasteczkach po stronie klienta, więc wystarczy je usunąć */
-        Cookies.remove('userID');
-        Cookies.remove('userName');
-        Cookies.remove('profilePicURL');
-        props.handleLogout();
+        fetch('https://localhost:3060/spotify/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then((response) => {
+                    if(response.ok) {
+                        return response.json()
+                    }
+                    if(response.status === 401) {
+                        throw new Error('Invalid access token!');
+                    }
+                })
+                .then((data) => {
+                    Cookies.remove('userID');
+                    Cookies.remove('userName');
+                    Cookies.remove('profilePicURL');
+                    props.handleLogout();
+                    console.log(data.message);
+                })
+                .catch(console.error);
         setLoggedIn(false);
     }
     const handleToggleProfileContextMenu = () => {
@@ -54,30 +99,6 @@ const NavBar = (props) => {
         if(Cookies.get('userID')) {
             setLoggedIn(true);
         }
-        else {
-        /*  Próba pobrania informacji o użytkowniku jeśli nie ma ich w ciasteczkach.
-            Żądanie wysyłane jest bez względu na to, czy otrzymano już token dostępu.
-            Jeśli nie otrzymano, serwer po prostu zwróci błąd. */
-            fetch('https://localhost:3060/spotify/user', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json()
-                    }
-                })
-                .then((data) => {
-                    Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
-                    Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
-                    Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
-                    window.location.href = Cookies.get('urlBeforeAuth');
-                })
-                .catch(console.error);
-        }
         if(spotifyAuthURL === '') {
             fetch('https://localhost:3060/spotify/auth-url')
                 .then((response) => {
@@ -89,7 +110,7 @@ const NavBar = (props) => {
                 .catch(console.error);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    },[]);
     // #endregion
 
     // #region Struktura komponentu (JSX)

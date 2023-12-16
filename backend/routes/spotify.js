@@ -7,7 +7,8 @@ const crypto = require('crypto');
 // #endregion
 
 // #region Zmienne konfiguracyjne
-const { CLIENT_PORT, SERVER_PORT_HTTPS } = require('../config');
+const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
+const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
 const CLIENT_ID = '***REMOVED***';
 const CLIENT_SECRET = '***REMOVED***';
 const RESPONSE_TYPE = 'code';

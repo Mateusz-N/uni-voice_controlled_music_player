@@ -5,7 +5,7 @@ const axios = require('axios');
 const router = express.Router();
 // #endregion
 
-const API_KEY = '***REMOVED***';
+const API_KEY = process.env.MUSIXMATCH_API_KEY;
 
 // #region Punkty końcowe
 router.get('/', async (req, res) => {

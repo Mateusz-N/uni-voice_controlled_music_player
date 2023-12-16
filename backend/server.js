@@ -1,12 +1,15 @@
 // #region Importy bibliotek
 const express = require('express');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const mysql = require('mysql');
 // #endregion
 
 // #region Importy plików
-const { SERVER_PORT, CLIENT_PORT } = require('./config');
+const { SERVER_PORT_HTTP, SERVER_PORT_HTTPS, CLIENT_PORT } = require('./config');
 
 const spotifyRouter = require('./routes/spotify');
 const discogsRouter = require('./routes/discogs');
@@ -33,9 +36,15 @@ connection.end();
 
 // #region Konfiguracja aplikacji Express
 const app = express();
+const privateKey = fs.readFileSync('cert/key.pem', 'utf8');
+const certificate = fs.readFileSync('cert/cert.pem', 'utf8');
+const ssl = {
+  key: privateKey,
+  cert: certificate
+}
 
 app.use(cors({
-  origin: [`http://localhost:${CLIENT_PORT}`],
+  origin: [`http://localhost:${CLIENT_PORT}`, `https://localhost:${CLIENT_PORT}`],
   methods: ['GET', 'POST'],
   credentials: true
 }));
@@ -44,7 +53,13 @@ app.use('/spotify', spotifyRouter);
 app.use('/discogs', discogsRouter);
 app.use('/musixmatch', musixmatchRouter);
 
-app.listen(SERVER_PORT, () => {
-  console.log(`Aplikacja nasłuchuje na porcie ${SERVER_PORT}`);
+const serverHTTP = http.createServer(app);
+const serverHTTPS = https.createServer(ssl, app);
+
+serverHTTP.listen(SERVER_PORT_HTTP, () => {
+  console.log(`Serwer HTTP nasłuchuje na porcie ${SERVER_PORT_HTTP}`);
+})
+serverHTTPS.listen(SERVER_PORT_HTTPS, () => {
+  console.log(`Serwer HTTPS nasłuchuje na porcie ${SERVER_PORT_HTTPS}`);
 })
 // #endregion

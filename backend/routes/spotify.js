@@ -7,11 +7,11 @@ const crypto = require('crypto');
 // #endregion
 
 // #region Zmienne konfiguracyjne
-const { CLIENT_PORT, SERVER_PORT } = require('../config');
+const { CLIENT_PORT, SERVER_PORT_HTTPS } = require('../config');
 const CLIENT_ID = '***REMOVED***';
 const CLIENT_SECRET = '***REMOVED***';
 const RESPONSE_TYPE = 'code';
-const REDIRECT_URI = `http://localhost:${SERVER_PORT}/spotify/auth`;
+const REDIRECT_URI = `https://localhost:${SERVER_PORT_HTTPS}/spotify/auth`;
 const SCOPE = 'playlist-read-private playlist-read-collaborative';
 const STATE = crypto.randomBytes(10).toString('hex');
 const AUTH_URL = new URL('https://accounts.spotify.com/authorize');
@@ -49,7 +49,7 @@ router.get('/auth', async (req, res) => {
 
   /* Autoryzacja powiodła się? */
   if(returnedState !== STATE) {
-    res.redirect(`http://localhost:${CLIENT_PORT}?error=state_mismatch`);
+    res.redirect(`https://localhost:${CLIENT_PORT}?error=state_mismatch`);
   }
   else {
     const res_token = await axios.post(
@@ -73,13 +73,18 @@ router.get('/auth', async (req, res) => {
       secure: true,
       sameSite: 'strict'
     });
-    res.status(302).redirect(`http://localhost:${CLIENT_PORT}`);
+    res.status(302).redirect(`https://localhost:${CLIENT_PORT}`);
   }
 });
 
 /* Pobranie informacji o profilu w serwisie Spotify zalogowanego użytkownika */
 router.get('/user', async (req, res) => {
   const accessToken = req.cookies.accessToken;
+  if(!accessToken) {
+    res.status(401).send({
+      error: 'Invalid access token!'
+    });
+  }
   const res_profile = await axios.get(
     'https://api.spotify.com/v1/me',
     {

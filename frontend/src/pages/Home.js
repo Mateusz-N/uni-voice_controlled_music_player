@@ -30,7 +30,7 @@ const Home = () => {
     const getPlaylists = () => {
         if(Cookies.get('userID')) {
             btnSync.current.classList.add(Styles.spinning);
-            fetch('http://localhost:3030/spotify/playlists', {
+            fetch('https://localhost:3060/spotify/playlists', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

@@ -58,7 +58,7 @@ const NavBar = (props) => {
         /*  Próba pobrania informacji o użytkowniku jeśli nie ma ich w ciasteczkach.
             Żądanie wysyłane jest bez względu na to, czy otrzymano już token dostępu.
             Jeśli nie otrzymano, serwer po prostu zwróci błąd. */
-            fetch('http://localhost:3030/spotify/user', {
+            fetch('https://localhost:3060/spotify/user', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ const NavBar = (props) => {
                 .catch(console.error);
         }
         if(spotifyAuthURL === '') {
-            fetch('http://localhost:3030/spotify/auth-url')
+            fetch('https://localhost:3060/spotify/auth-url')
                 .then((response) => {
                     if(response.ok) {
                         return response.json()

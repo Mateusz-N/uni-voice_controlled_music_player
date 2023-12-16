@@ -7,9 +7,10 @@ const crypto = require('crypto');
 // #endregion
 
 // #region Zmienne konfiguracyjne
-const { CLIENT_PORT, SERVER_PORT_HTTPS } = require('../config');
-const CLIENT_ID = '***REMOVED***';
-const CLIENT_SECRET = '***REMOVED***';
+const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
+const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const RESPONSE_TYPE = 'code';
 const REDIRECT_URI = `https://localhost:${SERVER_PORT_HTTPS}/spotify/auth`;
 const SCOPE = 'playlist-read-private playlist-read-collaborative';

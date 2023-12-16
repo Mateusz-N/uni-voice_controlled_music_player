@@ -23,6 +23,8 @@ const Home = () => {
     const [playlists, setPlaylists] = useState([playlistGenerator]);
     const btnSync = useRef(null);
 
+    const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
+
     // #region Obsługa zdarzeń (Event Handlers)
     const onLogin = () => {
         getPlaylists();
@@ -33,7 +35,7 @@ const Home = () => {
     const getPlaylists = () => {
         if(Cookies.get('userID')) {
             btnSync.current.classList.add(Styles.spinning);
-            fetch('https://localhost:3060/spotify/playlists', {
+            fetch(`https://localhost:${SERVER_PORT_HTTPS}/spotify/playlists`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

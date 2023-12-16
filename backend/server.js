@@ -6,14 +6,19 @@ const https = require('https');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const mysql = require('mysql');
+require('dotenv').config();
 // #endregion
 
 // #region Importy plików
-const { SERVER_PORT_HTTP, SERVER_PORT_HTTPS, CLIENT_PORT } = require('./config');
-
 const spotifyRouter = require('./routes/spotify');
 const discogsRouter = require('./routes/discogs');
 const musixmatchRouter = require('./routes/musixmatch');
+// #endregion
+
+// #region Zmienne środowiskowe
+const SERVER_PORT_HTTP = process.env.SERVER_PORT_HTTP || 3030;
+const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
+const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
 // #endregion
 
 // #region Połączenie z bazą danych MySQL

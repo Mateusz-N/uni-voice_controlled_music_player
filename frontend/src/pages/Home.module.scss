@@ -32,13 +32,15 @@
 #mainSection {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(128px, max-content));
+    grid-template-columns: repeat(auto-fill, minmax(128px, max-content));
 
     padding: 16px;
 }
 
 .catalogItem_thumbnail {
     width: 100%;
+    min-width: 128px;
+    max-width: 135px;
     aspect-ratio: 1/1;
 
     border-radius: 8px;

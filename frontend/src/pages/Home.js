@@ -27,7 +27,7 @@ const Home = () => {
         description: ''   
     }
 
-    const [playlists, setPlaylists] = useState([savedTracks, playlistGenerator]);
+    const [playlists, setPlaylists] = useState([playlistGenerator]);
     const btnSync = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)

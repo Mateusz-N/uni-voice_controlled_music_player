@@ -1,6 +1,9 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
+
+import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
@@ -32,32 +35,32 @@ const TrackListItem = (props) => {
             {props.for === 'playlist' ?
                 <>
                     <td>
-                        {track.artists.map((artist, index) => {
+                        {track.artists[0].name ? track.artists.map((artist, index) => {
                             return(
                                 <Fragment key = {index}>
-                                    <Link to = {'./artist/' + artist.id}>{artist}</Link>
+                                    <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
                                     {index === track.artists.length - 1 ? '' : ', '}
                                 </Fragment>
                             )
-                        })}
+                        }) : '?'}
                     </td>
                     <td>
                         <div className = {Styles.trackList_item_album}>
                             <Link to = {'/album/' + track.album.id}>
-                                <img src = {track.album.coverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/>
+                                <img src = {track.album.images.length > 0 ? track.album.images[0].url : placeholderAlbumCoverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/>
                             </Link>
                             <p>
-                                <Link to = {'/album/' + track.album.id}>{track.album.name}</Link>
+                                {track.album.name ? <Link to = {'/album/' + track.album.id}>{track.album.name}</Link> : '?'}
                             </p>
                         </div>
                     </td>
-                    <td>{track.year}</td>
+                    <td>{track.album.release_date ? track.album.release_date.split('-').shift() : '?'}</td>
                 </>
             : null}
-            <td>{track.genre}</td>
-            <td>{track.duration}</td>
+            <td>{track.genres.join(', ')}</td>
+            <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
             {props.for === 'playlist' ?
-                <td>{track.added.toDateString()}</td>
+                <td>{new Date(track.dateAdded).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</td>
             : null}
         </tr>
     );

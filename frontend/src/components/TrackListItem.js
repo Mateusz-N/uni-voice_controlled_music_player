@@ -16,6 +16,49 @@ const TrackListItem = (props) => {
     const playing = props.playing;
     const handleToggleTrackPlayback = props.trackPlaybackToggleHandler;
     // #endregion
+
+    // #region Przypisanie dynamicznych elementów komponentu
+    let artistsColumn = null;
+    let albumColumn = null;
+    let releaseDateColumn = null;
+    let dateAddedColumn = null;
+    if(props.for === 'playlist') {
+        let artistsColumnContents = '?';
+        let albumName = '?';
+        let releaseDateColumnContents = '?';
+        const dateAddedColumnContents = new Date(track.dateAdded).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'});
+
+        if(track.album.name) {
+            albumName = <Link to = {'/album/' + track.album.id}>{track.album.name}</Link>
+        }
+        const albumColumnContents =
+            <div className = {Styles.trackList_item_album}>
+                <Link to = {'/album/' + track.album.id}>
+                    <img src = {track.album.images.length > 0 ? track.album.images[0].url : placeholderAlbumCoverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/>
+                </Link>
+                <p>
+                    {albumName}
+                </p>
+            </div>
+        if(track.artists[0].name) {
+            artistsColumnContents = track.artists.map((artist, index) => {
+                return(
+                    <Fragment key = {index}>
+                        <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
+                        {index === track.artists.length - 1 ? '' : ', '}
+                    </Fragment>
+                )
+            })
+        }
+        if(track.album.release_date) {
+            releaseDateColumnContents = track.album.release_date.split('-').shift();
+        }
+        artistsColumn = <td>{artistsColumnContents}</td>;
+        albumColumn = <td>{albumColumnContents}</td>;
+        releaseDateColumn = <td>{releaseDateColumnContents}</td>;
+        dateAddedColumn = <td>{dateAddedColumnContents}</td>;
+    }
+    // #endregion
     
     // #region Struktura komponentu (JSX)
     return(
@@ -32,36 +75,12 @@ const TrackListItem = (props) => {
                     <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(index)}>{track.title}</p>
                 </div>
             </td>
-            {props.for === 'playlist' ?
-                <>
-                    <td>
-                        {track.artists[0].name ? track.artists.map((artist, index) => {
-                            return(
-                                <Fragment key = {index}>
-                                    <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
-                                    {index === track.artists.length - 1 ? '' : ', '}
-                                </Fragment>
-                            )
-                        }) : '?'}
-                    </td>
-                    <td>
-                        <div className = {Styles.trackList_item_album}>
-                            <Link to = {'/album/' + track.album.id}>
-                                <img src = {track.album.images.length > 0 ? track.album.images[0].url : placeholderAlbumCoverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/>
-                            </Link>
-                            <p>
-                                {track.album.name ? <Link to = {'/album/' + track.album.id}>{track.album.name}</Link> : '?'}
-                            </p>
-                        </div>
-                    </td>
-                    <td>{track.album.release_date ? track.album.release_date.split('-').shift() : '?'}</td>
-                </>
-            : null}
+            {artistsColumn}
+            {albumColumn}
+            {releaseDateColumn}
             <td>{track.genres.join(', ')}</td>
             <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
-            {props.for === 'playlist' ?
-                <td>{new Date(track.dateAdded).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</td>
-            : null}
+            {dateAddedColumn}
         </tr>
     );
     // #endregion

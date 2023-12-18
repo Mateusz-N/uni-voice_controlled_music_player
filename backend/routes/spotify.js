@@ -9,10 +9,12 @@ const crypto = require('crypto');
 // #region Zmienne konfiguracyjne
 const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
 const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
+const SERVER_URL_HTTPS = process.env.SERVER_URL_HTTPS || `https://localhost:${SERVER_PORT_HTTPS}`;
+const CLIENT_URL_HTTPS = process.env.CLIENT_URL_HTTPS || `https://localhost:${CLIENT_PORT}`;
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const RESPONSE_TYPE = 'code';
-const REDIRECT_URI = `https://localhost:${SERVER_PORT_HTTPS}/spotify/auth`;
+const REDIRECT_URI = `${SERVER_URL_HTTPS}/spotify/auth`;
 const SCOPE = 'playlist-read-private playlist-read-collaborative user-library-read';
 const STATE = crypto.randomBytes(10).toString('hex');
 const AUTH_URL = new URL('https://accounts.spotify.com/authorize');
@@ -50,7 +52,7 @@ router.get('/auth', async (req, res) => {
 
   /* Autoryzacja powiodła się? */
   if(returnedState !== STATE) {
-    res.redirect(`https://localhost:${CLIENT_PORT}?error=state_mismatch`);
+    res.redirect(`${CLIENT_URL_HTTPS}?error=state_mismatch`);
   }
   else {
     const res_token = await axios.post(

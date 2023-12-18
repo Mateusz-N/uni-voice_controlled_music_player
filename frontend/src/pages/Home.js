@@ -30,8 +30,6 @@ const Home = () => {
     const [playlists, setPlaylists] = useState([savedTracks, playlistGenerator]);
     const btnSync = useRef(null);
 
-    const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
-
     // #region Obsługa zdarzeń (Event Handlers)
     const onLogin = () => {
         getPlaylists();
@@ -42,7 +40,7 @@ const Home = () => {
     const getPlaylists = () => {
         if(Cookies.get('userID')) {
             btnSync.current.classList.add(Styles.spinning);
-            fetch(`https://localhost:${SERVER_PORT_HTTPS}/spotify/playlists`, {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -68,8 +66,8 @@ const Home = () => {
     
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        console.log("I've been re-rendered!")
         getPlaylists();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     // #endregion
 

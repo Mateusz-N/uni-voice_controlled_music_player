@@ -14,7 +14,7 @@ const Playlist = () => {
     const getPlaylist = () => {
         if(Cookies.get('userID')) {
             const playlistID = window.location.href.split('/').pop();
-            fetch(`http://localhost:3030/spotify/playlist/${playlistID}`, {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {
                 method: 'GET',
                 credentials: 'include'
             })
@@ -24,7 +24,7 @@ const Playlist = () => {
                     }
                 })
                 .then((data) => {
-                    const playlist = playlistID == 1 ? {
+                    const playlist = parseInt(playlistID) === 1 ? {
                         id: playlistID,
                         name: 'Saved tracks',
                         thumbnailSrc: placeholderAlbumCoverSrc,
@@ -78,10 +78,6 @@ const Playlist = () => {
     useEffect(() => {
         getPlaylist();
     },[])
-
-    const sampleSongs = [{ id: "aR5rHG1", title: "Song 1", artists: ["Artist 1"], album: {coverSrc: placeholderAlbumCoverSrc, name: "Album 1"}, year: 1995, genre: "rock", duration: 240000, added: new Date("2023-07-01") },
-    { id: "aR5rHG2", title: "Song 222222222222222222222222222222222222", artists: ["Artist 2222222222222222222222222222"], album: {coverSrc: placeholderAlbumCoverSrc, name: "Album 232ff3322343235564351"}, year: 20082222222222222222222222222222, genre: "pop2222222222222222222222222222", duration: 1800002222222222222222222222222222, added: new Date("2023-07-02") },
-    { id: "aR5rHG3", title: "Song 3", artists: ["Artist 3"], album: "Album 3", year: 2012, genre: "hip-hop", duration: 200000, added: new Date("2023-07-03") }];
 
     return (
         <div id = 'page'>

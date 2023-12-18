@@ -20,7 +20,7 @@ const NavBar = (props) => {
     // #endregion
 
     // #region Zmienne konfiguracyjne
-    const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
+    const SERVER_URL = process.env.REACT_APP_SERVER_URL;
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -33,7 +33,7 @@ const NavBar = (props) => {
         const checkPopup = setInterval(() => {
             if(popup.closed) {
                 clearInterval(checkPopup);
-                fetch(`https://localhost:${SERVER_PORT_HTTPS}/spotify/user`, {
+                fetch(`${SERVER_URL}/spotify/user`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -63,7 +63,7 @@ const NavBar = (props) => {
     const handleLogout = () => {
     /*  Logika związana z sesją użytkownika opiera się
         na ciasteczkach po stronie klienta, więc wystarczy je usunąć */
-        fetch(`https://localhost:${SERVER_PORT_HTTPS}/spotify/logout`, {
+        fetch(`${SERVER_URL}/spotify/logout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -104,7 +104,7 @@ const NavBar = (props) => {
             setLoggedIn(true);
         }
         if(spotifyAuthURL === '') {
-            fetch(`https://localhost:${SERVER_PORT_HTTPS}/spotify/auth-url`)
+            fetch(`${SERVER_URL}/spotify/auth-url`)
                 .then((response) => {
                     if(response.ok) {
                         return response.json()

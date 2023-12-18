@@ -19,6 +19,8 @@ const musixmatchRouter = require('./routes/musixmatch');
 const SERVER_PORT_HTTP = process.env.SERVER_PORT_HTTP || 3030;
 const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
 const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
+const CLIENT_URL_HTTP = process.env.CLIENT_URL_HTTP || `http://localhost:${CLIENT_PORT}`;
+const CLIENT_URL_HTTPS = process.env.CLIENT_URL_HTTPS || `https://localhost:${CLIENT_PORT}`;
 // #endregion
 
 // #region Połączenie z bazą danych MySQL
@@ -49,7 +51,7 @@ const ssl = {
 }
 
 app.use(cors({
-  origin: [`http://localhost:${CLIENT_PORT}`, `https://localhost:${CLIENT_PORT}`],
+  origin: [CLIENT_URL_HTTP, CLIENT_URL_HTTPS],
   methods: ['GET', 'POST'],
   credentials: true
 }));

@@ -24,7 +24,7 @@ const Playlist = () => {
                     }
                 })
                 .then((data) => {
-                    const playlist = parseInt(playlistID) === 1 ? {
+                    const playlist = playlistID.toString() === '1' ? {
                         id: playlistID,
                         name: 'Saved tracks',
                         thumbnailSrc: placeholderAlbumCoverSrc,

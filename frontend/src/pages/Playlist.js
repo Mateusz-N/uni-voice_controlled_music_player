@@ -29,14 +29,14 @@ const Playlist = () => {
                         name: 'Saved tracks',
                         thumbnailSrc: placeholderAlbumCoverSrc,
                         description: '',
-                        totalDuration_ms: data.items.reduce((totalDuration_ms, item) => totalDuration_ms + item.track.duration_ms, 0),
+                        totalDuration_ms: data.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
                         tracks: data.items.map(item => ({
                             id: item.track.id,
                             number: item.track.track_number,
                             title: item.track.name,
                             artists: item.track.artists,
                             album: item.track.album,
-                            duration_ms: item.track.duration_ms,
+                            duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
                             genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
                             dateAdded: item.added_at,
                             explicit: item.track.explicit,
@@ -52,14 +52,14 @@ const Playlist = () => {
                         name: data.name,
                         thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
                         description: data.description,
-                        totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + item.track.duration_ms, 0),
+                        totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
                         tracks: data.tracks.items.map(item => ({
                             id: item.track.id,
                             number: item.track.track_number,
                             title: item.track.name,
                             artists: item.track.artists,
                             album: item.track.album,
-                            duration_ms: item.track.duration_ms,
+                            duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
                             genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
                             dateAdded: item.added_at,
                             explicit: item.track.explicit,

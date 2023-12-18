@@ -121,7 +121,7 @@ router.get('/playlist/:id', async (req, res) => {
   const accessToken = req.cookies.accessToken;
   const playlistID = req.params.id;
   let playlist, nextEndpoint;
-  if(playlistID === '1') {
+  if(playlistID === '1') { // Polubione utwory
     nextEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
   }
   else {

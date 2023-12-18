@@ -35,14 +35,14 @@ const TrackListItem = (props) => {
             {props.for === 'playlist' ?
                 <>
                     <td>
-                        {track.artists.map((artist, index) => {
+                        {track.artists[0].name ? track.artists.map((artist, index) => {
                             return(
                                 <Fragment key = {index}>
                                     <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
                                     {index === track.artists.length - 1 ? '' : ', '}
                                 </Fragment>
                             )
-                        })}
+                        }) : '?'}
                     </td>
                     <td>
                         <div className = {Styles.trackList_item_album}>
@@ -50,7 +50,7 @@ const TrackListItem = (props) => {
                                 <img src = {track.album.images.length > 0 ? track.album.images[0].url : placeholderAlbumCoverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/>
                             </Link>
                             <p>
-                                <Link to = {'/album/' + track.album.id}>{track.album.name}</Link>
+                                {track.album.name ? <Link to = {'/album/' + track.album.id}>{track.album.name}</Link> : '?'}
                             </p>
                         </div>
                     </td>

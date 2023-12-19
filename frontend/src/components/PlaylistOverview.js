@@ -18,9 +18,9 @@ const PlaylistOverview = (props) => {
 
     // #region Obsługa wartości null/undefined
     const playlist = props.playlist;
-    let playlistName = null;
-    let playlistThumbnailSrc = null;
-    let playlistDescription = null;
+    let playlistName = 'Unknown playlist';
+    let playlistThumbnailSrc = '';
+    let playlistDescription = '';
     if(playlist && Object.keys(playlist).length > 0) {
         playlistName = playlist.name;
         playlistThumbnailSrc = playlist.thumbnailSrc;
@@ -46,7 +46,7 @@ const PlaylistOverview = (props) => {
                     </figcaption>
                 </figure>
                 <hr/>
-                <PlaylistDetails playlist = {playlist} />
+                <PlaylistDetails playlist = {playlist} for = {props.for} />
             </main>
             <hr/>
             <section id = {Styles.playlistDescription}>

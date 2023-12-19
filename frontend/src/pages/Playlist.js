@@ -66,7 +66,9 @@ const Playlist = () => {
                             explicit: item.track.explicit,
                             playable: item.track.is_playable,
                             local: item.track.is_local
-                        }))
+                        })),
+                        owner: data.owner.display_name,
+                        public: data.public
                     }
                     setPlaylist(playlist);
                 })

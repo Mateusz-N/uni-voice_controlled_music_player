@@ -29,6 +29,7 @@ const Album = () => {
                         name: data.name,
                         thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
                         totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.duration_ms.totalMilliseconds || item.duration_ms), 0),
+                        artists: data.artists,
                         tracks: data.tracks.items.map(item => ({
                             id: item.id,
                             number: item.track_number,
@@ -42,8 +43,7 @@ const Album = () => {
                             playable: item.is_playable,
                             local: item.is_local
                         })),
-                        owner: data.owner.display_name,
-                        public: data.public
+                        releaseDate: data.release_date
                     }
                     setAlbum(album);
                 })

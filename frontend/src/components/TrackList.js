@@ -20,18 +20,16 @@ const TrackList = (props) => {
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let tracks = [];
-    let liArtists = null;
-    let liAlbum = null;
-    let liYear = null;
-    let liAdded = null;
+    let thAlbum = null;
+    let thYear = null;
+    let thAdded = null;
     if(props.tracks) {
         tracks = props.tracks;
-        if(props.for === 'playlist') {
-            liArtists = <th>Artist(s)</th>;
-            liAlbum = <th>Album</th>;
-            liYear = <th>Year</th>;
-            liAdded = <th>Added</th>;
-        }
+    }
+    if(props.for === 'playlist') {
+        thAlbum = <th>Album</th>;
+        thYear = <th>Year</th>;
+        thAdded = <th>Added</th>;
     }
     // #endregion
 
@@ -42,12 +40,12 @@ const TrackList = (props) => {
                 <tr id = {Styles.trackList_header}>
                     <th>#</th>
                     <th>Title</th>
-                    {liArtists}
-                    {liAlbum}
-                    {liYear}
+                    <th>Artist(s)</th>
+                    {thAlbum}
+                    {thYear}
                     <th>Genre</th>
                     <th>Duration</th>
-                    {liAdded}
+                    {thAdded}
                 </tr>
             </thead>
             <tbody>

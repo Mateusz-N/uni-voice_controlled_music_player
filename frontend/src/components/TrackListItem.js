@@ -17,43 +17,67 @@ const TrackListItem = (props) => {
     const handleToggleTrackPlayback = props.trackPlaybackToggleHandler;
     // #endregion
 
-    // #region Przypisanie dynamicznych elementów komponentu
-    let artistsColumn = null;
+    // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let albumColumn = null;
     let releaseDateColumn = null;
     let dateAddedColumn = null;
+    let artistsColumnContents = '?';
+    let trackArtists = [];
+    let trackAlbum = {
+        id: null,
+        name: '?',
+        images: [],
+        release_date: '?'
+    };
+    if(track && Object.keys(track).length > 0) {
+        if(track.artists) {
+            trackArtists = track.artists;
+        }
+        if(trackArtists[0].name.length > 0) {
+            artistsColumnContents = trackArtists.map((artist, index) => {
+                return(
+                    <Fragment key = {index}>
+                        <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
+                        {index === trackArtists.length - 1 ? '' : ', '}
+                    </Fragment>
+                )
+            });
+        }
+        if(track.album) {
+            if(track.album.id) {
+                trackAlbum.id = track.album.id;
+            }
+            if(track.album.name) {
+                trackAlbum.name = track.album.name;
+            }
+            if(track.album.images) {
+                trackAlbum.images = track.album.images;
+            }
+            if(track.album.release_date) {
+                trackAlbum.release_date = track.album.release_date;
+            }
+        }
+    }
     if(props.for === 'playlist') {
-        let artistsColumnContents = '?';
-        let albumName = '?';
-        let releaseDateColumnContents = '?';
+        let albumName = trackAlbum.name;
+        let releaseDateColumnContents = trackAlbum.release_date;
         const dateAddedColumnContents = new Date(track.dateAdded).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'});
 
-        if(track.album.name) {
-            albumName = <Link to = {'/album/' + track.album.id}>{track.album.name}</Link>
+        if(trackAlbum.id && trackAlbum.name !== '?') {
+            albumName = <Link to = {'/album/' + trackAlbum.id}>{trackAlbum.name}</Link>
         }
         const albumColumnContents =
             <div className = {Styles.trackList_item_album}>
-                <Link to = {'/album/' + track.album.id}>
-                    <img src = {track.album.images.length > 0 ? track.album.images[0].url : placeholderAlbumCoverSrc} alt = {track.album.name} className = {Styles.trackList_item_albumCover}/>
+                <Link to = {'/album/' + trackAlbum.id}>
+                    <img src = {trackAlbum.images.length > 0 ? trackAlbum.images[0].url : placeholderAlbumCoverSrc} alt = {trackAlbum.name} className = {Styles.trackList_item_albumCover}/>
                 </Link>
                 <p>
                     {albumName}
                 </p>
             </div>
-        if(track.artists[0].name) {
-            artistsColumnContents = track.artists.map((artist, index) => {
-                return(
-                    <Fragment key = {index}>
-                        <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
-                        {index === track.artists.length - 1 ? '' : ', '}
-                    </Fragment>
-                )
-            })
+        if(releaseDateColumnContents !== '?') {
+            releaseDateColumnContents = trackAlbum.release_date.split('-').shift();
         }
-        if(track.album.release_date) {
-            releaseDateColumnContents = track.album.release_date.split('-').shift();
-        }
-        artistsColumn = <td>{artistsColumnContents}</td>;
         albumColumn = <td>{albumColumnContents}</td>;
         releaseDateColumn = <td>{releaseDateColumnContents}</td>;
         dateAddedColumn = <td>{dateAddedColumnContents}</td>;
@@ -75,7 +99,7 @@ const TrackListItem = (props) => {
                     <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(index)}>{track.title}</p>
                 </div>
             </td>
-            {artistsColumn}
+            <td>{artistsColumnContents}</td>
             {albumColumn}
             {releaseDateColumn}
             <td>{track.genres.join(', ')}</td>

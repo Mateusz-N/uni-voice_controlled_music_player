@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
@@ -14,40 +15,58 @@ const PlaylistDetails = (props) => {
     let liReleased = null;
     let playlistTotalDuration_ms = 0;
     let playlistTracks = [];
+    let playlistArtists = [];
+    let playlistReleaseDate = '?';
+    let playlistOwner = '?';
+    let playlistPublic = '?';
     if(playlist && Object.keys(playlist).length > 0) {
-        playlistTotalDuration_ms = playlist.totalDuration_ms;
+        if(playlist.totalDuration_ms) {
+            playlistTotalDuration_ms = playlist.totalDuration_ms;
+        }
         if(playlist.tracks) {
             playlistTracks = playlist.tracks;
         }
         if(props.for === 'album') {
+            if(playlist.artists) {
+                playlistArtists = playlist.artists;
+            }
+            if(playlist.releaseDate) {
+                playlistReleaseDate = new Date(playlist.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'});
+            }
             liArtists =
                 <li>
                     <span className = {Styles.playlistDetails_detailName}>Artist(s): </span>
-                    {playlist.artists.map((artist, index) => {
+                    {playlistArtists.map((artist, index) => {
                         return(
-                            <>
-                                <Link key = {index} to = {'./artist/' + artist.id}>{artist}</Link>
-                                {index === playlist.artists.length - 1 ? '' : ', '}
-                            </>
+                            <Fragment key = {index}>
+                                <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
+                                {index === playlistArtists.length - 1 ? '' : ', '}
+                            </Fragment>
                         )
                     })}
                 </li>;
             liReleased =
                 <li>
                     <span className = {Styles.playlistDetails_detailName}>Released: </span>
-                    {playlist.releaseDate.toDateString()}
+                    {playlistReleaseDate}
                 </li>;
         }
         else if(props.for === 'playlist') {
+            if(playlist.owner) {
+                playlistOwner = playlist.owner;
+            }
+            if(playlist.public) {
+                playlistPublic = playlist.public ? 'yes' : 'no';
+            }
             liOwner =
                 <li>
                     <span className = {Styles.playlistDetails_detailName}>Owner: </span>
-                    {playlist.owner}
+                    {playlistOwner}
                 </li>;
             liPublic =
                 <li>
                     <span className = {Styles.playlistDetails_detailName}>Public: </span>
-                    {playlist.public ? 'yes' : 'no'}
+                    {playlistPublic}
                 </li>;
         }
     }

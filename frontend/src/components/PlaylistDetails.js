@@ -12,8 +12,10 @@ const PlaylistDetails = (props) => {
     let liOwner = null;
     let liPublic = null;
     let liReleased = null;
+    let playlistTotalDuration_ms = 0;
     let playlistTracks = [];
-    if(playlist) {
+    if(playlist && Object.keys(playlist).length > 0) {
+        playlistTotalDuration_ms = playlist.totalDuration_ms;
         if(playlist.tracks) {
             playlistTracks = playlist.tracks;
         }
@@ -61,7 +63,7 @@ const PlaylistDetails = (props) => {
             </li>
             <li>
                 <span className = {Styles.playlistDetails_detailName}>Total duration: </span>
-                {millisecondsToFormattedTime(playlist.totalDuration_ms)}
+                {millisecondsToFormattedTime(playlistTotalDuration_ms)}
             </li>
             {liOwner}
             {liPublic}

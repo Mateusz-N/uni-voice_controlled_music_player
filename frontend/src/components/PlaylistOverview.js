@@ -21,7 +21,7 @@ const PlaylistOverview = (props) => {
     let playlistName = null;
     let playlistThumbnailSrc = null;
     let playlistDescription = null;
-    if(playlist) {
+    if(playlist && Object.keys(playlist).length > 0) {
         playlistName = playlist.name;
         playlistThumbnailSrc = playlist.thumbnailSrc;
         playlistDescription = playlist.description;

@@ -31,7 +31,6 @@ const CODE_CHALLENGE = crypto
 const handlePlaylistRequest = async (req, res, isAlbum) => {
   const accessToken = req.cookies.accessToken;
   const playlistID = req.params.id;
-  console.log(accessToken)
   let playlist, nextEndpoint;
   if(playlistID === '1') { // Polubione utwory
     nextEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
@@ -213,13 +212,11 @@ router.get('/playlists', async (req, res) => {
 
 /* Pobranie konkretnej listy odtwarzania */
 router.get('/playlist/:id', async (req, res) => {
-  console.log(":)")
   await handlePlaylistRequest(req, res, false);
 });
 
 /* Pobranie konkretnego albumu */
 router.get('/album/:id', async (req, res) => {
-  console.log(":)")
   await handlePlaylistRequest(req, res, true);
 });
 

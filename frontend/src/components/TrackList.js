@@ -7,8 +7,6 @@ import Styles from 'components/TrackList.module.scss';
 const TrackList = (props) => {
     const [playingTrackID, setPlayingTrackID] = useState(null);
 
-    const tracks = props.tracks;
-
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackPlayback = (trackID) => {
         if(playingTrackID !== trackID) {
@@ -20,6 +18,23 @@ const TrackList = (props) => {
     }
     // #endregion
 
+    // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
+    let tracks = [];
+    let liArtists = null;
+    let liAlbum = null;
+    let liYear = null;
+    let liAdded = null;
+    if(props.tracks) {
+        tracks = props.tracks;
+        if(props.for === 'playlist') {
+            liArtists = <th>Artist(s)</th>;
+            liAlbum = <th>Album</th>;
+            liYear = <th>Year</th>;
+            liAdded = <th>Added</th>;
+        }
+    }
+    // #endregion
+
     // #region Struktura komponentu (JSX)
     return(
         <table id = {Styles.trackList}>
@@ -27,18 +42,12 @@ const TrackList = (props) => {
                 <tr id = {Styles.trackList_header}>
                     <th>#</th>
                     <th>Title</th>
-                    {props.for === 'playlist' ?
-                        <>
-                            <th>Artist(s)</th>
-                            <th>Album</th>
-                            <th>Year</th>
-                        </>
-                    : null}
+                    {liArtists}
+                    {liAlbum}
+                    {liYear}
                     <th>Genre</th>
                     <th>Duration</th>
-                    {props.for === 'playlist' ?
-                        <th>Added</th>
-                    : null}
+                    {liAdded}
                 </tr>
             </thead>
             <tbody>

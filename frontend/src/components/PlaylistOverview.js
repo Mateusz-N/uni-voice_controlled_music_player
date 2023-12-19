@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
-import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
+
+import PlaylistDetails from 'components/PlaylistDetails';
 
 import Styles from 'components/PlaylistOverview.module.scss';
 
@@ -17,14 +16,24 @@ const PlaylistOverview = (props) => {
     }
     // #endregion
 
+    // #region Obsługa wartości null/undefined
     const playlist = props.playlist;
+    let playlistName = null;
+    let playlistThumbnailSrc = null;
+    let playlistDescription = null;
+    if(playlist) {
+        playlistName = playlist.name;
+        playlistThumbnailSrc = playlist.thumbnailSrc;
+        playlistDescription = playlist.description;
+    }
+    // #endregion
 
     // #region Struktura komponentu (JSX)
     return(
         <aside id = {Styles.playlistOverview}>
             <main id = {Styles.playlistOverview_mainSection}>
                 <figure id = {Styles.playlistFigure}>
-                    <img src = {playlist.thumbnailSrc} alt = {playlist.name} id = {Styles.playlistFigure_thumbnail} />
+                    <img src = {playlistThumbnailSrc} alt = {playlistName} id = {Styles.playlistFigure_thumbnail} />
                     <figcaption id = {Styles.playlistFigcaption}>
                         <img
                             src = {playlistPaused ? btn_play : btn_pause}
@@ -33,54 +42,15 @@ const PlaylistOverview = (props) => {
                             className = {Styles.playlist_btnTogglePlayback}
                             onClick = {handleTogglePlaylistPlayback}
                         />
-                        <h3 id = {Styles.playlistName}>{playlist.name}</h3>
+                        <h3 id = {Styles.playlistName}>{playlistName}</h3>
                     </figcaption>
                 </figure>
                 <hr/>
-                <ul id = {Styles.playlistDetails}>
-                    {props.for === 'album' ?
-                        <li>
-                            <span className = {Styles.playlistDetails_detailName}>Artist(s): </span>
-                            {playlist.artists.map((artist, index) => {
-                                return(
-                                    <>
-                                        <Link key = {index} to = {'./artist/' + artist.id}>{artist}</Link>
-                                        {index === playlist.artists.length - 1 ? '' : ', '}
-                                    </>
-                                )
-                            })}
-                        </li>
-                    : null}
-                    <li>
-                        <span className = {Styles.playlistDetails_detailName}>Track count: </span>
-                        {playlist.tracks.length}
-                    </li>
-                    <li>
-                        <span className = {Styles.playlistDetails_detailName}>Total duration: </span>
-                        {millisecondsToFormattedTime(playlist.totalDuration_ms)}
-                    </li>
-                    {props.for === 'playlist' ?
-                        <>
-                            <li>
-                                <span className = {Styles.playlistDetails_detailName}>Owner: </span>
-                                {playlist.owner}
-                            </li>
-                            <li>
-                                <span className = {Styles.playlistDetails_detailName}>Public: </span>
-                                {playlist.public ? 'yes' : 'no'}
-                            </li>
-                        </>
-                        :
-                        <li>
-                            <span className = {Styles.playlistDetails_detailName}>Released: </span>
-                            {playlist.releaseDate.toDateString()}
-                        </li>
-                    }
-                </ul>
+                <PlaylistDetails playlist = {playlist} />
             </main>
             <hr/>
             <section id = {Styles.playlistDescription}>
-                <p>{playlist.description}</p>
+                <p>{playlistDescription}</p>
             </section>
         </aside>
     );

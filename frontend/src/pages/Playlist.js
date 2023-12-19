@@ -10,7 +10,7 @@ import TrackList from 'components/TrackList';
 import PlaylistOverview from 'components/PlaylistOverview';
 
 const Playlist = () => {
-    const [playlist, setPlaylist] = useState({tracks: []});
+    const [playlist, setPlaylist] = useState({});
     const getPlaylist = () => {
         if(Cookies.get('userID')) {
             const playlistID = window.location.href.split('/').pop();
@@ -24,7 +24,7 @@ const Playlist = () => {
                     }
                 })
                 .then((data) => {
-                    const playlist = playlistID.toString() === '1' ? {
+                    const playlist = playlistID.toString() === '1' ? { // '1' === Polubione utwory
                         id: playlistID,
                         name: 'Saved tracks',
                         thumbnailSrc: placeholderAlbumCoverSrc,
@@ -53,6 +53,7 @@ const Playlist = () => {
                         thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
                         description: data.description,
                         totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
+                        artists: data.artists,
                         tracks: data.tracks.items.map(item => ({
                             id: item.track.id,
                             number: item.track.track_number,
@@ -65,9 +66,7 @@ const Playlist = () => {
                             explicit: item.track.explicit,
                             playable: item.track.is_playable,
                             local: item.track.is_local
-                        })),
-                        owner: data.owner.display_name,
-                        public: data.public
+                        }))
                     }
                     setPlaylist(playlist);
                 })
@@ -79,6 +78,7 @@ const Playlist = () => {
         getPlaylist();
     },[])
 
+    // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
             <NavBar />
@@ -95,6 +95,7 @@ const Playlist = () => {
             }} />
         </div>
     );
+    // #endregion
 }
 
 export default Playlist;

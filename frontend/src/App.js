@@ -13,7 +13,7 @@ const App = () => {
     <Routes>
       <Route path = '/' element = {<HomePage />} />
       <Route path = 'playlist/:id' element = {<PlaylistPage />} /> {/* "/:id" prowadzi do podstrony konkretnej listy odtwarzania */}
-      <Route path = 'album/:id' element = {<AlbumPage />} /> {/* "/:id" prowadzi do podstrony konkretnej listy odtwarzania */}
+      <Route path = 'album/:id' element = {<AlbumPage />} /> {/* "/:id" prowadzi do podstrony konkretnego albumu */}
       <Route path = 'generator' element = {<PlaylistGeneratorPage />} />
       <Route path = 'settings' element = {<SettingsPage />} />
     </Routes>

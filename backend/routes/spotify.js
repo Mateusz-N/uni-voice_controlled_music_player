@@ -28,6 +28,47 @@ const CODE_CHALLENGE = crypto
   .replace(/=+$/, '')
 // #endregion
 
+const handlePlaylistRequest = async (req, res, isAlbum) => {
+  const accessToken = req.cookies.accessToken;
+  const playlistID = req.params.id;
+  console.log(accessToken)
+  let playlist, nextEndpoint;
+  if(playlistID === '1') { // Polubione utwory
+    nextEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
+  }
+  else {
+    nextEndpoint = `https://api.spotify.com/v1/${isAlbum ? 'albums' : 'playlists'}/${playlistID}`;
+  }
+  do {
+    const res_playlist = await axios.get(
+      nextEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+    if(res_playlist.status === 200) {
+      const playlistPage = res_playlist.data;
+      if(!playlist) {
+        playlist = playlistPage;
+        nextEndpoint = playlistID === '1' ? playlistPage.next : playlistPage.tracks.next;
+      }
+      else {
+        playlistID === '1' ? playlist.items.push(...playlistPage.items) : playlist.tracks.items.push(...playlistPage.items);
+        nextEndpoint = playlistPage.next;
+      }
+    }
+    else {
+      res.status(res_profile.status).send({
+        error: 'Something went wrong!'
+      });
+    }
+  }
+  while(nextEndpoint);
+  res.status(200).send(playlist);
+}
+
 // #region Punkty końcowe
 /* Generowanie linku do autoryzacji użytkownika w serwisie Spotify */
 router.get('/auth-url', async (req, res) => {    
@@ -172,43 +213,14 @@ router.get('/playlists', async (req, res) => {
 
 /* Pobranie konkretnej listy odtwarzania */
 router.get('/playlist/:id', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
-  const playlistID = req.params.id;
-  let playlist, nextEndpoint;
-  if(playlistID === '1') { // Polubione utwory
-    nextEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
-  }
-  else {
-    nextEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
-  }
-  do {
-    const res_playlist = await axios.get(
-      nextEndpoint,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      }
-    );
-    if(res_playlist.status === 200) {
-      const playlistPage = res_playlist.data;
-      if(!playlist) {
-        playlist = playlistPage;
-        nextEndpoint = playlistID === '1' ? playlistPage.next : playlistPage.tracks.next;
-      }
-      else {
-        playlistID === '1' ? playlist.items.push(...playlistPage.items) : playlist.tracks.items.push(...playlistPage.items);
-        nextEndpoint = playlistPage.next;
-      }
-    }
-    else {
-      res.status(res_profile.status).send({
-        error: 'Something went wrong!'
-      });
-    }
-  }
-  while(nextEndpoint);
-  res.status(200).send(playlist);
+  console.log(":)")
+  await handlePlaylistRequest(req, res, false);
+});
+
+/* Pobranie konkretnego albumu */
+router.get('/album/:id', async (req, res) => {
+  console.log(":)")
+  await handlePlaylistRequest(req, res, true);
 });
 
 /* Pobranie konkretnego wykonawcy */

@@ -22,9 +22,9 @@ const OverviewPanel = (props) => {
     return(
         <aside id = {Styles.overviewPanel}>
             <main id = {Styles.overviewPanel_mainSection}>
-                <figure id = {Styles.playlistFigure}>
-                    <img src = {data.thumbnailSrc} alt = {data.name} id = {Styles.playlistFigure_thumbnail} />
-                    <figcaption id = {Styles.playlistFigcaption}>
+                <figure id = {Styles.itemFigure}>
+                    <img src = {data.thumbnailSrc} alt = {data.name} id = {Styles.itemFigure_thumbnail} />
+                    <figcaption id = {Styles.itemFigcaption}>
                         <img
                             src = {playlistPaused ? btn_play : btn_pause}
                             alt = {playlistPaused ? 'Play' : 'Pause'}
@@ -32,14 +32,14 @@ const OverviewPanel = (props) => {
                             className = {Styles.playlist_btnTogglePlayback}
                             onClick = {handleTogglePlaylistPlayback}
                         />
-                        <h3 id = {Styles.playlistName}>{data.name}</h3>
+                        <h3 id = {Styles.itemName}>{data.name}</h3>
                     </figcaption>
                 </figure>
                 <hr/>
                 <OverviewPanelDetails items = {data.detailsToDisplay} for = {props.for} />
             </main>
             <hr/>
-            <section id = {Styles.playlistDescription}>
+            <section id = {Styles.itemDescription}>
                 <p>{data.description}</p>
             </section>
         </aside>

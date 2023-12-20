@@ -11,21 +11,21 @@
     background-color: #3a3a3a;
 }
 
-#playlistFigure {
+#itemFigure {
     margin: 0;
 }
 
-#playlistFigure_thumbnail {
+#itemFigure_thumbnail {
     width: 100%;
 
     border-radius: 4%;
 }
 
-#playlistFigure, #overviewPanelDetails {
+#itemFigure, #overviewPanelDetails {
     flex: 1;
 }
 
-#playlistFigcaption {
+#itemFigcaption {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -43,7 +43,7 @@
     }
 }
 
-#playlistName {
+#itemName {
     margin: 0;
 
     overflow: hidden;

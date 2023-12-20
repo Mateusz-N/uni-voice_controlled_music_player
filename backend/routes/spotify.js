@@ -29,6 +29,9 @@ const CODE_CHALLENGE = crypto
 // #endregion
 
 const handlePlaylistRequest = async (req, res, isAlbum) => {
+/*Obsługa żądań dotyczących zarówno
+  konkretnej listy odtwarzania jak i konkretnego albumu.
+  Albumy to w końcu najzwyczajniej specjalne listy odtwarzania  */
   const accessToken = req.cookies.accessToken;
   const playlistID = req.params.id;
   let playlist, nextEndpoint;
@@ -66,6 +69,62 @@ const handlePlaylistRequest = async (req, res, isAlbum) => {
   }
   while(nextEndpoint);
   res.status(200).send(playlist);
+}
+
+const handlePlaylistsRequest = async (req, res, areArtistAlbums) => {
+/*Obsługa żądań dotyczących zarówno list odtwarzania jak i albumów.
+  Albumy to w końcu najzwyczajniej specjalne listy odtwarzania  */
+  // const accessToken = req.cookies.accessToken;
+  const accessToken = req.cookies.accessToken;
+  let playlists, nextEndpoint;
+  if(areArtistAlbums) {
+    nextEndpoint = `https://api.spotify.com/v1/artists/${req.params.id}/albums`;
+  }
+  else {
+    nextEndpoint = `https://api.spotify.com/v1/me/playlists?limit=50`;
+  }
+  do {
+    const res_playlists = await axios.get(
+      nextEndpoint,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        },
+      }
+    );
+    if(res_playlists.status === 200) {
+      const playlistsPage = res_playlists.data.items.map(playlist => {
+        if(areArtistAlbums) {
+          return {
+            id: playlist.id,
+            type: 'album',
+            name: playlist.name,
+            thumbnailSrc: playlist.images[0].url
+          }
+        }
+        return {
+          id: playlist.id,
+          type: 'playlist',
+          name: playlist.name,
+          thumbnailSrc: playlist.images[0].url
+        }
+      });
+      if(!playlists) {
+        playlists = playlistsPage;
+      }
+      else {
+        playlists.push(...playlistsPage);
+      }
+      nextEndpoint = res_playlists.data.next
+    }
+    else {
+      res.status(res_profile.status).send({
+        error: 'Something went wrong!'
+      });
+    }
+  }
+  while(nextEndpoint);
+  res.status(200).send(playlists);
 }
 
 // #region Punkty końcowe
@@ -172,42 +231,7 @@ router.get('/user', async (req, res) => {
 
 /* Pobranie list odtwarzania w serwisie Spotify zalogowanego użytkownika */
 router.get('/playlists', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
-  let playlists;
-  let nextEndpoint = `https://api.spotify.com/v1/me/playlists?limit=50`;
-  do {
-    const res_playlists = await axios.get(
-      nextEndpoint,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        },
-      }
-    );
-    if(res_playlists.status === 200) {
-      const playlistsPage = res_playlists.data.items.map(playlist => ({
-          id: playlist.id,
-          type: 'playlist',
-          name: playlist.name,
-          thumbnailSrc: playlist.images[0].url,
-          description: playlist.description
-      }));
-      if(!playlists) {
-        playlists = playlistsPage;
-      }
-      else {
-        playlists.push(...playlistsPage);
-      }
-      nextEndpoint = res_playlists.data.next
-    }
-    else {
-      res.status(res_profile.status).send({
-        error: 'Something went wrong!'
-      });
-    }
-  }
-  while(nextEndpoint);
-  res.status(200).send(playlists);
+  await handlePlaylistsRequest(req, res, false);
 });
 
 /* Pobranie konkretnej listy odtwarzania */
@@ -237,6 +261,11 @@ router.get('/artist/:id', async (req, res) => {
     res.status(200).send(artist);
   }
 });
+
+/* Pobranie katalogu konkretnego wykonawcy */
+router.get('/artist/:id/albums', async (req, res) => {
+  await handlePlaylistsRequest(req, res, true);
+})
 // #endregion
 
 module.exports = router;

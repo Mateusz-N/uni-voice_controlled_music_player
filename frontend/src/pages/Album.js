@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useState, useEffect, Fragment } from 'react';
 import Cookies from 'js-cookie';
+
+import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
@@ -7,13 +10,22 @@ import NavBar from 'components/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList';
-import PlaylistOverview from 'components/PlaylistOverview';
+import OverviewPanel from 'components/OverviewPanel';
 
 const Album = () => {
-    const [album, setAlbum] = useState({});
+    const albumID = window.location.href.split('/').pop();
+    const [album, setAlbum] = useState({
+        id: albumID,
+        name: 'Unknown album',
+        thumbnailSrc: placeholderAlbumCoverSrc,
+        totalDuration_ms: 0,
+        artists: [],
+        tracks: [],
+        releaseDate: 'N/A',
+        detailsToDisplay: []
+    });
     const getAlbum = () => {
         if(Cookies.get('userID')) {
-            const albumID = window.location.href.split('/').pop();
             fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/album/${albumID}`, {
                 method: 'GET',
                 credentials: 'include'
@@ -45,6 +57,26 @@ const Album = () => {
                         })),
                         releaseDate: data.release_date
                     }
+                    album.detailsToDisplay = [{
+                        name: 'Track count',
+                        content: album.tracks ? album.tracks.length || 'N/A' : 'N/A'
+                    }, {
+                        name: 'Total Duration',
+                        content: album.totalDuration_ms ? millisecondsToFormattedTime(album.totalDuration_ms) : 'N/A'
+                    }, {
+                        name: 'Artist(s)',
+                        content: album.artists ? album.artists.map((artist, index) => {
+                            return(
+                                <Fragment key = {index}>
+                                    <Link to = {'/artist/' + artist.id}>{artist.name}</Link>
+                                    {index === album.artists.length - 1 ? '' : ', '}
+                                </Fragment>
+                            )
+                        }) : '?'
+                    }, {
+                        name: 'Released',
+                        content: album.releaseDate ? new Date(album.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : '?'
+                    }]
                     setAlbum(album);
                 })
                 .catch(console.error);
@@ -59,9 +91,9 @@ const Album = () => {
     return (
         <div id = 'page'>
             <NavBar />
-            <CatalogBrowser className = 'playlistBrowser'>
+            <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList tracks = {album.tracks} for = 'album' />
-                <PlaylistOverview playlist = {album} for = 'album' />
+                <OverviewPanel data = {album} for = 'album' />
             </CatalogBrowser>
             <PlaybackPanel track = {{
                 duration_ms: '15000',

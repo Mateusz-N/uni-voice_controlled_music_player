@@ -161,19 +161,19 @@ const PlaybackPanel = (props) => {
                 <img src = {track.albumCoverSrc} alt = {Styles.albumTitle} id = {Styles.albumCover} />
                 <section id = {Styles.trackProperties}>
                     <p id = {Styles.trackTitle} className = {Styles.trackProperty}>
-                        <Link to = {'./track/' + track.trackID}>{track.trackTitle}</Link>
+                        <Link to = {'/track/' + track.trackID}>{track.trackTitle}</Link>
                     </p>
                     <p id = {Styles.artists} className = {Styles.trackProperty}>
                         {track.artists.map((artist, index) => {
                             return(
                                 <Fragment key = {index}>
-                                    <Link to = {'./artist/' + artist.id}>{artist}</Link>
+                                    <Link to = {'/artist/' + artist.id}>{artist}</Link>
                                     {index === track.artists.length - 1 ? '' : ', '}
                                 </Fragment>
                             )
                         })}
                     </p>
-                    <p id = {Styles.albumTitle} className = {Styles.trackProperty}><Link to = {'./album/' + track.albumID}>{track.albumTitle}</Link></p>
+                    <p id = {Styles.albumTitle} className = {Styles.trackProperty}><Link to = {'/album/' + track.albumID}>{track.albumTitle}</Link></p>
                 </section>
             </aside>
             <main id = {Styles.mainSection}>

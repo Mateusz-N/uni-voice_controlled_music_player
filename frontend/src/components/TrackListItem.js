@@ -37,7 +37,7 @@ const TrackListItem = (props) => {
             artistsColumnContents = trackArtists.map((artist, index) => {
                 return(
                     <Fragment key = {index}>
-                        <Link to = {'./artist/' + artist.id}>{artist.name}</Link>
+                        <Link to = {'/artist/' + artist.id}>{artist.name}</Link>
                         {index === trackArtists.length - 1 ? '' : ', '}
                     </Fragment>
                 )

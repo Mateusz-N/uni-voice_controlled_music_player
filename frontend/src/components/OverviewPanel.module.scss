@@ -1,4 +1,4 @@
-#playlistOverview {
+#overviewPanel {
     position: fixed;
     box-sizing: border-box;
     top: 52px;
@@ -21,7 +21,7 @@
     border-radius: 4%;
 }
 
-#playlistFigure, #playlistDetails {
+#playlistFigure, #overviewPanelDetails {
     flex: 1;
 }
 

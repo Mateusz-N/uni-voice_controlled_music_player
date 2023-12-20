@@ -4,6 +4,7 @@ import HomePage from 'pages/Home';
 import PlaylistPage from 'pages/Playlist';
 import PlaylistGeneratorPage from 'pages/PlaylistGenerator';
 import AlbumPage from 'pages/Album';
+import ArtistPage from 'pages/Artist';
 import SettingsPage from "pages/Settings";
 
 import 'App.css';
@@ -13,7 +14,8 @@ const App = () => {
     <Routes>
       <Route path = '/' element = {<HomePage />} />
       <Route path = 'playlist/:id' element = {<PlaylistPage />} /> {/* "/:id" prowadzi do podstrony konkretnej listy odtwarzania */}
-      <Route path = 'album/:id' element = {<AlbumPage />} /> {/* "/:id" prowadzi do podstrony konkretnego albumu */}
+      <Route path = 'album/:id' element = {<AlbumPage />} />
+      <Route path = 'artist/:id' element = {<ArtistPage />} />
       <Route path = 'generator' element = {<PlaylistGeneratorPage />} />
       <Route path = 'settings' element = {<SettingsPage />} />
     </Routes>

@@ -6,9 +6,14 @@
     padding-bottom: 83px;
 
     background-color: #333;
-}
 
-.playlistBrowser {
-    display: flex;
-    align-items: flex-start;
+    &.playlistBrowser {
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    &.hasOverviewPanel > main {
+        width: 80%;
+        box-sizing: border-box;
+    }
 }

@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
+import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
+
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
 import NavBar from 'components/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList';
-import PlaylistOverview from 'components/PlaylistOverview';
+import OverviewPanel from 'components/OverviewPanel';
 
 const Playlist = () => {
-    const [playlist, setPlaylist] = useState({});
+    const playlistID = window.location.href.split('/').pop();
+    const [playlist, setPlaylist] = useState({
+        id: playlistID,
+        name: 'Unknkown playlist',
+        thumbnailSrc: placeholderAlbumCoverSrc,
+        description: '',
+        totalDuration_ms: 'N/A',
+        artists: [],
+        tracks: [],
+        owner: 'N/A',
+        public: 'N/A',
+        detailsToDisplay: []
+    });
     const getPlaylist = () => {
         if(Cookies.get('userID')) {
-            const playlistID = window.location.href.split('/').pop();
             fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {
                 method: 'GET',
                 credentials: 'include'
@@ -70,6 +83,19 @@ const Playlist = () => {
                         owner: data.owner.display_name,
                         public: data.public
                     }
+                    playlist.detailsToDisplay = [{
+                        name: 'Track count',
+                        content: playlist.tracks ? playlist.tracks.length || 'N/A' : 'N/A'
+                    }, {
+                        name: 'Total Duration',
+                        content: playlist.totalDuration_ms ? millisecondsToFormattedTime(playlist.totalDuration_ms) : 'N/A'
+                    }, {
+                        name: 'Owner',
+                        content: playlist.owner || 'N/A'
+                    }, {
+                        name: 'Public',
+                        content: (playlist.public === true) ? 'yes' : ((playlist.public === false) ? 'no' : 'N/A')
+                    }]
                     setPlaylist(playlist);
                 })
                 .catch(console.error);
@@ -84,9 +110,9 @@ const Playlist = () => {
     return (
         <div id = 'page'>
             <NavBar />
-            <CatalogBrowser className = 'playlistBrowser'>
+            <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList tracks = {playlist.tracks} for = 'playlist' />
-                <PlaylistOverview playlist = {playlist} for = 'playlist' />
+                <OverviewPanel data = {playlist} for = 'playlist' />
             </CatalogBrowser>
             <PlaybackPanel track = {{
                 duration_ms: '15000',

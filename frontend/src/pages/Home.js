@@ -16,15 +16,14 @@ const Home = () => {
     const playlistGenerator = {
         id: '0',
         type: 'generator',
-        thumbnailSrc: btn_generate,
-        name: 'Generate new...'
+        name: 'Generate new...',
+        thumbnailSrc: btn_generate
     }
     const savedTracks =  {
         id: '1',
         type: 'playlist',
         name: 'Saved tracks',
-        thumbnailSrc: placeholderAlbumCoverSrc,
-        description: ''   
+        thumbnailSrc: placeholderAlbumCoverSrc
     }
 
     const [playlists, setPlaylists] = useState([playlistGenerator]);
@@ -75,8 +74,8 @@ const Home = () => {
     return (
         <div id = 'page'>
             <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
-            <CatalogBrowser className = 'homeBrowser'>
-                <h1 id = {Styles.yourCatalog}>
+            <CatalogBrowser className = 'collectionBrowser'>
+                <h1 id = {Styles.catalogHeader}>
                     Your catalog&nbsp;
                     <img src = {btn_sync} alt = 'Sync with Spotify' id = {Styles.btnSync} onClick = {handleSyncWithSpotify} ref = {btnSync} />
                 </h1>
@@ -85,10 +84,10 @@ const Home = () => {
                         playlists.map((playlist, index) => {
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
-                                    <Link to = {playlist.type === 'generator' ? './generator' : './playlist/' + playlist.id}>
+                                    <Link to = {playlist.type === 'generator' ? '/generator' : '/playlist/' + playlist.id}>
                                         <img src = {playlist.thumbnailSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnail} />
                                     </Link>
-                                    <Link to = {'./playlist/' + playlist.id}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
+                                    <Link to = {'/playlist/' + playlist.id}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
                                 </article>
                             );
                         })

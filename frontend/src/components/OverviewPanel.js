@@ -3,11 +3,11 @@ import { useState } from 'react';
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
-import PlaylistDetails from 'components/PlaylistDetails';
+import OverviewPanelDetails from 'components/OverviewPanelDetails';
 
-import Styles from 'components/PlaylistOverview.module.scss';
+import Styles from 'components/OverviewPanel.module.scss';
 
-const PlaylistOverview = (props) => {
+const OverviewPanel = (props) => {
     const [playlistPaused, setPlaylistPaused] = useState(true);
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -16,24 +16,14 @@ const PlaylistOverview = (props) => {
     }
     // #endregion
 
-    // #region Obsługa wartości null/undefined
-    const playlist = props.playlist;
-    let playlistName = 'Unknown playlist';
-    let playlistThumbnailSrc = '';
-    let playlistDescription = '';
-    if(playlist && Object.keys(playlist).length > 0) {
-        playlistName = playlist.name;
-        playlistThumbnailSrc = playlist.thumbnailSrc;
-        playlistDescription = playlist.description;
-    }
-    // #endregion
+    const data = props.data;
 
     // #region Struktura komponentu (JSX)
     return(
-        <aside id = {Styles.playlistOverview}>
-            <main id = {Styles.playlistOverview_mainSection}>
+        <aside id = {Styles.overviewPanel}>
+            <main id = {Styles.overviewPanel_mainSection}>
                 <figure id = {Styles.playlistFigure}>
-                    <img src = {playlistThumbnailSrc} alt = {playlistName} id = {Styles.playlistFigure_thumbnail} />
+                    <img src = {data.thumbnailSrc} alt = {data.name} id = {Styles.playlistFigure_thumbnail} />
                     <figcaption id = {Styles.playlistFigcaption}>
                         <img
                             src = {playlistPaused ? btn_play : btn_pause}
@@ -42,19 +32,19 @@ const PlaylistOverview = (props) => {
                             className = {Styles.playlist_btnTogglePlayback}
                             onClick = {handleTogglePlaylistPlayback}
                         />
-                        <h3 id = {Styles.playlistName}>{playlistName}</h3>
+                        <h3 id = {Styles.playlistName}>{data.name}</h3>
                     </figcaption>
                 </figure>
                 <hr/>
-                <PlaylistDetails playlist = {playlist} for = {props.for} />
+                <OverviewPanelDetails items = {data.detailsToDisplay} for = {props.for} />
             </main>
             <hr/>
             <section id = {Styles.playlistDescription}>
-                <p>{playlistDescription}</p>
+                <p>{data.description}</p>
             </section>
         </aside>
     );
     // #endregion
 }
 
-export default PlaylistOverview;
+export default OverviewPanel;

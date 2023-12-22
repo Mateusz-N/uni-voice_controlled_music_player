@@ -48,11 +48,11 @@ const Home = () => {
             })
                 .then((response) => {
                     if(response.ok) {
-                        return response.json()
+                        return response.json();
                     }
                 })
                 .then((data) => {
-                    setPlaylists([playlistGenerator, savedTracks, ...data])
+                    setPlaylists([playlistGenerator, savedTracks, ...data]);
                     btnSync.current.classList.remove(Styles.spinning);
                 })
                 .catch(console.error);

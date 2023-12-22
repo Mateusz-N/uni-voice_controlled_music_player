@@ -45,6 +45,10 @@
 
     border-radius: 8px;
 
+    &.catalogItem_thumbnail_artist {
+        border-radius: 100vh;
+    }
+
     &:hover {
         filter: brightness(85%);
     }

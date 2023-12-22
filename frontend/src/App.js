@@ -6,6 +6,7 @@ import PlaylistGeneratorPage from 'pages/PlaylistGenerator';
 import AlbumPage from 'pages/Album';
 import ArtistPage from 'pages/Artist';
 import SettingsPage from "pages/Settings";
+import SearchPage from "pages/Search";
 
 import 'App.css';
 
@@ -18,6 +19,7 @@ const App = () => {
       <Route path = 'artist/:id' element = {<ArtistPage />} />
       <Route path = 'generator' element = {<PlaylistGeneratorPage />} />
       <Route path = 'settings' element = {<SettingsPage />} />
+      <Route path = 'search' element = {<SearchPage />} />
     </Routes>
   );
 }

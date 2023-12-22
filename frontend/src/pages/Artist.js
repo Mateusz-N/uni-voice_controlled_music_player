@@ -85,10 +85,12 @@ const Artist = () => {
         getArtist();
     }
 
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getArtist();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
+    // #endregion
 
     // #region Struktura komponentu (JSX)
     return (
@@ -105,7 +107,7 @@ const Artist = () => {
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
                                     <Link to = {'/album/' + album.id}>
-                                        <img src = {album.thumbnailSrc} alt = {album.name} className = {Styles.catalogItem_thumbnail} />
+                                        <img src = {album.thumbnailSrc || placeholderAlbumCoverSrc} alt = {album.name} className = {Styles.catalogItem_thumbnail} />
                                     </Link>
                                     <Link to = {'/album/' + album.id}><h4 className = {Styles.catalogItem_name}>{album.name}</h4></Link>
                                 </article>

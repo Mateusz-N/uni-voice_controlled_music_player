@@ -102,9 +102,11 @@ const Playlist = () => {
         }
     }
 
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getPlaylist();
     },[])
+    // #endregion
 
     // #region Struktura komponentu (JSX)
     return (

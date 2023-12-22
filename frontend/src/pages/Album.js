@@ -83,9 +83,11 @@ const Album = () => {
         }
     }
 
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getAlbum();
     },[])
+    // #endregion
 
     // #region Struktura komponentu (JSX)
     return (

@@ -85,7 +85,7 @@ const Home = () => {
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
                                     <Link to = {playlist.type === 'generator' ? '/generator' : '/playlist/' + playlist.id}>
-                                        <img src = {playlist.thumbnailSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnail} />
+                                        <img src = {playlist.thumbnailSrc || placeholderAlbumCoverSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnail} />
                                     </Link>
                                     <Link to = {'/playlist/' + playlist.id}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
                                 </article>

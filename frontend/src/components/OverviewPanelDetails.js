@@ -2,7 +2,6 @@ import Styles from 'components/OverviewPanelDetails.module.scss';
 
 const OverviewPanelDetails = (props) => {
     const items = props.items;
-    console.log(items)
 
     // #region Struktura komponentu (JSX)
     return(

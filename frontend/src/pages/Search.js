@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
@@ -11,10 +11,11 @@ import CatalogBrowser from 'components/CatalogBrowser';
 import Styles from 'pages/Home.module.scss';
 
 const Search = () => {
+    const windowLocation = useLocation();
     const [results, setResults] = useState([]);
     useEffect(() => {
         if(Cookies.get('userID')) {
-            const query = new URLSearchParams(window.location.search).get('query');
+            const query = new URLSearchParams(windowLocation.search).get('query');
             fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/search?query=${query}`, {
                 method: 'GET',
                 headers: {
@@ -35,9 +36,6 @@ const Search = () => {
                 .catch(console.error);
         }
     }, []);
-    useEffect(() => {
-        console.log(results[0])
-    }, [results])
     return (
         <div id = 'page'>
             <NavBar />

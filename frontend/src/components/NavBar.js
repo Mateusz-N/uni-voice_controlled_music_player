@@ -42,7 +42,6 @@ const NavBar = (props) => {
                 })
                     .then((response) => {
                         if(response.ok) {
-                            console.log('Logged in successfully!');
                             return response.json();
                         }
                         if(response.status === 401) {
@@ -55,6 +54,7 @@ const NavBar = (props) => {
                         Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
                         setLoggedIn(true);
                         props.handleLogin();
+                        console.info(data.message);
                     })
                     .catch(console.error);
             }
@@ -83,7 +83,7 @@ const NavBar = (props) => {
                     Cookies.remove('userName');
                     Cookies.remove('profilePicURL');
                     props.handleLogout();
-                    console.log(data.message);
+                    console.info(data.message);
                 })
                 .catch(console.error);
         setLoggedIn(false);

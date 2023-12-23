@@ -12,33 +12,53 @@ import Styles from 'pages/Home.module.scss';
 
 const Search = () => {
     const windowLocation = useLocation();
+
+    // #region Zmienne stanu (useState Hooks)
+    const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
     const [results, setResults] = useState([]);
+    // #endregion
+
+    // #region Obsługa zdarzeń (Event Handlers)
+    const onLogin = () => {
+        setLoggedIn(true);
+    }
+    const onLogout = () => {
+        setLoggedIn(false);
+    }
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        if(Cookies.get('userID')) {
-            const query = new URLSearchParams(windowLocation.search).get('query');
-            fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/search?query=${query}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json();
-                    }
-                })
-                .then((data) => {
-                    Object.keys(data).forEach(type => {
-                        setResults(prevState => [...prevState, ...data[type]]);
-                    });
-                })
-                .catch(console.error);
+        if(!loggedIn) {
+            setResults([]);
+            return;
         }
-    }, []);
+        const query = new URLSearchParams(windowLocation.search).get('query');
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/search?query=${query}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                Object.keys(data).forEach(type => {
+                    setResults(prevState => [...prevState, ...data[type]]);
+                });
+            })
+            .catch(console.error);
+    }, [loggedIn]);
+    // #endregion
+
+    // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar />
+            <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
             <CatalogBrowser>
                 <h1 id = {Styles.catalogHeader}>
                     Results&nbsp;
@@ -67,6 +87,7 @@ const Search = () => {
             }} />
         </div>
     );
+    // #endregion
 }
 
 export default Search;

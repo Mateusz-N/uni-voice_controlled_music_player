@@ -170,7 +170,7 @@ router.post('/logout', async (req, res) => {
   }
   res.clearCookie('accessToken');
   res.status(200).send({
-    message: "Logged out successfully!"
+    message: 'Logged out successfully!'
   });
 });
 
@@ -195,7 +195,8 @@ router.get('/user', async (req, res) => {
     res.status(200).send({
       userID: res_profile.data.id,
       userName: res_profile.data.display_name,
-      profilePicURL: res_profile.data.images[0] ? res_profile.data.images[0].url : null
+      profilePicURL: res_profile.data.images[0] ? res_profile.data.images[0].url : null,
+      message: 'Logged in successfully!'
     });
   }
   else {

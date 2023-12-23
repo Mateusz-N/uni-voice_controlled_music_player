@@ -13,8 +13,9 @@ import OverviewPanel from 'components/OverviewPanel';
 import Styles from 'pages/Home.module.scss';
 
 const Artist = () => {
+    // #region Zmienne globalne
     const artistID = window.location.href.split('/').pop();
-    const [artist, setArtist] = useState({
+    const placeholderArtist = {
         id: artistID,
         name: 'Unknown artist',
         thumbnailSrc: placeholderAlbumCoverSrc,
@@ -22,46 +23,63 @@ const Artist = () => {
         followers: 'N/A',
         popularity: 'N/A',
         detailsToDisplay: []
-    });
+    };
+    // #endregion
+
+    // #region Zmienne stanu (useState Hooks)
+    const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
+    const [artist, setArtist] = useState(placeholderArtist);
     const [albums, setAlbums] = useState([]);
+    // #endregion
+
     const btnSync = useRef(null);
 
+    // #region Obsługa zdarzeń (Event Handlers)
+    const onLogin = () => {
+        setLoggedIn(true);
+    }
+    const onLogout = () => {
+        setLoggedIn(false);
+    }
     const getArtist = () => {
-        btnSync.current.classList.add(Styles.spinning);
-        if(Cookies.get('userID')) {
-            fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/artist/${artistID}`, {
-                method: 'GET',
-                credentials: 'include'
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json()
-                    }
-                })
-                .then((data) => {
-                    const artist = {
-                        id: artistID,
-                        name: data.name,
-                        thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
-                        genres: data.genres,
-                        followers: data.followers.total,
-                        popularity: data.popularity,
-                        detailsToDisplay: [{
-                            name: 'Genres',
-                            content: data.genres ? data.genres.join(', ') : 'N/A'
-                        }, {
-                            name: 'Followers',
-                            content: data.followers.total || 'N/A'
-                        }, {
-                            name: 'Popularity',
-                            content: data.popularity || 'N/A'
-                        }]
-                    }
-                    setArtist(artist);
-                })
-                .catch(console.error);
-            getAlbums(artistID);
+        if(!loggedIn) {
+            setArtist(placeholderArtist);
+            setAlbums([]);
+            return;
         }
+        btnSync.current.classList.add(Styles.spinning);
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/artist/${artistID}`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json()
+                }
+            })
+            .then((data) => {
+                const artist = {
+                    id: artistID,
+                    name: data.name,
+                    thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
+                    genres: data.genres,
+                    followers: data.followers.total,
+                    popularity: data.popularity,
+                    detailsToDisplay: [{
+                        name: 'Genres',
+                        content: data.genres ? data.genres.join(', ') : 'N/A'
+                    }, {
+                        name: 'Followers',
+                        content: data.followers.total || 'N/A'
+                    }, {
+                        name: 'Popularity',
+                        content: data.popularity || 'N/A'
+                    }]
+                }
+                setArtist(artist);
+            })
+            .catch(console.error);
+        getAlbums(artistID);
     }
     const getAlbums = (artistID) => {
         if(Cookies.get('userID')) {
@@ -84,18 +102,19 @@ const Artist = () => {
     const handleSyncWithSpotify = () => {
         getArtist();
     }
+    // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getArtist();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    },[loggedIn])
     // #endregion
 
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar />
+            <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
             <CatalogBrowser className = 'collectionBrowser hasOverviewPanel'>
                 <h1 id = {Styles.catalogHeader}>
                     {artist.name}&nbsp;

@@ -4,6 +4,7 @@ const queryString = require('node:querystring');
 const axios = require('axios');
 const router = express.Router();
 const crypto = require('crypto');
+const { access } = require('node:fs');
 // #endregion
 
 // #region Zmienne konfiguracyjne
@@ -29,6 +30,72 @@ const CODE_CHALLENGE = crypto
 // #endregion
 
 // #region Funkcje pomocnicze
+const requestAccessToken = async (res, grantType, queryParams) => {
+  const queryObject = {
+    grant_type: grantType,
+    client_id: queryParams.clientId
+  }
+  if(grantType === 'authorization_code') {
+    queryObject.code = queryParams.code;
+    queryObject.redirect_uri = queryParams.redirectUri;
+    queryObject.code_verifier = queryParams.codeVerifier
+  }
+  else if(grantType === 'refresh_token') {
+    queryObject.refresh_token = queryParams.refreshToken
+  }
+  const res_token = await axios.post(
+    'https://accounts.spotify.com/api/token',
+    queryString.stringify(queryObject),
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
+      }
+    }
+  );
+  if(res_token.status === 200) {
+    res.cookie('accessToken', res_token.data.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    });
+    res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds() + res_token.data.expires_in, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    })
+    res.cookie('refreshToken', res_token.data.refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    });
+    return res_token.data.access_token;
+  }
+  else {
+    res.status(res_token.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+}
+
+const verifyAccessToken = async (res, accessToken, accessToken_expirationDateInSeconds, refreshToken, clientId) => {
+  if(new Date().getSeconds() < accessToken_expirationDateInSeconds) {
+    return accessToken;
+  }
+  const newToken = await requestAccessToken(res, 'refresh_token', {
+    clientId: clientId,
+    refreshToken: refreshToken
+  });
+  return newToken;
+}
+
+const retrieveAccessToken = (req) => {
+  const accessToken = req.cookies.accessToken;
+  const accessToken_expirationDateInSeconds = req.cookies.accessToken_expirationDateInSeconds;
+  const refreshToken = req.cookies.refreshToken;
+  return [accessToken, accessToken_expirationDateInSeconds, refreshToken];
+}
+
 const handleGetItemsRequest = async (accessToken, initialEndpoint, onSuccess) => {
 /*Obsługa wszelkiego rodzaju żądań,
   które pobierają dane z wykorzystaniem paginacji*/
@@ -130,26 +197,11 @@ router.get('/auth', async (req, res) => {
     res.redirect(`${CLIENT_URL_HTTPS}?error=state_mismatch`);
   }
   else {
-    const res_token = await axios.post(
-      'https://accounts.spotify.com/api/token',
-      queryString.stringify({
-        code: returnedCode,
-        redirect_uri: REDIRECT_URI,
-        grant_type: 'authorization_code',
-        client_id: CLIENT_ID,
-        code_verifier: CODE_VERIFIER
-      }),
-      {
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
-        }
-      }
-    );
-    res.cookie('accessToken', res_token.data.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict'
+    await requestAccessToken(res, 'authorization_code', {
+      clientId: CLIENT_ID,
+      code: returnedCode,
+      redirectUri: REDIRECT_URI,
+      codeVerifier: CODE_VERIFIER
     });
     const closePopupScript = `
       <script>
@@ -161,7 +213,7 @@ router.get('/auth', async (req, res) => {
 });
 
 router.post('/logout', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   if(!accessToken) {
     res.status(401).send({
       error: 'Invalid access token!'
@@ -176,7 +228,7 @@ router.post('/logout', async (req, res) => {
 
 /* Pobranie informacji o profilu w serwisie Spotify zalogowanego użytkownika */
 router.get('/user', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   if(!accessToken) {
     res.status(401).send({
       error: 'Invalid access token!'
@@ -208,7 +260,8 @@ router.get('/user', async (req, res) => {
 
 /* Pobranie list odtwarzania w serwisie Spotify zalogowanego użytkownika */
 router.get('/playlists', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  console.log(accessToken);
   const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
   const playlists = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
   res.status(200).send(playlists);
@@ -216,7 +269,7 @@ router.get('/playlists', async (req, res) => {
 
 /* Pobranie albumów konkretnego wykonawcy */
 router.get('/artist/:id/albums', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
   let initialEndpoint = `https://api.spotify.com/v1/artists/${artistID}/albums`;
   const albums = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
@@ -225,7 +278,7 @@ router.get('/artist/:id/albums', async (req, res) => {
 
 /* Pobranie konkretnej listy odtwarzania */
 router.get('/playlist/:id', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const playlistID = req.params.id;
   let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
   let nextEndpointReference = 'tracks.next';
@@ -241,7 +294,7 @@ router.get('/playlist/:id', async (req, res) => {
 
 /* Pobranie konkretnego albumu */
 router.get('/album/:id', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const albumID = req.params.id;
   const initialEndpoint = `https://api.spotify.com/v1/albums/${albumID}`;
   const nextEndpointReference = 'tracks.next';
@@ -252,7 +305,7 @@ router.get('/album/:id', async (req, res) => {
 
 /* Pobranie konkretnego wykonawcy */
 router.get('/artist/:id', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
   const res_artist = await axios.get(
     `https://api.spotify.com/v1/artists/${artistID}`,
@@ -270,7 +323,8 @@ router.get('/artist/:id', async (req, res) => {
 
 /* Przeszukiwanie katalogu Spotify */
 router.get('/search', async (req, res) => {
-  const accessToken = req.cookies.accessToken;
+  res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds())
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const query = req.query.query;
   const results = {};
   for (const type of ['album', 'artist', 'playlist', 'track']) {

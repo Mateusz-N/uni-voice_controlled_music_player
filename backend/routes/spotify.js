@@ -261,7 +261,6 @@ router.get('/user', async (req, res) => {
 /* Pobranie list odtwarzania w serwisie Spotify zalogowanego użytkownika */
 router.get('/playlists', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
-  console.log(accessToken);
   const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
   const playlists = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
   res.status(200).send(playlists);
@@ -283,7 +282,7 @@ router.get('/playlist/:id', async (req, res) => {
   let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
   let nextEndpointReference = 'tracks.next';
   let itemsReference = 'tracks.items';
-  if(playlistID === '1') { // Polubione utwory
+  if(playlistID === '2') { // Polubione utwory
     initialEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
     nextEndpointReference = 'next';
     itemsReference = 'items';

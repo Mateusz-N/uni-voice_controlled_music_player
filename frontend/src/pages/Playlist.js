@@ -54,7 +54,7 @@ const Playlist = () => {
                 }
             })
             .then((data) => {
-                const playlist = playlistID.toString() === '1' ? { // '1' === Polubione utwory
+                const playlist = playlistID.toString() === '2' ? { // '1' === Polubione utwory
                     id: playlistID,
                     name: 'Saved tracks',
                     thumbnailSrc: placeholderAlbumCoverSrc,

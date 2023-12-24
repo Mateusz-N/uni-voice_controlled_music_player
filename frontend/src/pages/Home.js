@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 
 import btn_sync from 'resources/btn_sync.svg';
 import btn_generate from 'resources/btn_generate.svg';
+import btn_build from 'resources/btn_build.svg';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
 import NavBar from 'components/NavBar';
@@ -19,14 +20,20 @@ const Home = () => {
         name: 'Generate new...',
         thumbnailSrc: btn_generate
     }
-    const savedTracks =  {
+    const playlistBuilder = {
         id: '1',
+        type: 'builder',
+        name: 'Create new manually...',
+        thumbnailSrc: btn_build
+    }
+    const savedTracks =  {
+        id: '2',
         type: 'playlist',
         name: 'Saved tracks',
         thumbnailSrc: placeholderAlbumCoverSrc
     }
 
-    const [playlists, setPlaylists] = useState([playlistGenerator]);
+    const [playlists, setPlaylists] = useState([playlistGenerator, playlistBuilder]);
     const btnSync = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -34,7 +41,7 @@ const Home = () => {
         getPlaylists();
     }
     const onLogout = () => {
-        setPlaylists([playlistGenerator]);
+        setPlaylists([playlistGenerator, playlistBuilder]);
     }
     const getPlaylists = () => {
         if(Cookies.get('userID')) {
@@ -52,7 +59,7 @@ const Home = () => {
                     }
                 })
                 .then((data) => {
-                    setPlaylists([playlistGenerator, savedTracks, ...data]);
+                    setPlaylists([playlistGenerator, playlistBuilder, savedTracks, ...data]);
                     btnSync.current.classList.remove(Styles.spinning);
                 })
                 .catch(console.error);
@@ -82,12 +89,13 @@ const Home = () => {
                 <main id = {Styles.mainSection}>
                     {
                         playlists.map((playlist, index) => {
+                            const playlistLink = playlist.type === 'playlist' ? '/playlist/' + playlist.id : '/' + playlist.type;
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
-                                    <Link to = {playlist.type === 'generator' ? '/generator' : '/playlist/' + playlist.id}>
+                                    <Link to = {playlistLink}>
                                         <img src = {playlist.thumbnailSrc || placeholderAlbumCoverSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnail} />
                                     </Link>
-                                    <Link to = {'/playlist/' + playlist.id}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
+                                    <Link to = {playlistLink} title = {playlist.name}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
                                 </article>
                             );
                         })

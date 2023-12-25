@@ -16,7 +16,7 @@ const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const RESPONSE_TYPE = 'code';
 const REDIRECT_URI = `${SERVER_URL_HTTPS}/spotify/auth`;
-const SCOPE = 'playlist-read-private playlist-read-collaborative user-library-read';
+const SCOPE = 'playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative user-library-read';
 const STATE = crypto.randomBytes(10).toString('hex');
 const AUTH_URL = new URL('https://accounts.spotify.com/authorize');
 const CODE_VERIFIER = crypto.randomBytes(32).toString('hex');
@@ -332,6 +332,42 @@ router.get('/search', async (req, res) => {
   }
   res.status(200).send(results);
 })
+
+/* Dodawanie list odtwarzania */
+router.post('/playlists', async(req, res) => {
+  res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds())
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  const userID = req.body.userID;
+  const playlistName = req.body.name;
+  const isPlaylistPublic = req.body.public;
+  const isPlaylistCollaborative = req.body.collaborative;
+  const playlistDescription = req.body.description;
+  const res_playlist = await axios.post(
+    `https://api.spotify.com/v1/users/${userID}/playlists`,
+    queryString.stringify(queryObject),
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      },
+      data: {
+        name: playlistName,
+        description: playlistDescription,
+        public: isPlaylistPublic,
+        collaborative: isPlaylistCollaborative
+      }
+    }
+  );
+  if(res_playlist.status === 200) {
+    res.status(200).send({
+      message: 'Playlist created successfully!'
+    });
+  }
+  else {
+    res.status(res_playlist.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+});
 // #endregion
 
 module.exports = router;

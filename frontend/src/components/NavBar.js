@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -18,6 +18,8 @@ const NavBar = (props) => {
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
     const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
     // #endregion
+
+    const profileContextMenu_options = useRef(null);
 
     // #region Zmienne konfiguracyjne
     const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -141,12 +143,12 @@ const NavBar = (props) => {
                     :
                     <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
                 }
-                <menu id = {Styles.profileContextMenu} style = {{maxHeight: profileContextMenuExpanded ? document.getElementById(Styles.profileContextMenu_options).offsetHeight : 0}}>
-                    <ul id = {Styles.profileContextMenu_options}>
+                <menu id = {Styles.profileContextMenu} className = 'contextMenu' style = {{maxHeight: profileContextMenuExpanded ? profileContextMenu_options.current.offsetHeight : 0}}>
+                    <ul id = {Styles.profileContextMenu_options} className = 'contextMenu_options' ref = {profileContextMenu_options}>
                         <Link to = '/settings'>
-                            <li id = {Styles.profileContextMenu_settings} className = {Styles.profileContextMenu_option}>Settings</li>
+                            <li id = {Styles.profileContextMenu_settings} className = {Styles.profileContextMenu_option + ' ' + 'contextMenu_option'}>Settings</li>
                         </Link>
-                        <li id = {Styles.profileContextMenu_disconnect} className = {Styles.profileContextMenu_option} onClick = {handleLogout}>Disconnect</li>
+                        <li id = {Styles.profileContextMenu_disconnect} className = {Styles.profileContextMenu_option + ' ' + 'contextMenu_option contextMenu_option_dangerous'} onClick = {handleLogout}>Disconnect</li>
                     </ul>
                 </menu>
             </section>

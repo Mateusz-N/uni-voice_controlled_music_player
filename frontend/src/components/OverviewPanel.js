@@ -16,7 +16,9 @@ const OverviewPanel = (props) => {
     const [itemData, setItemData] = useState(props.data);
     const [playlistPaused, setPlaylistPaused] = useState(true);
     const [itemNameEditModeActive, setItemNameEditModeActive] = useState(false);
+    const [itemContextMenuExpanded, setItemContextMenuExpanded] = useState(false);
 
+    const itemFigure_contextMenu_options = useRef(null);
     const input_itemName = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -43,6 +45,9 @@ const OverviewPanel = (props) => {
         event.preventDefault();
         handleDisableItemNameEditMode();
     }
+    const handleToggleItemContextMenu = () => {
+        setItemContextMenuExpanded(prevState => !prevState);
+    }
     // #endregion
     
     const btn_togglePlayback = 
@@ -58,7 +63,7 @@ const OverviewPanel = (props) => {
             {itemData.name}
         </h3>
     const form_itemName =
-        <form onSubmit = {event => handleSubmitItemNameForm(event)}>
+        <form id = {Styles.form_itemName} onSubmit = {event => handleSubmitItemNameForm(event)}>
             <input
                 id = {Styles.input_itemName}
                 name = 'itemName'
@@ -89,7 +94,13 @@ const OverviewPanel = (props) => {
             <main id = {Styles.overviewPanel_mainSection}>
                 <figure id = {Styles.itemFigure}>
                     <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnail} />
-                    <img src = {btn_kebab} alt = 'Menu' id = {Styles.itemFigure_btnKebab} />
+                    <img src = {btn_kebab} alt = 'Menu' id = {Styles.itemFigure_btnKebab} onClick = {handleToggleItemContextMenu} />
+                    <menu id = {Styles.itemFigure_contextMenu} className = 'contextMenu' style = {{maxHeight: itemContextMenuExpanded ? itemFigure_contextMenu_options.current.offsetHeight : 0}}>
+                        <ul id = {Styles.itemFigure_contextMenu_options} className = 'contextMenu_options' ref = {itemFigure_contextMenu_options}>
+                            <li id = {Styles.itemFigure_contextMenu_addTracks} className = {Styles.itemFigure_contextMenu_option + ' ' + 'contextMenu_option'}>Add tracks</li>
+                            <li id = {Styles.itemFigure_contextMenu_deletePlaylist} className = {Styles.itemFigure_contextMenu_option + ' ' + 'contextMenu_option contextMenu_option_dangerous'}>Delete playlist</li>
+                        </ul>
+                    </menu>
                     <figcaption id = {Styles.itemFigcaption}>
                         {mode === 'modify' ? btn_editItemName : btn_togglePlayback}
                         {itemNameEditModeActive ? form_itemName : header_itemName}

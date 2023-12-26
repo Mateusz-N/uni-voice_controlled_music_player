@@ -4,3 +4,43 @@
 
   width: 100%;
 }
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+form input {
+  width: 100%;
+  box-sizing: border-box;
+
+  border-radius: 6px;
+  color: inherit;
+  background-color: transparent;
+  font: inherit;
+}
+
+.formControlSection {
+  align-self: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.btnPrimary {
+  background-color: rgb(255, 200, 0);
+  color: #222;
+  font-weight: bolder;
+  border: none;
+  cursor: pointer;
+}
+
+.btnSecondary {
+  background-color: transparent;
+  color: unset;
+  font-weight: bolder;
+  border: none;
+  cursor: pointer;
+}

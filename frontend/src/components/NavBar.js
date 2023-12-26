@@ -139,7 +139,7 @@ const NavBar = (props) => {
                 {loggedIn ?
                     <img src = {Cookies.get('profilePicURL')} alt = {Cookies.get('userName')} id = {Styles.profilePic} onClick = {handleToggleProfileContextMenu} />
                     :
-                    <button id = {Styles.btnLogin} onClick = {handleLogin}>Connect with Spotify</button>
+                    <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
                 }
                 <menu id = {Styles.profileContextMenu} style = {{maxHeight: profileContextMenuExpanded ? document.getElementById(Styles.profileContextMenu_options).offsetHeight : 0}}>
                     <ul id = {Styles.profileContextMenu_options}>

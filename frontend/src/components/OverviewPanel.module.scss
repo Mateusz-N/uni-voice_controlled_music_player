@@ -12,6 +12,7 @@
 }
 
 #itemFigure {
+    position: relative;
     margin: 0;
 }
 
@@ -19,6 +20,15 @@
     width: 100%;
 
     border-radius: 4%;
+}
+
+#itemFigure_btnKebab {
+    height: 36px;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    cursor: pointer;
 }
 
 #itemFigure, #overviewPanelDetails {
@@ -33,8 +43,8 @@
     margin: 8px;
 }
 
-.playlist_btnTogglePlayback {
-    height: 32px;
+.playlist_btnTogglePlayback, .playlist_btnEditItemName {
+    height: 25px;
 
     cursor: pointer;
 
@@ -48,4 +58,9 @@
 
     overflow: hidden;
     word-wrap: break-word;
+}
+
+#btnSubmit_itemName, #btnCancel_itemName {
+    padding: 6px;
+    border-radius: 6px;
 }

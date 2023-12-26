@@ -42,7 +42,7 @@ const PlaylistBuilder = () => {
             <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList tracks = {tracks} for = 'playlist' />
-                <OverviewPanel data = {playlist} for = 'playlist' />
+                <OverviewPanel data = {playlist} for = 'playlist' mode = 'modify' />
             </CatalogBrowser>
             <PlaybackPanel track = {{
                 duration_ms: '15000',

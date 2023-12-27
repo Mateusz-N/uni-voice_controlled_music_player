@@ -9,6 +9,7 @@ import OverviewPanelDetails from 'components/OverviewPanelDetails';
 
 import Styles from 'components/OverviewPanel.module.scss';
 import ContextMenu from './ContextMenu';
+import DetailEditForm from './DetailEditForm';
 
 const OverviewPanel = (props) => {
 
@@ -21,8 +22,6 @@ const OverviewPanel = (props) => {
     const [itemContextMenuExpanded, setItemContextMenuExpanded] = useState(false);
     // #endregion
 
-    const input_itemName = useRef(null);
-
     // #region Obsługa zdarzeń (Event Handlers)
     const handleTogglePlaylistPlayback = () => {
         setPlaylistPaused(prevState => !prevState);
@@ -33,8 +32,7 @@ const OverviewPanel = (props) => {
     const handleDisableItemNameEditMode = () => {
         setItemNameEditModeActive(false);
     }
-    const handleSubmitItemNameForm = (event) => {
-        console.log(event)
+    const handleSubmitItemNameForm = (event, input_itemName) => {
         event.preventDefault();
         setItemData(prevState => {
             prevState.name = input_itemName.current.value;
@@ -69,21 +67,21 @@ const OverviewPanel = (props) => {
         <h3 id = {Styles.itemName}>
             {itemData.name}
         </h3>
-    const form_itemName =
-        <form id = {Styles.form_itemName} onSubmit = {event => handleSubmitItemNameForm(event)}>
-            <input
-                id = {Styles.input_itemName}
-                name = 'itemName'
-                defaultValue = {itemData.name}
-                min = '1'
-                max = '127'
-                ref = {input_itemName}
-            />
-            <section className = 'formControlSection'>
-                <button id = {Styles.btnCancel_itemName} className = 'btnSecondary' onClick = {event => handleCancelItemNameForm(event)} type = 'button'>Cancel</button>
-                <button id = {Styles.btnSubmit_itemName} className = 'btnPrimary' onClick = {event => handleSubmitItemNameForm(event)}>Apply</button>
-            </section>
-        </form>
+    const form_itemName = <DetailEditForm detail = 'itemName' defaultValue = {itemData.name} onSubmit = {handleSubmitItemNameForm} onCancel = {handleCancelItemNameForm} styles = {Styles} />
+        // <form id = {Styles.form_itemName} onSubmit = {event => handleSubmitItemNameForm(event)}>
+        //     <input
+        //         id = {Styles.input_itemName}
+        //         name = 'itemName'
+        //         defaultValue = {itemData.name}
+        //         min = '1'
+        //         max = '127'
+        //         ref = {input_itemName}
+        //     />
+        //     <section className = 'formControlSection'>
+        //         <button id = {Styles.btnCancel_itemName} className = 'btnSecondary' onClick = {event => handleCancelItemNameForm(event)} type = 'button'>Cancel</button>
+        //         <button id = {Styles.btnSubmit_itemName} className = 'btnPrimary' onClick = {event => handleSubmitItemNameForm(event)}>Apply</button>
+        //     </section>
+        // </form>
     let btn_editItemName = null;
     if(!itemNameEditModeActive) {
         btn_editItemName = 

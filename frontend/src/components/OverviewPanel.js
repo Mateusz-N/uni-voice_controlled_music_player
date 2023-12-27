@@ -8,17 +8,19 @@ import btn_kebab from 'resources/btn_kebab.svg';
 import OverviewPanelDetails from 'components/OverviewPanelDetails';
 
 import Styles from 'components/OverviewPanel.module.scss';
+import ContextMenu from './ContextMenu';
 
 const OverviewPanel = (props) => {
 
     const mode = props.mode;
 
+    // #region Zmienne stanu (useState Hooks)
     const [itemData, setItemData] = useState(props.data);
     const [playlistPaused, setPlaylistPaused] = useState(true);
     const [itemNameEditModeActive, setItemNameEditModeActive] = useState(false);
     const [itemContextMenuExpanded, setItemContextMenuExpanded] = useState(false);
+    // #endregion
 
-    const itemFigure_contextMenu_options = useRef(null);
     const input_itemName = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -41,15 +43,20 @@ const OverviewPanel = (props) => {
         handleDisableItemNameEditMode();
     }
     const handleCancelItemNameForm = (event) => {
-        console.log(event)
         event.preventDefault();
         handleDisableItemNameEditMode();
     }
     const handleToggleItemContextMenu = () => {
         setItemContextMenuExpanded(prevState => !prevState);
     }
+    document.body.addEventListener('click', (event) => {
+        if(itemContextMenuExpanded && event.target !== document.getElementById(Styles.itemFigure_btnKebab)) {
+            setItemContextMenuExpanded(false);
+        }
+    })
     // #endregion
     
+    // #region Przypisanie dynamicznych elementów komponentu
     const btn_togglePlayback = 
         <img
             src = {playlistPaused ? btn_play : btn_pause}
@@ -87,6 +94,7 @@ const OverviewPanel = (props) => {
                 onClick = {handleEnableItemNameEditMode}
             />
     }
+    // #endregion
 
     // #region Struktura komponentu (JSX)
     return(
@@ -95,12 +103,10 @@ const OverviewPanel = (props) => {
                 <figure id = {Styles.itemFigure}>
                     <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnail} />
                     <img src = {btn_kebab} alt = 'Menu' id = {Styles.itemFigure_btnKebab} onClick = {handleToggleItemContextMenu} />
-                    <menu id = {Styles.itemFigure_contextMenu} className = 'contextMenu' style = {{maxHeight: itemContextMenuExpanded ? itemFigure_contextMenu_options.current.offsetHeight : 0}}>
-                        <ul id = {Styles.itemFigure_contextMenu_options} className = 'contextMenu_options' ref = {itemFigure_contextMenu_options}>
-                            <li id = {Styles.itemFigure_contextMenu_addTracks} className = {Styles.itemFigure_contextMenu_option + ' ' + 'contextMenu_option'}>Add tracks</li>
-                            <li id = {Styles.itemFigure_contextMenu_deletePlaylist} className = {Styles.itemFigure_contextMenu_option + ' ' + 'contextMenu_option contextMenu_option_dangerous'}>Delete playlist</li>
-                        </ul>
-                    </menu>
+                    <ContextMenu expanded = {itemContextMenuExpanded} context = 'itemFigure' styles = {Styles}>
+                        <li id = {Styles.itemFigure_contextMenu_addTracks}>Add tracks</li>
+                        <li id = {Styles.itemFigure_contextMenu_deletePlaylist} dangerous = 'true'>Delete playlist</li>
+                    </ContextMenu>
                     <figcaption id = {Styles.itemFigcaption}>
                         {mode === 'modify' ? btn_editItemName : btn_togglePlayback}
                         {itemNameEditModeActive ? form_itemName : header_itemName}

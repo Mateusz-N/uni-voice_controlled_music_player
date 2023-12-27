@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -7,6 +7,7 @@ import microphone_idle from 'resources/microphone_idle.svg';
 import microphone_active from 'resources/microphone_active.svg';
 
 import SearchBar from 'components/SearchBar';
+import ContextMenu from 'components/ContextMenu';
 
 import Styles from 'components/NavBar.module.scss';
 
@@ -18,8 +19,6 @@ const NavBar = (props) => {
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
     const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
     // #endregion
-
-    const profileContextMenu_options = useRef(null);
 
     // #region Zmienne konfiguracyjne
     const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -143,14 +142,10 @@ const NavBar = (props) => {
                     :
                     <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
                 }
-                <menu id = {Styles.profileContextMenu} className = 'contextMenu' style = {{maxHeight: profileContextMenuExpanded ? profileContextMenu_options.current.offsetHeight : 0}}>
-                    <ul id = {Styles.profileContextMenu_options} className = 'contextMenu_options' ref = {profileContextMenu_options}>
-                        <Link to = '/settings'>
-                            <li id = {Styles.profileContextMenu_settings} className = {Styles.profileContextMenu_option + ' ' + 'contextMenu_option'}>Settings</li>
-                        </Link>
-                        <li id = {Styles.profileContextMenu_disconnect} className = {Styles.profileContextMenu_option + ' ' + 'contextMenu_option contextMenu_option_dangerous'} onClick = {handleLogout}>Disconnect</li>
-                    </ul>
-                </menu>
+                <ContextMenu expanded = {profileContextMenuExpanded} context = 'profile' styles = {Styles}>
+                    <li id = {Styles.profileContextMenu_settings}><Link to = '/settings'>Settings</Link></li>
+                    <li id = {Styles.profileContextMenu_disconnect} onClick = {handleLogout} dangerous = 'true'>Disconnect</li>
+                </ContextMenu>
             </section>
         </nav>
     );

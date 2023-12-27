@@ -32,26 +32,8 @@
 }
 
 #itemFigure_contextMenu {
-    position: absolute;
     top: 56px;
     right: 16px;
-    margin: 0;
-
-    padding: 0;
-
-    background-color: #222;
-    overflow: hidden;
-    transition: max-height ease-in .1s;
-
-    #itemFigure_contextMenu_options {
-        margin: 0;
-
-        padding: 0;
-
-        a {
-            text-decoration: none;
-        }
-    }
 }
 
 #itemFigure, #overviewPanelDetails {

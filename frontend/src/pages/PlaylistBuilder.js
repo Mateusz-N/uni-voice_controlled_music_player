@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 
+import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
+
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
 import NavBar from 'components/NavBar';
@@ -20,7 +22,31 @@ const PlaylistBuilder = () => {
         tracks: [],
         owner: 'N/A',
         public: 'N/A',
-        detailsToDisplay: []
+        detailsToDisplay: [{
+            name: 'Track count',
+            content: 0,
+            editable: false,
+            dataType: 'number',
+            inputOptions: {}
+        }, {
+            name: 'Total Duration',
+            content: millisecondsToFormattedTime(0),
+            editable: false,
+            dataType: 'number',
+            inputOptions: {}
+        }, {
+            name: 'Owner',
+            content: Cookies.get('userName') || 'Guest',
+            editable: false,
+            dataType: 'text',
+            inputOptions: {}
+        }, {
+            name: 'Public',
+            content: 'yes',
+            editable: true,
+            dataType: 'checkbox',
+            inputOptions: {checked: 'true'}
+        }]
     };
 
     // #region Zmienne stanu (useState Hooks)

@@ -102,16 +102,28 @@ const Playlist = () => {
                 }
                 playlist.detailsToDisplay = [{
                     name: 'Track count',
-                    content: playlist.tracks ? playlist.tracks.length || 'N/A' : 'N/A'
+                    content: playlist.tracks ? playlist.tracks.length || 'N/A' : 'N/A',
+                    editable: false,
+                    dataType: 'number',
+                    inputOptions: {}
                 }, {
                     name: 'Total Duration',
-                    content: playlist.totalDuration_ms ? millisecondsToFormattedTime(playlist.totalDuration_ms) : 'N/A'
+                    content: playlist.totalDuration_ms ? millisecondsToFormattedTime(playlist.totalDuration_ms) : 'N/A',
+                    editable: false,
+                    dataType: 'number',
+                    inputOptions: {}
                 }, {
                     name: 'Owner',
-                    content: playlist.owner || 'N/A'
+                    content: playlist.owner || 'N/A',
+                    editable: false,
+                    dataType: 'text',
+                    inputOptions: {}
                 }, {
                     name: 'Public',
-                    content: (playlist.public === true) ? 'yes' : ((playlist.public === false) ? 'no' : 'N/A')
+                    content: (playlist.public === true) ? 'yes' : ((playlist.public === false) ? 'no' : 'N/A'),
+                    editable: true,
+                    dataType: 'checkbox',
+                    inputOptions: {checked: 'true'}
                 }]
                 setPlaylist(playlist);
             })

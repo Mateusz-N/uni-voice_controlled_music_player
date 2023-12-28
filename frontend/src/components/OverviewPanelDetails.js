@@ -1,3 +1,5 @@
+import OverviewPanelDetail from './OverviewPanelDetail';
+
 import Styles from 'components/OverviewPanelDetails.module.scss';
 
 const OverviewPanelDetails = (props) => {
@@ -6,14 +8,7 @@ const OverviewPanelDetails = (props) => {
     // #region Struktura komponentu (JSX)
     return(
         <ul id = {Styles.overviewPanelDetails}>
-            {items.map((item, index) => {
-                return(
-                    <li key = {index}>
-                        <span className = {Styles.overviewPanelDetails_detailName}>{item.name}: </span>
-                        {item.content}
-                    </li>
-                );
-            })}
+            {items.map((item, index) => <OverviewPanelDetail key = {index} item = {item} targetDataPropertyReference = {`detailsToDisplay[${index}].content`} /> )}
         </ul>
     );
     // #endregion

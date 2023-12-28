@@ -1,0 +1,22 @@
+.overviewPanelDetails_detail {
+    display: flex;
+    gap: 6px;
+
+    &:not(:last-child) {
+        margin-bottom: 4px;
+    }
+}
+
+.overviewPanelDetails_detailName {
+    font-weight: bold;
+}
+
+.btn_edit {
+    height: 21px;
+
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(85%);
+    }
+}

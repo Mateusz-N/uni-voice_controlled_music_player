@@ -1,15 +1,17 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
+
+import { setPropertyByString } from 'common/auxiliaryFunctions';
 
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
-import btn_edit from 'resources/btn_edit.svg';
 import btn_kebab from 'resources/btn_kebab.svg';
 
 import OverviewPanelDetails from 'components/OverviewPanelDetails';
+import ContextMenu from 'components/ContextMenu';
+import DetailEditForm from 'components/DetailEditForm';
+import EditButton from 'components/EditButton';
 
 import Styles from 'components/OverviewPanel.module.scss';
-import ContextMenu from './ContextMenu';
-import DetailEditForm from './DetailEditForm';
 
 const OverviewPanel = (props) => {
 
@@ -26,23 +28,20 @@ const OverviewPanel = (props) => {
     const handleTogglePlaylistPlayback = () => {
         setPlaylistPaused(prevState => !prevState);
     }
-    const handleEnableItemNameEditMode = () => {
+    const handleEnableDetailEditMode = () => {
         setItemNameEditModeActive(true);
     }
-    const handleDisableItemNameEditMode = () => {
+    const handleDisableDetailEditMode = () => {
         setItemNameEditModeActive(false);
     }
-    const handleSubmitItemNameForm = (event, input_itemName) => {
+    const handleSubmitEditForm = (event, targetDataPropertyReference, detailValue) => {
         event.preventDefault();
-        setItemData(prevState => {
-            prevState.name = input_itemName.current.value;
-            return prevState;
-        })
-        handleDisableItemNameEditMode();
+        setItemData(prevState => setPropertyByString(prevState, targetDataPropertyReference, detailValue));
+        handleDisableDetailEditMode();
     }
-    const handleCancelItemNameForm = (event) => {
+    const handleCancelEditForm = (event) => {
         event.preventDefault();
-        handleDisableItemNameEditMode();
+        handleDisableDetailEditMode();
     }
     const handleToggleItemContextMenu = () => {
         setItemContextMenuExpanded(prevState => !prevState);
@@ -67,31 +66,15 @@ const OverviewPanel = (props) => {
         <h3 id = {Styles.itemName}>
             {itemData.name}
         </h3>
-    const form_itemName = <DetailEditForm detail = 'itemName' defaultValue = {itemData.name} onSubmit = {handleSubmitItemNameForm} onCancel = {handleCancelItemNameForm} styles = {Styles} />
-        // <form id = {Styles.form_itemName} onSubmit = {event => handleSubmitItemNameForm(event)}>
-        //     <input
-        //         id = {Styles.input_itemName}
-        //         name = 'itemName'
-        //         defaultValue = {itemData.name}
-        //         min = '1'
-        //         max = '127'
-        //         ref = {input_itemName}
-        //     />
-        //     <section className = 'formControlSection'>
-        //         <button id = {Styles.btnCancel_itemName} className = 'btnSecondary' onClick = {event => handleCancelItemNameForm(event)} type = 'button'>Cancel</button>
-        //         <button id = {Styles.btnSubmit_itemName} className = 'btnPrimary' onClick = {event => handleSubmitItemNameForm(event)}>Apply</button>
-        //     </section>
-        // </form>
-    let btn_editItemName = null;
-    if(!itemNameEditModeActive) {
-        btn_editItemName = 
-            <img
-                src = {btn_edit}
-                alt = 'Edit'
-                className = {Styles.playlist_btnEditItemName}
-                onClick = {handleEnableItemNameEditMode}
-            />
-    }
+    const form_itemName =
+        <DetailEditForm
+            detail = 'itemName'
+            defaultValue = {itemData.name}
+            onSubmit = {(event, header_itemName_value) => handleSubmitEditForm(event, 'name', header_itemName_value)}
+            onCancel = {(event) => handleCancelEditForm(event)}
+            styles = {Styles}
+            inputOptions = {{}}
+        />
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -106,12 +89,17 @@ const OverviewPanel = (props) => {
                         <li id = {Styles.itemFigure_contextMenu_deletePlaylist} dangerous = 'true'>Delete playlist</li>
                     </ContextMenu>
                     <figcaption id = {Styles.itemFigcaption}>
-                        {mode === 'modify' ? btn_editItemName : btn_togglePlayback}
+                        {mode === 'modify' ? itemNameEditModeActive ? null : <EditButton onEnableEditMode = {handleEnableDetailEditMode} styles = {Styles} /> : btn_togglePlayback}
                         {itemNameEditModeActive ? form_itemName : header_itemName}
                     </figcaption>
                 </figure>
                 <hr/>
-                <OverviewPanelDetails items = {itemData.detailsToDisplay} for = {props.for} />
+                <OverviewPanelDetails
+                    items = {itemData.detailsToDisplay}
+                    for = {props.for}
+                    onSubmitEditForm = {handleSubmitEditForm}
+                    onCancelEditForm = {handleCancelEditForm}
+                />
             </main>
             <hr/>
             <section id = {Styles.itemDescription}>

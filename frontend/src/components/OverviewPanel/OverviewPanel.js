@@ -50,7 +50,7 @@ const OverviewPanel = (props) => {
         if(itemContextMenuExpanded && event.target !== document.getElementById(Styles.itemFigure_btnKebab)) {
             setItemContextMenuExpanded(false);
         }
-    })
+    });
     // #endregion
     
     // #region Przypisanie dynamicznych elementów komponentu

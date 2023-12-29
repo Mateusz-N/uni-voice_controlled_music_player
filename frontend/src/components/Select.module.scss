@@ -1,0 +1,31 @@
+.select {
+    position: relative;
+    margin: 0;
+  
+    padding: 0;
+
+    cursor: pointer;
+}
+
+.option {
+    padding: 8px;
+
+    user-select: none;
+    cursor: pointer;
+}
+
+.option_default {
+    padding: 0 2px 0 4px;
+
+    border: none;
+    border-radius: 4px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #AAA;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#select_contextMenu {
+    left: 0;
+    right: 0;
+}

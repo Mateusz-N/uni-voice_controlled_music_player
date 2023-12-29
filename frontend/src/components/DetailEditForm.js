@@ -1,4 +1,5 @@
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
+import Select from 'components/Select';
 
 const DetailEditForm = (props) => {
     const detailName = props.detail;
@@ -25,17 +26,14 @@ const DetailEditForm = (props) => {
         />
     if(inputType === 'select') {
         input =
-            <select
+            <Select
                 id = {ExternalStyles['input_' + detailName]}
                 name = {detailName}
-                onChange = {() => handleUpdateDetailValue(detailValue === 'yes' ? 'no' : 'yes')}
+                defaultValue = {detailValue}
+                children = {inputChildren}
+                onSelection = {() => handleUpdateDetailValue(detailValue)}
                 {...inputAttributes}
-            >
-                {inputChildren.map((child, index) => {
-                    const ChildFragment = Object.keys(child)[0];
-                    return <ChildFragment key = {index} {...child[ChildFragment].attributes}>{child[ChildFragment].content}</ChildFragment>
-                })}
-            </select>
+            />
     }
 
     let formControlSection = null;
@@ -48,7 +46,7 @@ const DetailEditForm = (props) => {
     }
 
     return(
-        <form id = {ExternalStyles['form_' + detailName]} onSubmit = {event => props.onSubmit(event, detailValue)}>
+        <form id = {ExternalStyles['form_' + detailName]} onSubmit = {event => props.onSubmit(event, detailValue)} style = {{position: 'relative'}}>
             {input}
             {formControlSection}
         </form>

@@ -9,7 +9,7 @@ import NavBar from 'components/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList';
-import OverviewPanel from 'components/OverviewPanel';
+import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 const Playlist = () => {
     // #region Zmienne globalne
@@ -104,26 +104,57 @@ const Playlist = () => {
                     name: 'Track count',
                     content: playlist.tracks ? playlist.tracks.length || 'N/A' : 'N/A',
                     editable: false,
-                    dataType: 'number',
-                    inputOptions: {}
+                    input: {
+                        type: 'number',
+                        attributes: {},
+                        excludeControls: false,
+                        children: {}
+                    }
                 }, {
                     name: 'Total Duration',
                     content: playlist.totalDuration_ms ? millisecondsToFormattedTime(playlist.totalDuration_ms) : 'N/A',
                     editable: false,
-                    dataType: 'number',
-                    inputOptions: {}
+                    input: {
+                        type: 'number',
+                        attributes: {},
+                        excludeControls: false,
+                        children: {}
+                    }
                 }, {
                     name: 'Owner',
                     content: playlist.owner || 'N/A',
                     editable: false,
-                    dataType: 'text',
-                    inputOptions: {}
+                    input: {
+                        type: 'text',
+                        attributes: {},
+                        excludeControls: false,
+                        children: {}
+                    }
                 }, {
                     name: 'Public',
                     content: (playlist.public === true) ? 'yes' : ((playlist.public === false) ? 'no' : 'N/A'),
                     editable: true,
-                    dataType: 'checkbox',
-                    inputOptions: {checked: 'true'}
+                    input: {
+                        type: 'select',
+                        attributes: {},
+                        excludeControls: true,
+                        children: [{
+                            option: {
+                                attributes: {
+                                    name: 'yes',
+                                    value: 'yes'
+                                },
+                                content: 'yes'
+                        }}, {
+                            option: {
+                                attributes: {
+                                    name: 'no',
+                                    value: 'no'
+                                },
+                                content: 'no'
+                            }
+                        }]
+                    }
                 }]
                 setPlaylist(playlist);
             })

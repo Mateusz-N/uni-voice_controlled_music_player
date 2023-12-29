@@ -6,12 +6,12 @@ import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 import btn_kebab from 'resources/btn_kebab.svg';
 
-import OverviewPanelDetails from 'components/OverviewPanelDetails';
+import OverviewPanelDetails from 'components/OverviewPanel/OverviewPanelDetails';
 import ContextMenu from 'components/ContextMenu';
 import DetailEditForm from 'components/DetailEditForm';
 import EditButton from 'components/EditButton';
 
-import Styles from 'components/OverviewPanel.module.scss';
+import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
 
 const OverviewPanel = (props) => {
 

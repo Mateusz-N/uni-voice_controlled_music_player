@@ -10,7 +10,7 @@ import NavBar from 'components/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList';
-import OverviewPanel from 'components/OverviewPanel';
+import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 const Album = () => {
     // #region Zmienne globalne

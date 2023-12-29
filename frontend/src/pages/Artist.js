@@ -8,7 +8,7 @@ import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 import NavBar from 'components/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
-import OverviewPanel from 'components/OverviewPanel';
+import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 import Styles from 'pages/Home.module.scss';
 

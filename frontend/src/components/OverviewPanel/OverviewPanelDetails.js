@@ -1,6 +1,6 @@
 import OverviewPanelDetail from './OverviewPanelDetail';
 
-import Styles from 'components/OverviewPanelDetails.module.scss';
+import Styles from 'components/OverviewPanel/OverviewPanelDetails.module.scss';
 
 const OverviewPanelDetails = (props) => {
     const items = props.items;

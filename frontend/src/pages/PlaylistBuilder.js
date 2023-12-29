@@ -9,7 +9,7 @@ import NavBar from 'components/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList';
-import OverviewPanel from 'components/OverviewPanel';
+import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 const PlaylistBuilder = () => {
     const placeholderPlaylist = {
@@ -26,26 +26,57 @@ const PlaylistBuilder = () => {
             name: 'Track count',
             content: 0,
             editable: false,
-            dataType: 'number',
-            inputOptions: {}
+            input: {
+                type: 'number',
+                attributes: {},
+                excludeControls: false,
+                children: {}
+            }
         }, {
             name: 'Total Duration',
             content: millisecondsToFormattedTime(0),
             editable: false,
-            dataType: 'number',
-            inputOptions: {}
+            input: {
+                type: 'number',
+                attributes: {},
+                excludeControls: false,
+                children: {}
+            }
         }, {
             name: 'Owner',
             content: Cookies.get('userName') || 'Guest',
             editable: false,
-            dataType: 'text',
-            inputOptions: {}
+            input: {
+                type: 'text',
+                attributes: {},
+                excludeControls: false,
+                children: {}
+            }
         }, {
             name: 'Public',
             content: 'yes',
             editable: true,
-            dataType: 'checkbox',
-            inputOptions: {checked: 'true'}
+            input: {
+                type: 'select',
+                attributes: {},
+                excludeControls: true,
+                children: [{
+                    option: {
+                        attributes: {
+                            name: 'yes',
+                            value: 'yes'
+                        },
+                        content: 'yes'
+                }}, {
+                    option: {
+                        attributes: {
+                            name: 'no',
+                            value: 'no'
+                        },
+                        content: 'no'
+                    }
+                }]
+            }
         }]
     };
 

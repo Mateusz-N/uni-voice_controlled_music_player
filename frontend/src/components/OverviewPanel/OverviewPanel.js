@@ -44,14 +44,6 @@ const OverviewPanel = (props) => {
                 </ContextMenu>
             </Fragment>
     }
-    const btn_togglePlayback = 
-        <img
-            src = {playlistPaused ? btn_play : btn_pause}
-            alt = {playlistPaused ? 'Play' : 'Pause'}
-            id = {playlistPaused ? Styles.playlist_btnPlay : Styles.playlist_btnPause}
-            className = {Styles.playlist_btnTogglePlayback}
-            onClick = {handleTogglePlaylistPlayback}
-        />
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -59,7 +51,15 @@ const OverviewPanel = (props) => {
         <aside id = {Styles.overviewPanel}>
             <main id = {Styles.overviewPanel_mainSection}>
                 <figure id = {Styles.itemFigure}>
-                    <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnail} />
+                    <main id = {Styles.itemFigure_thumbnail} onClick = {handleTogglePlaylistPlayback}>
+                        <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnailImage} />
+                        <img
+                            src = {playlistPaused ? btn_play : btn_pause}
+                            alt = {playlistPaused ? 'Play' : 'Pause'}
+                            id = {playlistPaused ? Styles.playlist_btnPlay : Styles.playlist_btnPause}
+                            className = {Styles.playlist_btnTogglePlayback}
+                        />
+                    </main>
                     {kebabMenu}
                     <figcaption id = {Styles.itemFigcaption}>
                         <OverviewPanelDetail

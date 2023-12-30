@@ -17,9 +17,37 @@
 }
 
 #itemFigure_thumbnail {
+    position: relative;
+    width: 100%;
+
+    cursor: pointer;
+
+    &:hover {
+        #itemFigure_thumbnailImage {
+            filter: brightness(85%);
+        }
+        .playlist_btnTogglePlayback {
+            visibility: visible;
+        }
+    }
+}
+
+#itemFigure_thumbnailImage {
     width: 100%;
 
     border-radius: 4%;
+}
+
+.playlist_btnTogglePlayback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    height: 25%;
+    margin: auto;
+    visibility: hidden;
 }
 
 #itemFigure_btnKebab {
@@ -46,16 +74,6 @@
     gap: 8px;
     
     margin: 8px;
-}
-
-.playlist_btnTogglePlayback {
-    height: 25px;
-
-    cursor: pointer;
-
-    &:hover {
-        filter: brightness(85%);
-    }
 }
 
 #btnEdit_itemName {

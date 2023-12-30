@@ -1,0 +1,9 @@
+.btnEdit {
+    height: 21px;
+
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(85%);
+    }
+}

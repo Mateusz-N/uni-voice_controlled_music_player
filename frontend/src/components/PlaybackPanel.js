@@ -45,7 +45,6 @@ const PlaybackPanel = (props) => {
         }
     }
     const handleUpdateTargetTimestamp = (newTargetTimestamp_ms) => {
-        console.log(newTargetTimestamp_ms)
         if(newTargetTimestamp_ms < 0) {
             newTargetTimestamp_ms = 0;
         }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
+import { placeholderPlaylist } from 'common/placeholderObjects';
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
@@ -14,18 +15,6 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 const Playlist = () => {
     // #region Zmienne globalne
     const playlistID = window.location.href.split('/').pop();
-    const placeholderPlaylist = {
-        id: playlistID,
-        name: 'Unknkown playlist',
-        thumbnailSrc: placeholderAlbumCoverSrc,
-        description: '',
-        totalDuration_ms: 'N/A',
-        artists: [],
-        tracks: [],
-        owner: 'N/A',
-        public: 'N/A',
-        detailsToDisplay: []
-    };
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -101,9 +90,21 @@ const Playlist = () => {
                     public: data.public
                 }
                 playlist.detailsToDisplay = [{
+                    name: 'Name',
+                    content: playlist.name || '',
+                    editable: true,
+                    showSeparately: true,
+                    input: {
+                        type: 'text',
+                        attributes: {placeholder: 'Playlist name'},
+                        excludeControls: false,
+                        children: {}
+                    }
+                }, {
                     name: 'Track count',
                     content: playlist.tracks ? playlist.tracks.length || 'N/A' : 'N/A',
                     editable: false,
+                    showSeparately: false,
                     input: {
                         type: 'number',
                         attributes: {},
@@ -114,6 +115,7 @@ const Playlist = () => {
                     name: 'Total Duration',
                     content: playlist.totalDuration_ms ? millisecondsToFormattedTime(playlist.totalDuration_ms) : 'N/A',
                     editable: false,
+                    showSeparately: false,
                     input: {
                         type: 'number',
                         attributes: {},
@@ -124,6 +126,7 @@ const Playlist = () => {
                     name: 'Owner',
                     content: playlist.owner || 'N/A',
                     editable: false,
+                    showSeparately: false,
                     input: {
                         type: 'text',
                         attributes: {},
@@ -134,6 +137,7 @@ const Playlist = () => {
                     name: 'Public',
                     content: (playlist.public === true) ? 'yes' : ((playlist.public === false) ? 'no' : 'N/A'),
                     editable: true,
+                    showSeparately: false,
                     input: {
                         type: 'select',
                         attributes: {},
@@ -155,6 +159,17 @@ const Playlist = () => {
                             }
                         }]
                     }
+                }, {
+                    name: 'Description',
+                    content: playlist.description || '',
+                    editable: true,
+                    showSeparately: true,
+                    input: {
+                        type: 'text',
+                        attributes: {placeholder: 'Playlist description'},
+                        excludeControls: false,
+                        children: {}
+                    }
                 }]
                 setPlaylist(playlist);
             })
@@ -165,7 +180,7 @@ const Playlist = () => {
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getPlaylist();
-    },[loggedIn])
+    },[loggedIn]);
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -174,7 +189,7 @@ const Playlist = () => {
             <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList tracks = {playlist.tracks} for = 'playlist' />
-                <OverviewPanel data = {playlist} for = 'playlist' />
+                <OverviewPanel key = {playlist.id} data = {playlist} for = 'playlist' />
             </CatalogBrowser>
             <PlaybackPanel track = {{
                 duration_ms: '15000',

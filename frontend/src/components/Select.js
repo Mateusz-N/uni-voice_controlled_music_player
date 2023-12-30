@@ -20,7 +20,6 @@ const Select = (props) => {
     }
 
     document.body.addEventListener('click', (event) => {
-        console.log(event.target.className, event.currentTarget)
         if(expanded && !event.target.className.includes(Styles.option_default)) {
             setExpanded(false);
         }

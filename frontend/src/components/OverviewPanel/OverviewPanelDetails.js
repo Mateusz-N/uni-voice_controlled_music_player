@@ -8,7 +8,7 @@ const OverviewPanelDetails = (props) => {
     // #region Struktura komponentu (JSX)
     return(
         <ul id = {Styles.overviewPanelDetails}>
-            {items.map((item, index) => <OverviewPanelDetail key = {index} item = {item} targetDataPropertyReference = {`detailsToDisplay[${index}].content`} /> )}
+            {items.map((item, index) => <OverviewPanelDetail key = {index} item = {item} /> )}
         </ul>
     );
     // #endregion

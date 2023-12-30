@@ -1,12 +1,17 @@
 import btn_edit from 'resources/btn_edit.svg';
 
+import Styles from 'components/EditButton.module.scss';
+
 const EditButton = (props) => {
     const ExternalStyles = props.styles;
+    const detailName = props.detailName;
+
     return(
         <img
             src = {btn_edit}
             alt = 'Edit'
-            className = {ExternalStyles.btn_edit}
+            id = {ExternalStyles['btnEdit_item' + detailName]}
+            className = {Styles.btnEdit}
             onClick = {props.onEnableEditMode}
         />
     );

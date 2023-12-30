@@ -1,47 +1,26 @@
 import { useState } from 'react';
 
-import { setPropertyByString } from 'common/auxiliaryFunctions';
-
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 import btn_kebab from 'resources/btn_kebab.svg';
 
 import OverviewPanelDetails from 'components/OverviewPanel/OverviewPanelDetails';
 import ContextMenu from 'components/ContextMenu';
-import DetailEditForm from 'components/DetailEditForm';
-import EditButton from 'components/EditButton';
 
 import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
+import OverviewPanelDetail from './OverviewPanelDetail';
 
 const OverviewPanel = (props) => {
-
-    const mode = props.mode;
-
+    const itemData = props.data;
+    
     // #region Zmienne stanu (useState Hooks)
-    const [itemData, setItemData] = useState(props.data);
     const [playlistPaused, setPlaylistPaused] = useState(true);
-    const [itemNameEditModeActive, setItemNameEditModeActive] = useState(false);
     const [itemContextMenuExpanded, setItemContextMenuExpanded] = useState(false);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleTogglePlaylistPlayback = () => {
         setPlaylistPaused(prevState => !prevState);
-    }
-    const handleEnableDetailEditMode = () => {
-        setItemNameEditModeActive(true);
-    }
-    const handleDisableDetailEditMode = () => {
-        setItemNameEditModeActive(false);
-    }
-    const handleSubmitEditForm = (event, targetDataPropertyReference, detailValue) => {
-        event.preventDefault();
-        setItemData(prevState => setPropertyByString(prevState, targetDataPropertyReference, detailValue));
-        handleDisableDetailEditMode();
-    }
-    const handleCancelEditForm = (event) => {
-        event.preventDefault();
-        handleDisableDetailEditMode();
     }
     const handleToggleItemContextMenu = () => {
         setItemContextMenuExpanded(prevState => !prevState);
@@ -62,19 +41,6 @@ const OverviewPanel = (props) => {
             className = {Styles.playlist_btnTogglePlayback}
             onClick = {handleTogglePlaylistPlayback}
         />
-    const header_itemName =
-        <h3 id = {Styles.itemName}>
-            {itemData.name}
-        </h3>
-    const form_itemName =
-        <DetailEditForm
-            detail = 'itemName'
-            defaultValue = {itemData.name}
-            onSubmit = {(event, header_itemName_value) => handleSubmitEditForm(event, 'name', header_itemName_value)}
-            onCancel = {(event) => handleCancelEditForm(event)}
-            styles = {Styles}
-            inputOptions = {{}}
-        />
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -89,21 +55,34 @@ const OverviewPanel = (props) => {
                         <li id = {Styles.itemFigure_contextMenu_deletePlaylist} dangerous = 'true'>Delete playlist</li>
                     </ContextMenu>
                     <figcaption id = {Styles.itemFigcaption}>
-                        {mode === 'modify' ? itemNameEditModeActive ? null : <EditButton onEnableEditMode = {handleEnableDetailEditMode} styles = {Styles} /> : btn_togglePlayback}
-                        {itemNameEditModeActive ? form_itemName : header_itemName}
+                        <OverviewPanelDetail
+                            key = {itemData.name}
+                            item = {itemData.detailsToDisplay.find(detail => detail.name === 'Name')}
+                            customItemContentNode = {{tagName: 'h3', attributes: {id: Styles.itemName}}}
+                            customNullValueMessage = {{message: 'Unknown playlist', hideItemName: true}}
+                            standalone = 'true'
+                            hideItemName = 'always'
+                            styles = {Styles}
+                        />
                     </figcaption>
                 </figure>
                 <hr/>
                 <OverviewPanelDetails
-                    items = {itemData.detailsToDisplay}
+                    items = {itemData.detailsToDisplay.filter(detail => detail.showSeparately === false)}
                     for = {props.for}
-                    onSubmitEditForm = {handleSubmitEditForm}
-                    onCancelEditForm = {handleCancelEditForm}
                 />
             </main>
             <hr/>
-            <section id = {Styles.itemDescription}>
-                <p>{itemData.description}</p>
+            <section id = {Styles.itemDescriptionSection}>
+                <OverviewPanelDetail
+                    key = {itemData.description}
+                    item = {itemData.detailsToDisplay.find(detail => detail.name === 'Description')}
+                    customItemContentNode = {{tagName: 'p', attributes: {id: Styles.itemDescription}}}
+                    customNullValueMessage = {{message: 'No description.', hideItemName: true, attributes: {style: {fontStyle: 'italic'}}}}
+                    standalone = 'true'
+                    hideItemName = 'always'
+                    styles = {Styles}
+                />
             </section>
         </aside>
     );

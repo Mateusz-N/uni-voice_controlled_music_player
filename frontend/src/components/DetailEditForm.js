@@ -7,7 +7,7 @@ const DetailEditForm = (props) => {
     const inputType = props.inputType;
     const inputAttributes = props.inputAttributes;
     const inputChildren = props.inputChildren;
-    const ExternalStyles = props.styles;
+    const ExternalStyles = props.styles || {};
 
     const [detailValue, setDetailValue] = useState(defaultValue);
 
@@ -15,23 +15,39 @@ const DetailEditForm = (props) => {
         setDetailValue(newValue);
     }
 
-    let input =
-        <input
-            id = {ExternalStyles['input_' + detailName]}
-            name = {detailName}
-            type = {inputType}
-            defaultValue = {defaultValue}
-            onInput = {(event) => handleUpdateDetailValue(event.target.value)}
-            {...inputAttributes}
-        />
+    let input;
+    let formStyle;
     if(inputType === 'select') {
         input =
             <Select
-                id = {ExternalStyles['input_' + detailName]}
+                id = {ExternalStyles['input_item' + detailName]}
                 name = {detailName}
                 defaultValue = {detailValue}
                 children = {inputChildren}
                 onSelection = {() => handleUpdateDetailValue(detailValue)}
+                {...inputAttributes}
+            />
+        formStyle = {position: 'relative'};
+    }
+    else if(inputType === 'textarea') {
+        input =
+            <textarea
+                id = {ExternalStyles['input_item' + detailName]}
+                name = {detailName}
+                defaultValue = {detailValue}
+                onInput = {(event) => handleUpdateDetailValue(event.target.value)}
+                {...inputAttributes}
+            >
+            </textarea>
+    }
+    else {
+        input = 
+            <input
+                id = {ExternalStyles['input_item' + detailName]}
+                name = {detailName}
+                type = {inputType}
+                defaultValue = {defaultValue}
+                onInput = {(event) => handleUpdateDetailValue(event.target.value)}
                 {...inputAttributes}
             />
     }
@@ -40,13 +56,13 @@ const DetailEditForm = (props) => {
     if(!props.excludeControls) {
         formControlSection =
             <section className = 'formControlSection'>
-                <button id = {ExternalStyles['btnCancel_' + detailName]} className = 'btnSecondary' onClick = {event => props.onCancel(event)} type = 'button'>Cancel</button>
-                <button id = {ExternalStyles['btnSubmit_' + detailName]} className = 'btnPrimary' onClick = {event => props.onSubmit(event, detailValue)}>Apply</button>
+                <button id = {ExternalStyles['btnCancel_item' + detailName]} className = {ExternalStyles['btnCancel'] + ' ' + 'btnSecondary'} onClick = {event => props.onCancel(event)} type = 'button'>Cancel</button>
+                <button id = {ExternalStyles['btnSubmit_item' + detailName]} className = {ExternalStyles['btnSubmit'] + ' ' + 'btnPrimary'} onClick = {event => props.onSubmit(event, detailValue)}>Apply</button>
             </section>
     }
 
     return(
-        <form id = {ExternalStyles['form_' + detailName]} onSubmit = {event => props.onSubmit(event, detailValue)} style = {{position: 'relative'}}>
+        <form id = {ExternalStyles['form_item' + detailName]} className = {ExternalStyles['form_item']} onSubmit = {event => props.onSubmit(event, detailValue)} style = {formStyle}>
             {input}
             {formControlSection}
         </form>

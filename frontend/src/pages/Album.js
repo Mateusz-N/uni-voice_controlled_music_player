@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, Fragment } from 'react';
 import Cookies from 'js-cookie';
 
+import { placeholderAlbum } from 'common/placeholderObjects';
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
@@ -15,16 +16,6 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 const Album = () => {
     // #region Zmienne globalne
     const albumID = window.location.href.split('/').pop();
-    const placeholderAlbum = {
-        id: albumID,
-        name: 'Unknown album',
-        thumbnailSrc: placeholderAlbumCoverSrc,
-        totalDuration_ms: 0,
-        artists: [],
-        tracks: [],
-        releaseDate: 'N/A',
-        detailsToDisplay: []
-    };
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -76,11 +67,17 @@ const Album = () => {
                     releaseDate: data.release_date
                 }
                 album.detailsToDisplay = [{
+                    name: 'Name',
+                    content: album.name || '',
+                    showSeparately: true
+                }, {
                     name: 'Track count',
-                    content: album.tracks ? album.tracks.length || 'N/A' : 'N/A'
+                    content: album.tracks ? album.tracks.length || 'N/A' : 'N/A',
+                    showSeparately: false
                 }, {
                     name: 'Total Duration',
-                    content: album.totalDuration_ms ? millisecondsToFormattedTime(album.totalDuration_ms) : 'N/A'
+                    content: album.totalDuration_ms ? millisecondsToFormattedTime(album.totalDuration_ms) : 'N/A',
+                    showSeparately: false
                 }, {
                     name: 'Artist(s)',
                     content: album.artists ? album.artists.map((artist, index) => {
@@ -90,10 +87,16 @@ const Album = () => {
                                 {index === album.artists.length - 1 ? '' : ', '}
                             </Fragment>
                         )
-                    }) : '?'
+                    }) : 'N/A',
+                    showSeparately: false
                 }, {
                     name: 'Released',
-                    content: album.releaseDate ? new Date(album.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : '?'
+                    content: album.releaseDate ? new Date(album.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : 'N/A',
+                    showSeparately: false
+                }, {
+                    name: 'Description',
+                    content: '',
+                    showSeparately: true
                 }];
                 setAlbum(album);
             })
@@ -113,7 +116,7 @@ const Album = () => {
             <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList tracks = {album.tracks} for = 'album' />
-                <OverviewPanel data = {album} for = 'album' />
+                <OverviewPanel key = {album.id} data = {album} for = 'album' />
             </CatalogBrowser>
             <PlaybackPanel track = {{
                 duration_ms: '15000',

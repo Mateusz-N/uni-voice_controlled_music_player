@@ -97,3 +97,68 @@ export const placeholderPlaylist = {
         }
     }]
 };
+
+export const placeholderAlbum = {
+    id: -1,
+    name: 'Unknown album',
+    thumbnailSrc: placeholderAlbumCoverSrc,
+    totalDuration_ms: 0,
+    artists: [],
+    tracks: [],
+    releaseDate: 'N/A',
+    detailsToDisplay: [{
+        name: 'Name',
+        content: '',
+        showSeparately: true
+    }, {
+        name: 'Track count',
+        content: 0,
+        showSeparately: false
+    }, {
+        name: 'Total Duration',
+        content: millisecondsToFormattedTime(0),
+        showSeparately: false
+    }, {
+        name: 'Artist(s)',
+        content: 'N/A',
+        showSeparately: false
+    }, {
+        name: 'Released',
+        content: 'N/A',
+        showSeparately: false
+    }, {
+        name: 'Description',
+        content: '',
+        showSeparately: true
+    }]
+};
+
+export const placeholderArtist = {
+    id: -1,
+    name: 'Unknown artist',
+    thumbnailSrc: placeholderAlbumCoverSrc,
+    genres: [],
+    followers: 'N/A',
+    popularity: 'N/A',
+    detailsToDisplay: [{
+        name: 'Name',
+        content: '',
+        showSeparately: true
+    }, {
+        name: 'Genres',
+        content: 'N/A',
+        showSeparately: false
+    }, {
+        name: 'Followers',
+        content: 'N/A',
+        showSeparately: false
+    }, {
+        name: 'Popularity',
+        content: 'N/A',
+        showSeparately: false
+    }, {
+        name: 'Description',
+        content: '',
+        showSeparately: true
+    }]
+};

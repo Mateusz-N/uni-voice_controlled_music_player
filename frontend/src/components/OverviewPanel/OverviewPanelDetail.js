@@ -12,7 +12,7 @@ const OverviewPanelDetail = (props) => {
 
     // #region Zmienne stanu (useState Hooks)
     const [itemData, setItemData] = useState(props.item);
-    const [editModeActive, setEditModeActive] = useState(itemData.input.excludeControls);
+    const [editModeActive, setEditModeActive] = useState(props.for === 'playlist' ? itemData.input.excludeControls : false);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -68,23 +68,25 @@ const OverviewPanelDetail = (props) => {
             {itemContent}
         </ItemContentTag>
 
-    const form_item = 
-        <DetailEditForm
-            detail = {itemData.name}
-            defaultValue = {itemData.content}
-            placeholder = {itemData.placeholder}
-            inputType = {itemData.input.type}
-            onSubmit = {(event, detailValue) => handleSubmitEditForm(event, 'content', detailValue)}
-            onCancel = {(event) => handleCancelEditForm(event)}
-            styles = {ExternalStyles}
-            inputAttributes = {itemData.input.attributes}
-            inputChildren = {itemData.input.children}
-            excludeControls = {itemData.input.excludeControls}
-        />
-
+    let form_item = null;
     let editBtn = null;
-    if(!editModeActive && itemData.editable && ['text', 'textarea'].includes(itemData.input.type)) {
-        editBtn = <EditButton detailName = {itemData.name} onEnableEditMode = {handleEnableEditMode} styles = {ExternalStyles} />;
+    if(props.for === 'playlist') { // Edytować można tylko listy odtwarzania
+        form_item = 
+            <DetailEditForm
+                detail = {itemData.name}
+                defaultValue = {itemData.content}
+                placeholder = {itemData.placeholder}
+                inputType = {itemData.input.type}
+                onSubmit = {(event, detailValue) => handleSubmitEditForm(event, 'content', detailValue)}
+                onCancel = {(event) => handleCancelEditForm(event)}
+                styles = {ExternalStyles}
+                inputAttributes = {itemData.input.attributes}
+                inputChildren = {itemData.input.children}
+                excludeControls = {itemData.input.excludeControls}
+            />
+        if(!editModeActive && itemData.editable && ['text', 'textarea'].includes(itemData.input.type)) {
+            editBtn = <EditButton detailName = {itemData.name} onEnableEditMode = {handleEnableEditMode} styles = {ExternalStyles} />;
+        }
     }
     // #endregion
 

@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 
+import { placeholderArtist } from 'common/placeholderObjects';
+
 import btn_sync from 'resources/btn_sync.svg';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
@@ -15,15 +17,6 @@ import Styles from 'pages/Home.module.scss';
 const Artist = () => {
     // #region Zmienne globalne
     const artistID = window.location.href.split('/').pop();
-    const placeholderArtist = {
-        id: artistID,
-        name: 'Unknown artist',
-        thumbnailSrc: placeholderAlbumCoverSrc,
-        genres: [],
-        followers: 'N/A',
-        popularity: 'N/A',
-        detailsToDisplay: []
-    };
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -66,14 +59,25 @@ const Artist = () => {
                     followers: data.followers.total,
                     popularity: data.popularity,
                     detailsToDisplay: [{
+                        name: 'Name',
+                        content: data.name || '',
+                        showSeparately: true
+                    }, {
                         name: 'Genres',
-                        content: data.genres ? data.genres.join(', ') : 'N/A'
+                        content: data.genres ? data.genres.join(', ') : 'N/A',
+                        showSeparately: false
                     }, {
                         name: 'Followers',
-                        content: data.followers.total || 'N/A'
+                        content: data.followers.total || 'N/A',
+                        showSeparately: false
                     }, {
                         name: 'Popularity',
-                        content: data.popularity || 'N/A'
+                        content: data.popularity || 'N/A',
+                        showSeparately: false
+                    }, {
+                        name: 'Description',
+                        content: '',
+                        showSeparately: true
                     }]
                 }
                 setArtist(artist);
@@ -134,7 +138,7 @@ const Artist = () => {
                         })
                     }
                 </main>
-                <OverviewPanel data = {artist} for = 'artist' />
+                <OverviewPanel key = {artist.id} data = {artist} for = 'artist' />
             </CatalogBrowser>
             <PlaybackPanel track = {{
                 duration_ms: '15000',

@@ -68,10 +68,10 @@ const Search = () => {
                         results.map((result, index) => {
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
-                                    <Link to = {result.id}>
+                                    <Link to = {'/' + result.type + '/' + result.id}>
                                         <img src = {result.thumbnailSrc || placeholderAlbumCoverSrc} alt = {result.name} className = {`${Styles.catalogItem_thumbnail} ${result.type === 'artist' ? Styles.catalogItem_thumbnail_artist : ''}`} />
                                     </Link>
-                                    <Link to = {'/playlist/' + result.id}><h4 className = {Styles.catalogItem_name}>{result.name}</h4></Link>
+                                    <Link to = {'/' + result.type + '/' + result.id}><h4 className = {Styles.catalogItem_name}>{result.name}</h4></Link>
                                 </article>
                             );
                         })

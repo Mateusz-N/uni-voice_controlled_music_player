@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
@@ -33,6 +33,17 @@ const OverviewPanel = (props) => {
     // #endregion
     
     // #region Przypisanie dynamicznych elementów komponentu
+    let kebabMenu = null;
+    if(props.for === 'playlist') {
+        kebabMenu =
+            <Fragment>
+                <img src = {btn_kebab} alt = 'Menu' id = {Styles.itemFigure_btnKebab} onClick = {handleToggleItemContextMenu} />
+                <ContextMenu expanded = {itemContextMenuExpanded} context = 'itemFigure' styles = {Styles}>
+                    <li id = {Styles.itemFigure_contextMenu_addTracks}>Add tracks</li>
+                    <li id = {Styles.itemFigure_contextMenu_deletePlaylist} dangerous = 'true'>Delete playlist</li>
+                </ContextMenu>
+            </Fragment>
+    }
     const btn_togglePlayback = 
         <img
             src = {playlistPaused ? btn_play : btn_pause}
@@ -49,26 +60,23 @@ const OverviewPanel = (props) => {
             <main id = {Styles.overviewPanel_mainSection}>
                 <figure id = {Styles.itemFigure}>
                     <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnail} />
-                    <img src = {btn_kebab} alt = 'Menu' id = {Styles.itemFigure_btnKebab} onClick = {handleToggleItemContextMenu} />
-                    <ContextMenu expanded = {itemContextMenuExpanded} context = 'itemFigure' styles = {Styles}>
-                        <li id = {Styles.itemFigure_contextMenu_addTracks}>Add tracks</li>
-                        <li id = {Styles.itemFigure_contextMenu_deletePlaylist} dangerous = 'true'>Delete playlist</li>
-                    </ContextMenu>
+                    {kebabMenu}
                     <figcaption id = {Styles.itemFigcaption}>
                         <OverviewPanelDetail
                             key = {itemData.name}
                             item = {itemData.detailsToDisplay.find(detail => detail.name === 'Name')}
                             customItemContentNode = {{tagName: 'h3', attributes: {id: Styles.itemName}}}
-                            customNullValueMessage = {{message: 'Unknown playlist', hideItemName: true}}
+                            customNullValueMessage = {{message: 'Unknown ' + props.for, hideItemName: true}}
                             standalone = 'true'
                             hideItemName = 'always'
                             styles = {Styles}
+                            for = {props.for}
                         />
                     </figcaption>
                 </figure>
                 <hr/>
                 <OverviewPanelDetails
-                    items = {itemData.detailsToDisplay.filter(detail => detail.showSeparately === false)}
+                    items = {itemData.detailsToDisplay.filter(detail => !detail.showSeparately)}
                     for = {props.for}
                 />
             </main>
@@ -82,6 +90,7 @@ const OverviewPanel = (props) => {
                     standalone = 'true'
                     hideItemName = 'always'
                     styles = {Styles}
+                    for = {props.for}
                 />
             </section>
         </aside>

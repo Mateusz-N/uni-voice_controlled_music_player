@@ -12,13 +12,13 @@
 }
 
 #itemFigure {
-    position: relative;
     margin: 0;
+    position: relative;
 }
 
 #itemFigure_thumbnail {
-    position: relative;
     width: 100%;
+    position: relative;
 
     cursor: pointer;
 
@@ -39,22 +39,22 @@
 }
 
 .playlist_btnTogglePlayback {
+    height: 25%;
+    margin: auto;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    
-    height: 25%;
-    margin: auto;
     visibility: hidden;
 }
 
 #itemFigure_btnKebab {
     height: 24px;
+    width: 24px;
     position: absolute;
     top: 16px;
-    right: 16px;
+    right: 9px;
 
     cursor: pointer;
 }

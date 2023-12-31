@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import btn_sync from 'resources/btn_sync.svg';
@@ -35,6 +36,7 @@ const Home = () => {
 
     const [playlists, setPlaylists] = useState([playlistGenerator, playlistBuilder]);
     const btnSync = useRef(null);
+    const navigate = useNavigate();
 
     // #region Obsługa zdarzeń (Event Handlers)
     const onLogin = () => {
@@ -44,29 +46,63 @@ const Home = () => {
         setPlaylists([playlistGenerator, playlistBuilder]);
     }
     const getPlaylists = () => {
-        if(Cookies.get('userID')) {
-            btnSync.current.classList.add(Styles.spinning);
-            fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json();
-                    }
-                })
-                .then((data) => {
-                    setPlaylists([playlistGenerator, playlistBuilder, savedTracks, ...data]);
-                    btnSync.current.classList.remove(Styles.spinning);
-                })
-                .catch(console.error);
+        const userID = Cookies.get('userID');
+        if(!userID) {
+            return;
         }
+        btnSync.current.classList.add(Styles.spinning);
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                setPlaylists([playlistGenerator, playlistBuilder, savedTracks, ...data]);
+                btnSync.current.classList.remove(Styles.spinning);
+            })
+            .catch(console.error);
+    }
+    const createPlaylist = async () => {
+        const userID = Cookies.get('userID');
+        if(!userID) {
+            return;
+        }
+        return fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/${userID}/playlist/new`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+                if(response.status === 401) {
+                    throw new Error('Invalid access token!');
+                }
+            })
+            .then((data) => {
+                return data.playlistID;
+            })
+            .catch(console.error);
     }
     const handleSyncWithSpotify = () => {
         getPlaylists();
+    }
+    const handlePlaylistLinkClick = async (event, playlistType) => {
+        if(playlistType === 'builder') {
+            event.preventDefault();
+            const newPlaylistID = await createPlaylist();
+            navigate(`/playlist/${newPlaylistID}`);
+        }
     }
     // #endregion
     
@@ -74,7 +110,7 @@ const Home = () => {
     useEffect(() => {
         getPlaylists();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    },[]);
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -92,10 +128,10 @@ const Home = () => {
                             const playlistLink = playlist.type === 'playlist' ? '/playlist/' + playlist.id : '/' + playlist.type;
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
-                                    <Link to = {playlistLink}>
+                                    <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)}>
                                         <img src = {playlist.thumbnailSrc || placeholderAlbumCoverSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnail} />
                                     </Link>
-                                    <Link to = {playlistLink} title = {playlist.name}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
+                                    <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)} title = {playlist.name}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
                                 </article>
                             );
                         })

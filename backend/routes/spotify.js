@@ -4,7 +4,6 @@ const queryString = require('node:querystring');
 const axios = require('axios');
 const router = express.Router();
 const crypto = require('crypto');
-const { access } = require('node:fs');
 // #endregion
 
 // #region Zmienne konfiguracyjne
@@ -334,31 +333,31 @@ router.get('/search', async (req, res) => {
 })
 
 /* Dodawanie list odtwarzania */
-router.post('/playlists', async(req, res) => {
-  res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds())
+router.post('/:userID/playlist/new', async(req, res) => {
+  res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds());
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
-  const userID = req.body.userID;
-  const playlistName = req.body.name;
-  const isPlaylistPublic = req.body.public;
-  const isPlaylistCollaborative = req.body.collaborative;
-  const playlistDescription = req.body.description;
-  const res_playlist = await axios.post(
-    `https://api.spotify.com/v1/users/${userID}/playlists`,
-    queryString.stringify(queryObject),
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      },
-      data: {
+  const userID = req.params.userID;
+  const playlistName = req.body.name || 'Unknown playlist';
+  const isPlaylistPublic = req.body.public || true;
+  const isPlaylistCollaborative = req.body.collaborative || false;
+  const playlistDescription = req.body.description || '';
+  const res_playlist = await axios({
+    method: 'POST',
+    url: `https://api.spotify.com/v1/users/${userID}/playlists`,
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    },
+    data: {
         name: playlistName,
         description: playlistDescription,
         public: isPlaylistPublic,
         collaborative: isPlaylistCollaborative
       }
-    }
-  );
-  if(res_playlist.status === 200) {
-    res.status(200).send({
+  });
+  if(res_playlist.status === 201) {
+    console.log(res_playlist.data.id);
+    res.status(201).send({
+      playlistID: res_playlist.data.id,
       message: 'Playlist created successfully!'
     });
   }

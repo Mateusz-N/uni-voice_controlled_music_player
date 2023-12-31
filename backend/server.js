@@ -52,7 +52,7 @@ const ssl = {
 
 app.use(cors({
   origin: [CLIENT_URL_HTTP, CLIENT_URL_HTTPS],
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'DELETE'],
   credentials: true
 }));
 app.use(cookieParser());

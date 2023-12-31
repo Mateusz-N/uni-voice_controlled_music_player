@@ -333,7 +333,7 @@ router.get('/search', async (req, res) => {
 })
 
 /* Dodawanie list odtwarzania */
-router.post('/:userID/playlist/new', async(req, res) => {
+router.post('/:userID/playlist', async (req, res) => {
   res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds());
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const userID = req.params.userID;
@@ -355,7 +355,6 @@ router.post('/:userID/playlist/new', async(req, res) => {
       }
   });
   if(res_playlist.status === 201) {
-    console.log(res_playlist.data.id);
     res.status(201).send({
       playlistID: res_playlist.data.id,
       message: 'Playlist created successfully!'
@@ -363,6 +362,54 @@ router.post('/:userID/playlist/new', async(req, res) => {
   }
   else {
     res.status(res_playlist.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+});
+
+/* Usunięcie (w rzeczywistości zaprzestanie śledzenia) listy odtwarzania */
+router.delete('/playlist/:id', async(req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  const playlistID = req.params.id;
+  const res_deletePlaylist = await axios.delete(
+    `https://api.spotify.com/v1/playlists/${playlistID}/followers`,
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+  );
+  if(res_deletePlaylist.status === 200) {
+    res.status(200).send({
+      message: 'Playlist deleted successfully!'
+    });
+  }
+  else {
+    res.status(res_deletePlaylist.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+});
+
+/* Aktualizacja metadanych listy odtwarzania */
+router.put('/playlist/:id', async(req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  const playlistID = req.params.id;
+  const res_updatePlaylist = await axios.put(
+    `https://api.spotify.com/v1/playlists/${playlistID}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+  );
+  if(res_updatePlaylist.status === 200) {
+    res.status(200).send({
+      message: 'Playlist updated successfully!'
+    });
+  }
+  else {
+    res.status(res_updatePlaylist.status).send({
       error: 'Something went wrong!'
     });
   }

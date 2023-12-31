@@ -49,17 +49,15 @@
     visibility: hidden;
 }
 
-#itemFigure_btnKebab {
+.itemFigure_btnKebab {
     height: 24px;
     width: 24px;
     position: absolute;
     top: 16px;
     right: 9px;
-
-    cursor: pointer;
 }
 
-#itemFigure_contextMenu {
+.itemFigure_contextMenu {
     top: 56px;
     right: 16px;
 }

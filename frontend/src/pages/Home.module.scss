@@ -37,21 +37,53 @@
     padding: 16px;
 }
 
+.catalogItem {
+    margin: 0;
+}
+
 .catalogItem_thumbnail {
     width: 100%;
+    position: relative;
     min-width: 128px;
     max-width: 135px;
     aspect-ratio: 1/1;
+
+    cursor: pointer;
+
+    &:hover {
+        .catalogItem_thumbnailImage {
+            filter: brightness(85%);
+        }
+    }
+}
+
+#itemFigure_thumbnailImage {
+    width: 100%;
+
+    border-radius: 4%;
+}
+
+.catalogItem_thumbnailImage {
+    width: 100%;
 
     border-radius: 8px;
 
     &.catalogItem_thumbnail_artist {
         border-radius: 100vh;
     }
+}
 
-    &:hover {
-        filter: brightness(85%);
-    }
+.catalogItem_btnKebab {
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    top: 10px;
+    right: 4px;
+}
+
+.catalogItem_contextMenu {
+    top: 56px;
+    right: 16px;
 }
 
 .catalogItem_name {

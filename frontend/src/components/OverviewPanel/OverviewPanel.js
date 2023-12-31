@@ -1,48 +1,34 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
-import btn_kebab from 'resources/btn_kebab.svg';
 
 import OverviewPanelDetails from 'components/OverviewPanel/OverviewPanelDetails';
-import ContextMenu from 'components/ContextMenu';
+import OverviewPanelDetail from 'components/OverviewPanel/OverviewPanelDetail';
+import PlaylistKebabMenu from 'components/PlaylistKebabMenu';
 
 import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
-import OverviewPanelDetail from './OverviewPanelDetail';
-
 const OverviewPanel = (props) => {
     const itemData = props.data;
     
     // #region Zmienne stanu (useState Hooks)
     const [playlistPaused, setPlaylistPaused] = useState(true);
-    const [itemContextMenuExpanded, setItemContextMenuExpanded] = useState(false);
     // #endregion
+
+    const navigate = useNavigate();
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleTogglePlaylistPlayback = () => {
         setPlaylistPaused(prevState => !prevState);
     }
-    const handleToggleItemContextMenu = () => {
-        setItemContextMenuExpanded(prevState => !prevState);
-    }
-    document.body.addEventListener('click', (event) => {
-        if(itemContextMenuExpanded && event.target !== document.getElementById(Styles.itemFigure_btnKebab)) {
-            setItemContextMenuExpanded(false);
-        }
-    });
     // #endregion
     
     // #region Przypisanie dynamicznych elementów komponentu
     let kebabMenu = null;
     if(props.for === 'playlist') {
         kebabMenu =
-            <Fragment>
-                <img src = {btn_kebab} alt = 'Menu' id = {Styles.itemFigure_btnKebab} onClick = {handleToggleItemContextMenu} />
-                <ContextMenu expanded = {itemContextMenuExpanded} context = 'itemFigure' styles = {Styles}>
-                    <li id = {Styles.itemFigure_contextMenu_addTracks}>Add tracks</li>
-                    <li id = {Styles.itemFigure_contextMenu_deletePlaylist} dangerous = 'true'>Delete playlist</li>
-                </ContextMenu>
-            </Fragment>
+            <PlaylistKebabMenu playlistID = {itemData.id} context = 'itemFigure' styles = {Styles} onDeletePlaylist = {navigate('/')} />
     }
     // #endregion
 

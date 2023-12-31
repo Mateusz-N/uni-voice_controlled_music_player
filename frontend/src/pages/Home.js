@@ -11,6 +11,7 @@ import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 import NavBar from 'components/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
+import PlaylistKebabMenu from 'components/PlaylistKebabMenu';
 
 import Styles from 'pages/Home.module.scss';
 
@@ -74,7 +75,7 @@ const Home = () => {
         if(!userID) {
             return;
         }
-        return fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/${userID}/playlist/new`, {
+        return fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/${userID}/playlist`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -126,13 +127,23 @@ const Home = () => {
                     {
                         playlists.map((playlist, index) => {
                             const playlistLink = playlist.type === 'playlist' ? '/playlist/' + playlist.id : '/' + playlist.type;
+                            let kebabMenu = null;
+                            if(!['0', '1'].includes(playlist.id)) {
+                                kebabMenu =
+                                    <PlaylistKebabMenu playlistID = {playlist.id} context = 'catalogItem' styles = {Styles} onDeletePlaylist = {handleSyncWithSpotify} />
+                            }
                             return(
-                                <article key = {index} className = {Styles.catalogItem}>
-                                    <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)}>
-                                        <img src = {playlist.thumbnailSrc || placeholderAlbumCoverSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnail} />
+                                <figure key = {index} className = {Styles.catalogItem}>
+                                    <main className = {Styles.catalogItem_thumbnail}>
+                                        <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)}>
+                                            <img src = {playlist.thumbnailSrc || placeholderAlbumCoverSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnailImage} />
+                                        </Link>
+                                        {kebabMenu}
+                                    </main>
+                                    <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)} title = {playlist.name}>
+                                        <h4 className = {Styles.catalogItem_name}>{playlist.name}</h4>
                                     </Link>
-                                    <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)} title = {playlist.name}><h4 className = {Styles.catalogItem_name}>{playlist.name}</h4></Link>
-                                </article>
+                                </figure>
                             );
                         })
                     }

@@ -1,13 +1,9 @@
-import { useNavigate } from 'react-router-dom';
-
 import KebabMenu from 'components/KebabMenu';
 
 const PlaylistKebabMenu = (props) => {
     const playlistID = props.playlistID;
     const context = props.context;
     const ExternalStyles = props.styles;
-
-    const navigate = useNavigate();
 
     const handleDeletePlaylist = () => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {

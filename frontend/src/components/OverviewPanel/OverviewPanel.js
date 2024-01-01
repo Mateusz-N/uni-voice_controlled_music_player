@@ -22,13 +22,66 @@ const OverviewPanel = (props) => {
     const handleTogglePlaylistPlayback = () => {
         setPlaylistPaused(prevState => !prevState);
     }
+    const handlePlaylistDelete = () => {
+        navigate('/');
+    }
+    const handleDetailChange = async(detailName, detailValue) => {
+    /*  UWAGA: punktu końcowy 'Get Playlist' będzie przez pewien czas zwracać nieaktualne dane.
+        Jest to prawdopodobnie defekt w owym punkcie końcowym.
+        Ponadto, właściwość 'public' zdaje się w ogóle nie być aktualizowana przez Spotify... */
+        detailName = detailName.toLowerCase();
+        if(detailName === 'public') {
+            if(detailValue === 'yes') {
+                detailValue = true;
+            }
+            else if(detailValue === 'no') {
+                detailValue = false;
+            }
+        }
+        else if(detailName === 'name') {
+            if(detailValue.length === 0) {
+                detailValue = 'Unknown playlist';
+            }
+        }
+        else if(detailName === 'description') {
+            if(detailValue.length === 0) {
+                detailValue = 'No description.';
+            }
+        }
+        await fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${itemData.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                detailName: detailName,
+                detailValue: detailValue
+            }),
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+                if(response.status === 401) {
+                    throw new Error('Invalid access token!');
+                }
+                if(response.status === 422) {
+                    throw new Error('Request could not be processed. Make sure you are not sending null or undefined data!');
+                }
+            })
+            .then((data) => {
+                console.info(data.message);
+            })
+            .catch(console.error);
+    }
     // #endregion
     
     // #region Przypisanie dynamicznych elementów komponentu
     let kebabMenu = null;
     if(props.for === 'playlist') {
         kebabMenu =
-            <PlaylistKebabMenu playlistID = {itemData.id} context = 'itemFigure' styles = {Styles} onDeletePlaylist = {navigate('/')} />
+            <PlaylistKebabMenu playlistID = {itemData.id} context = 'itemFigure' styles = {Styles} onDeletePlaylist = {handlePlaylistDelete} />
     }
     // #endregion
 
@@ -57,6 +110,7 @@ const OverviewPanel = (props) => {
                             hideItemName = 'always'
                             styles = {Styles}
                             for = {props.for}
+                            onDetailChange = {(detailName, detailValue) => handleDetailChange(detailName, detailValue)}
                         />
                     </figcaption>
                 </figure>
@@ -64,6 +118,7 @@ const OverviewPanel = (props) => {
                 <OverviewPanelDetails
                     items = {itemData.detailsToDisplay.filter(detail => !detail.showSeparately)}
                     for = {props.for}
+                    onDetailChange = {(detailName, detailValue) => handleDetailChange(detailName, detailValue)}
                 />
             </main>
             <hr/>
@@ -77,6 +132,7 @@ const OverviewPanel = (props) => {
                     hideItemName = 'always'
                     styles = {Styles}
                     for = {props.for}
+                    onDetailChange = {(detailName, detailValue) => handleDetailChange(detailName, detailValue)}
                 />
             </section>
         </aside>

@@ -29,6 +29,9 @@ const Playlist = () => {
         setLoggedIn(false);
     }
     const getPlaylist = () => {
+    /*  UWAGA: Właściwości listy odtwarzania mogą być nieaktualne, jeśli niedawno miała miejsce aktualizacja.
+        Jest to prawdopodobnie defekt w punkcie końcowym 'Get Playlist' Spotify API.
+        Np. punkt końcowy 'Get User's Playlists' wyświetla aktualną nazwę listy, a 'Get Playlist' nie. */
         if(!loggedIn) {
             setPlaylist(placeholderPlaylist);
             return;
@@ -39,7 +42,7 @@ const Playlist = () => {
         })
             .then((response) => {
                 if(response.ok) {
-                    return response.json()
+                    return response.json();
                 }
             })
             .then((data) => {
@@ -170,7 +173,7 @@ const Playlist = () => {
                         excludeControls: false,
                         children: {}
                     }
-                }]
+                }];
                 setPlaylist(playlist);
             })
             .catch(console.error);
@@ -180,6 +183,7 @@ const Playlist = () => {
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getPlaylist();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[loggedIn]);
     // #endregion
 

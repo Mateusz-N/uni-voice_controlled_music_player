@@ -23,7 +23,10 @@ const OverviewPanelDetail = (props) => {
         setEditModeActive(false);
     }
     const handleSubmitEditForm = (event, targetDataPropertyReference, detailValue) => {
-        event.preventDefault();
+        if(event) {
+            event.preventDefault();
+        }
+        props.onDetailChange(itemData.name, detailValue);
         setItemData(prevState => setPropertyByString(prevState, targetDataPropertyReference, detailValue));
         if(!itemData.input.excludeControls) {
             handleDisableEditMode();

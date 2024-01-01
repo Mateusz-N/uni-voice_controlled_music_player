@@ -8,12 +8,16 @@ const DetailEditForm = (props) => {
     const inputType = props.inputType;
     const inputAttributes = props.inputAttributes;
     const inputChildren = props.inputChildren;
+    const excludeControls = props.excludeControls;
     const ExternalStyles = props.styles || {};
 
     const [detailValue, setDetailValue] = useState(defaultValue);
 
     const handleUpdateDetailValue = (newValue) => {
         setDetailValue(newValue);
+        if(excludeControls) {
+            props.onSubmit(null, newValue);
+        }
     }
 
     let input;
@@ -25,7 +29,7 @@ const DetailEditForm = (props) => {
                 name = {detailName}
                 defaultValue = {detailValue}
                 children = {inputChildren}
-                onSelection = {() => handleUpdateDetailValue(detailValue)}
+                onSelection = {(selectedValue) => handleUpdateDetailValue(selectedValue)}
                 {...inputAttributes}
             />
         formStyle = {position: 'relative'};
@@ -54,11 +58,11 @@ const DetailEditForm = (props) => {
     }
 
     let formControlSection = null;
-    if(!props.excludeControls) {
+    if(!excludeControls) {
         formControlSection =
             <section className = 'formControlSection'>
-                <button id = {ExternalStyles['btnCancel_item' + detailName]} className = {ExternalStyles['btnCancel'] + ' ' + 'btnSecondary'} onClick = {event => props.onCancel(event)} type = 'button'>Cancel</button>
-                <button id = {ExternalStyles['btnSubmit_item' + detailName]} className = {ExternalStyles['btnSubmit'] + ' ' + 'btnPrimary'} onClick = {event => props.onSubmit(event, detailValue)}>Apply</button>
+                <button id = {ExternalStyles['btnCancel_item' + detailName]} className = {ExternalStyles.btnCancel + ' btnSecondary'} onClick = {event => props.onCancel(event)} type = 'button'>Cancel</button>
+                <button id = {ExternalStyles['btnSubmit_item' + detailName]} className = {ExternalStyles.btnSubmit + ' btnPrimary'} onClick = {event => props.onSubmit(event, detailValue)}>Apply</button>
             </section>
     }
 

@@ -276,6 +276,9 @@ router.get('/artist/:id/albums', async (req, res) => {
 
 /* Pobranie konkretnej listy odtwarzania */
 router.get('/playlist/:id', async (req, res) => {
+/*UWAGA: Właściwości listy odtwarzania mogą być nieaktualne, jeśli niedawno miała miejsce aktualizacja.
+  Jest to prawdopodobnie defekt w punkcie końcowym 'Get Playlist' Spotify API.
+  Np. punkt końcowy 'Get User's Playlists' wyświetla aktualną nazwę listy, a 'Get Playlist' nie. */
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const playlistID = req.params.id;
   let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
@@ -392,17 +395,30 @@ router.delete('/playlist/:id', async(req, res) => {
 });
 
 /* Aktualizacja metadanych listy odtwarzania */
-router.put('/playlist/:id', async(req, res) => {
+router.put('/playlist/:id', async (req, res) => {
+/*UWAGA: punktu końcowy 'Get Playlist' będzie przez pewien czas zwracać nieaktualne dane.
+  Jest to prawdopodobnie defekt w owym punkcie końcowym.
+  Ponadto, właściwość 'public' zdaje się w ogóle nie być aktualizowana przez Spotify... */
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const playlistID = req.params.id;
-  const res_updatePlaylist = await axios.put(
-    `https://api.spotify.com/v1/playlists/${playlistID}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+  const updatedDetailName = req.body.detailName;
+  const updatedDetailValue = req.body.detailValue;
+  if(updatedDetailName == null || updatedDetailValue == null) {
+    res.status(422).send({
+      message: 'Missing request data!'
+    });
+    return;
+  }
+  const res_updatePlaylist = await axios({
+    method: 'PUT',
+    url: `https://api.spotify.com/v1/playlists/${playlistID}`,
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    },
+    data: {
+      [updatedDetailName]: updatedDetailValue
     }
-  );
+  });
   if(res_updatePlaylist.status === 200) {
     res.status(200).send({
       message: 'Playlist updated successfully!'

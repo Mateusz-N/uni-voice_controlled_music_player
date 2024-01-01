@@ -8,6 +8,7 @@ import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
 import Styles from 'components/TrackListItem.module.scss';
+import KebabMenu from './KebabMenu';
 
 const TrackListItem = (props) => {
     // #region Zmienne globalne
@@ -105,6 +106,12 @@ const TrackListItem = (props) => {
             <td>{track.genres.join(', ')}</td>
             <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
             {dateAddedColumn}
+            <td className = {Styles.trackList_item_tdKebab}>
+                <KebabMenu context = 'trackList_item' kebabBtnID = {'trackList_item_btnKebab_' + track.id} styles = {Styles}>
+                    <li id = {Styles.trackList_item_contextMenu_addToFavorites}>Add to favorites</li>
+                    <li id = {Styles.trackList_item_contextMenu_addToPlaylist}>Add to playlist...</li>
+                </KebabMenu>
+            </td>
         </tr>
     );
     // #endregion

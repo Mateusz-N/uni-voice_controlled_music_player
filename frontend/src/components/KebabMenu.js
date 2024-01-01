@@ -7,10 +7,17 @@ import ContextMenu from "components/ContextMenu";
 import Styles from 'components/KebabMenu.module.scss';
 
 const KebabMenu = (props) => {
-    const ExternalStyles = props.styles;
+    const ExternalStyles = props.styles || Styles;
     const context = props.context;
     const children = props.children;
     const btnID = props.kebabBtnID;
+
+    if(children == null) {
+        throw new Error('The KebabMenu component must include child elements!');
+    }
+    if(btnID == null) {
+        throw new Error('The KebabMenu component must include a non-null kebabBtnID attribute!');
+    }
 
     const [itemContextMenuExpanded, setItemContextMenuExpanded] = useState(false);
 

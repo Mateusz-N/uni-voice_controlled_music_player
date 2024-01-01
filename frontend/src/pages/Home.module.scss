@@ -74,16 +74,20 @@
 }
 
 .catalogItem_btnKebab {
+    background-color: #222222D8;
+    border: 1px solid #AAA;
+    border-radius: 8px;
+    padding: 4px;
     height: 20px;
     width: 20px;
     position: absolute;
-    top: 10px;
-    right: 4px;
+    top: 2px;
+    right: 2px;
 }
 
 .catalogItem_contextMenu {
-    top: 56px;
-    right: 16px;
+    top: 32px;
+    right: 2px;
 }
 
 .catalogItem_name {

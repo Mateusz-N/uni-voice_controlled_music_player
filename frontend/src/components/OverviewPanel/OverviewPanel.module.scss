@@ -50,16 +50,20 @@
 }
 
 .itemFigure_btnKebab {
+    background-color: #222222D8;
+    border: 1px solid #AAA;
+    border-radius: 25%;
+    padding: 4px;
     height: 24px;
     width: 24px;
     position: absolute;
-    top: 16px;
-    right: 9px;
+    top: 6px;
+    right: 6px;
 }
 
 .itemFigure_contextMenu {
-    top: 56px;
-    right: 16px;
+    top: 40px;
+    right: 6px;
 }
 
 #itemFigure, #overviewPanelDetails {

@@ -46,6 +46,7 @@ const TrackList = (props) => {
                     <th>Genre</th>
                     <th>Duration</th>
                     {thAdded}
+                    <th className = {Styles.thKebab}></th>
                 </tr>
             </thead>
             <tbody>

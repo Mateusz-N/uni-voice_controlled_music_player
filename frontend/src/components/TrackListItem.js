@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
@@ -15,8 +15,34 @@ const TrackListItem = (props) => {
     const track = props.track
     const index = props.index;
     const playing = props.playing;
-    const handleToggleTrackPlayback = props.trackPlaybackToggleHandler;
+    const handleToggleTrackPlayback = props.onPlaybackToggle;
     // #endregion
+
+    const [trackSaved, setTrackSaved] = useState(track.saved);
+
+    const handleToggleTrackSaved = () => {
+        const initiallySaved = trackSaved;
+        setTrackSaved(prevState => !prevState);
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/tracks/saved?ids=${track.id}`, {
+            method: initiallySaved ? 'DELETE' : 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+                if(response.status === 401) {
+                    throw new Error('Invalid access token!');
+                }
+            })
+            .then((data) => {
+                console.info(data.message);
+            })
+            .catch(console.error);
+    }
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let albumColumn = null;
@@ -30,6 +56,21 @@ const TrackListItem = (props) => {
         images: [],
         release_date: '?'
     };
+    let contextMenu_savedTracksAction = <li id = {Styles.trackList_item_contextMenu_addToFavorites} onClick = {handleToggleTrackSaved}>Add to favorites</li>;
+    if(trackSaved) {
+        contextMenu_savedTracksAction = <li id = {Styles.trackList_item_contextMenu_removeFromFavorites} onClick = {handleToggleTrackSaved} dangerous = 'true'>Remove from favorites</li>
+    }
+    let kebabMenu = null;
+    if(!track.local) {
+        kebabMenu = 
+            <KebabMenu
+                context = 'trackList_item'
+                kebabBtnID = {'trackList_item_btnKebab_' + index} // track.id jest zawodne, gdyż pliki lokalne nie posiadają ID
+                styles = {Styles}>
+                {contextMenu_savedTracksAction}
+                <li id = {Styles.trackList_item_contextMenu_addToPlaylist}>Add to playlist...</li>
+            </KebabMenu>
+    }
     if(track && Object.keys(track).length > 0) {
         if(track.artists) {
             trackArtists = track.artists;
@@ -107,10 +148,7 @@ const TrackListItem = (props) => {
             <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
             {dateAddedColumn}
             <td className = {Styles.trackList_item_tdKebab}>
-                <KebabMenu context = 'trackList_item' kebabBtnID = {'trackList_item_btnKebab_' + track.id} styles = {Styles}>
-                    <li id = {Styles.trackList_item_contextMenu_addToFavorites}>Add to favorites</li>
-                    <li id = {Styles.trackList_item_contextMenu_addToPlaylist}>Add to playlist...</li>
-                </KebabMenu>
+                {kebabMenu}
             </td>
         </tr>
     );

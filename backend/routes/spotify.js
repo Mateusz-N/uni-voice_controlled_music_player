@@ -15,7 +15,7 @@ const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const RESPONSE_TYPE = 'code';
 const REDIRECT_URI = `${SERVER_URL_HTTPS}/spotify/auth`;
-const SCOPE = 'playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative user-library-read';
+const SCOPE = 'playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative user-library-read user-library-modify';
 const STATE = crypto.randomBytes(10).toString('hex');
 const AUTH_URL = new URL('https://accounts.spotify.com/authorize');
 const CODE_VERIFIER = crypto.randomBytes(32).toString('hex');
@@ -166,6 +166,27 @@ const handleGetMultipleItemsRequest = async (accessToken, initialEndpoint, respo
     return [items, nextEndpoint]
   }
   return await handleGetItemsRequest(accessToken, initialEndpoint, onSuccess);
+}
+
+const handleToggleTrackSaved = async (req, res, accessToken, method) => {
+  const IDs = req.query.ids;
+  const res_toggleTrackSaved = await axios({
+    method: method,
+    url: `https://api.spotify.com/v1/me/tracks?ids=${IDs}`,
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  });
+  if(res_toggleTrackSaved.status === 200) {
+    res.status(200).send({
+      message: `Track ${method === 'PUT' ? 'added to' : 'removed from'} favorites successfully!`
+    });
+  }
+  else {
+    res.status(res_toggleTrackSaved.status).send({
+      error: 'Something went wrong!'
+    });
+  }
 }
 // #endregion
 
@@ -429,6 +450,41 @@ router.put('/playlist/:id', async (req, res) => {
       error: 'Something went wrong!'
     });
   }
+});
+
+/* Sprawdzenie, które z podanych utworów zostały polubione przez użytkownika */
+router.get('/tracks/saved/check', async (req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  const IDs = req.query.ids;
+  const res_check = await axios.get(
+    `https://api.spotify.com/v1/me/tracks/contains?ids=${IDs}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+  );
+  if(res_check.status === 200) {
+    const results = res_check.data;
+    res.status(200).send(results);
+  }
+  else {
+    res.status(res_check.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+});
+
+/* Dodanie utwori do polubionych */
+router.put('/tracks/saved', async (req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  handleToggleTrackSaved(req, res, accessToken, 'PUT');
+});
+
+/* Usunięcie utworu z polubionych */
+router.delete('/tracks/saved', async (req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  handleToggleTrackSaved(req, res, accessToken, 'DELETE');
 });
 // #endregion
 

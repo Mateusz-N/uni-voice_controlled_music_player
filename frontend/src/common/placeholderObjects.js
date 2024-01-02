@@ -12,6 +12,7 @@ export const placeholderPlaylist = {
     totalDuration_ms: 'N/A',
     artists: [],
     tracks: [],
+    saved: null,
     owner: 'N/A',
     public: 'N/A',
     detailsToDisplay: [{

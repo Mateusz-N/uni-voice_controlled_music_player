@@ -45,8 +45,8 @@ const Playlist = () => {
                     return response.json();
                 }
             })
-            .then((data) => {
-                const playlist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
+            .then(async (data) => {
+                let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
                     id: playlistID,
                     name: 'Saved tracks',
                     thumbnailSrc: placeholderAlbumCoverSrc,
@@ -65,6 +65,7 @@ const Playlist = () => {
                         playable: item.track.is_playable,
                         local: item.track.is_local
                     })),
+                    saved: null,
                     owner: Cookies.get('userName'),
                     public: false
                 }
@@ -89,12 +90,13 @@ const Playlist = () => {
                         playable: item.track.is_playable,
                         local: item.track.is_local
                     })),
+                    saved: null,
                     owner: data.owner.display_name,
                     public: data.public
                 }
-                playlist.detailsToDisplay = [{
+                fetchedPlaylist.detailsToDisplay = [{
                     name: 'Name',
-                    content: playlist.name || '',
+                    content: fetchedPlaylist.name || '',
                     editable: true,
                     showSeparately: true,
                     input: {
@@ -105,7 +107,7 @@ const Playlist = () => {
                     }
                 }, {
                     name: 'Track count',
-                    content: playlist.tracks ? playlist.tracks.length || 'N/A' : 'N/A',
+                    content: fetchedPlaylist.tracks ? fetchedPlaylist.tracks.length || 'N/A' : 'N/A',
                     editable: false,
                     showSeparately: false,
                     input: {
@@ -116,7 +118,7 @@ const Playlist = () => {
                     }
                 }, {
                     name: 'Total Duration',
-                    content: playlist.totalDuration_ms ? millisecondsToFormattedTime(playlist.totalDuration_ms) : 'N/A',
+                    content: fetchedPlaylist.totalDuration_ms ? millisecondsToFormattedTime(fetchedPlaylist.totalDuration_ms) : 'N/A',
                     editable: false,
                     showSeparately: false,
                     input: {
@@ -127,7 +129,7 @@ const Playlist = () => {
                     }
                 }, {
                     name: 'Owner',
-                    content: playlist.owner || 'N/A',
+                    content: fetchedPlaylist.owner || 'N/A',
                     editable: false,
                     showSeparately: false,
                     input: {
@@ -138,7 +140,7 @@ const Playlist = () => {
                     }
                 }, {
                     name: 'Public',
-                    content: (playlist.public === true) ? 'yes' : ((playlist.public === false) ? 'no' : 'N/A'),
+                    content: (fetchedPlaylist.public === true) ? 'yes' : ((fetchedPlaylist.public === false) ? 'no' : 'N/A'),
                     editable: true,
                     showSeparately: false,
                     input: {
@@ -164,7 +166,7 @@ const Playlist = () => {
                     }
                 }, {
                     name: 'Description',
-                    content: playlist.description || '',
+                    content: fetchedPlaylist.description || '',
                     editable: true,
                     showSeparately: true,
                     input: {
@@ -174,9 +176,39 @@ const Playlist = () => {
                         children: {}
                     }
                 }];
-                setPlaylist(playlist);
+                fetchedPlaylist = await getTracksSavedStatus(fetchedPlaylist);
+                setPlaylist(fetchedPlaylist);
             })
             .catch(console.error);
+    }
+    const getTracksSavedStatus = async (playlist) => {
+        const trackList = playlist.tracks;
+        let groupsOf50 = [];
+        for(let i = 0; i < trackList.length; i += 50) {
+            groupsOf50.push(trackList.slice(i, i + 50));
+        }
+        for await(const group of groupsOf50) {
+            const idArray = [];
+            for(const track of group) {
+                if(track.id) {
+                    idArray.push(track.id)
+                }
+            };
+            await fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/tracks/saved/check?ids=${idArray.join(',')}`, {
+                method: 'GET',
+                credentials: 'include'
+            })
+                .then((response) => {
+                    if(response.ok) {
+                        return response.json();
+                    }
+                })
+                .then((data) => {
+                    group.map((track, index) => track.saved = data[index]);
+                })
+                .catch(console.error);
+        }
+        return playlist;
     }
     // #endregion
 

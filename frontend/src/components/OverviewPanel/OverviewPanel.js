@@ -25,7 +25,7 @@ const OverviewPanel = (props) => {
     const handlePlaylistDelete = () => {
         navigate('/');
     }
-    const handleDetailChange = async(detailName, detailValue) => {
+    const handleDetailChange = (detailName, detailValue) => {
     /*  UWAGA: punktu końcowy 'Get Playlist' będzie przez pewien czas zwracać nieaktualne dane.
         Jest to prawdopodobnie defekt w owym punkcie końcowym.
         Ponadto, właściwość 'public' zdaje się w ogóle nie być aktualizowana przez Spotify... */
@@ -48,7 +48,7 @@ const OverviewPanel = (props) => {
                 detailValue = 'No description.';
             }
         }
-        await fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${itemData.id}`, {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${itemData.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

@@ -4,7 +4,6 @@ const queryString = require('node:querystring');
 const axios = require('axios');
 const router = express.Router();
 const crypto = require('crypto');
-const { access } = require('node:fs');
 // #endregion
 
 // #region Zmienne konfiguracyjne
@@ -235,35 +234,47 @@ router.get('/user', async (req, res) => {
     });
     return;
   }
-  const res_profile = await axios.get(
-    'https://api.spotify.com/v1/me',
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
+  const requestDestination = req.get('destination') || 'db';
+  if(requestDestination === 'api') {
+    const res_profile = await axios.get(
+      'https://api.spotify.com/v1/me',
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
       }
+    );
+    if(res_profile.status === 200) {
+      res.status(200).send({
+        userID: res_profile.data.id,
+        userName: res_profile.data.display_name,
+        profilePicURL: res_profile.data.images[0] ? res_profile.data.images[0].url : null,
+        message: 'Logged in successfully!'
+      });
     }
-  );
-  if(res_profile.status === 200) {
-    res.status(200).send({
-      userID: res_profile.data.id,
-      userName: res_profile.data.display_name,
-      profilePicURL: res_profile.data.images[0] ? res_profile.data.images[0].url : null,
-      message: 'Logged in successfully!'
-    });
+    else {
+      res.status(res_profile.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
-  else {
-    res.status(res_profile.status).send({
-      error: 'Something went wrong!'
-    });
+  else if(requestDestination === 'db') {
+    // db handler
   }
 });
 
 /* Pobranie list odtwarzania w serwisie Spotify zalogowanego użytkownika */
 router.get('/playlists', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
-  console.log(accessToken);
-  const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
-  const playlists = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
+  const requestDestination = req.get('destination') || 'db';
+  let playlists;
+  if(requestDestination === 'api') {
+    const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
+    playlists = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
+  }
+  else if(requestDestination === 'db') {
+    // db handler
+  }
   res.status(200).send(playlists);
 });
 
@@ -271,8 +282,15 @@ router.get('/playlists', async (req, res) => {
 router.get('/artist/:id/albums', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
-  let initialEndpoint = `https://api.spotify.com/v1/artists/${artistID}/albums`;
-  const albums = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
+  const requestDestination = req.get('destination') || 'db';
+  let albums;
+  if(requestDestination === 'api') {
+    let initialEndpoint = `https://api.spotify.com/v1/artists/${artistID}/albums`;
+    albums = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
+  }
+  else if(requestDestination === 'db') {
+    // db handler
+  }
   res.status(200).send(albums);
 })
 
@@ -280,15 +298,22 @@ router.get('/artist/:id/albums', async (req, res) => {
 router.get('/playlist/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const playlistID = req.params.id;
-  let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
-  let nextEndpointReference = 'tracks.next';
-  let itemsReference = 'tracks.items';
-  if(playlistID === '1') { // Polubione utwory
-    initialEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
-    nextEndpointReference = 'next';
-    itemsReference = 'items';
+  const requestDestination = req.get('destination') || 'db';
+  let playlist;
+  if(requestDestination === 'api') {
+    let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
+    let nextEndpointReference = 'tracks.next';
+    let itemsReference = 'tracks.items';
+    if(playlistID === '1') { // Polubione utwory
+      initialEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
+      nextEndpointReference = 'next';
+      itemsReference = 'items';
+    }
+    playlist = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
   }
-  const playlist = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
+  else if(requestDestination === 'db') {
+    // db handler
+  }
   res.status(200).send(playlist);
 });
 
@@ -296,10 +321,17 @@ router.get('/playlist/:id', async (req, res) => {
 router.get('/album/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const albumID = req.params.id;
-  const initialEndpoint = `https://api.spotify.com/v1/albums/${albumID}`;
-  const nextEndpointReference = 'tracks.next';
-  const itemsReference = 'tracks.items';
-  const album = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
+  const requestDestination = req.get('destination') || 'db';
+  let album;
+  if(requestDestination === 'api') {
+    const initialEndpoint = `https://api.spotify.com/v1/albums/${albumID}`;
+    const nextEndpointReference = 'tracks.next';
+    const itemsReference = 'tracks.items';
+    album = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
+  }
+  else if(requestDestination === 'db') {
+    // db handler
+  }
   res.status(200).send(album);
 });
 
@@ -307,18 +339,25 @@ router.get('/album/:id', async (req, res) => {
 router.get('/artist/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
-  const res_artist = await axios.get(
-    `https://api.spotify.com/v1/artists/${artistID}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
+  const requestDestination = req.get('destination') || 'db';
+  let artist;
+  if(requestDestination === 'api') {
+    const res_artist = await axios.get(
+      `https://api.spotify.com/v1/artists/${artistID}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
       }
+    );
+    if(res_artist.status === 200) {
+      artist = res_artist.data;
     }
-  );
-  if(res_artist.status === 200) {
-    const artist = res_artist.data;
-    res.status(200).send(artist);
   }
+  else if(requestDestination === 'db') {
+    // db handler
+  }
+  res.status(200).send(artist);
 });
 
 /* Przeszukiwanie katalogu Spotify */

@@ -41,7 +41,7 @@ const Artist = () => {
     const onLogout = () => {
         setLoggedIn(false);
     }
-    const getArtist = () => {
+    const getArtist = (fromAPI = false) => {
         if(!loggedIn) {
             setArtist(placeholderArtist);
             setAlbums([]);
@@ -50,6 +50,10 @@ const Artist = () => {
         btnSync.current.classList.add(Styles.spinning);
         fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/artist/${artistID}`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'destination': fromAPI ? 'api' : 'db'
+            },
             credentials: 'include'
         })
             .then((response) => {
@@ -100,7 +104,7 @@ const Artist = () => {
         }
     }
     const handleSyncWithSpotify = () => {
-        getArtist();
+        getArtist(true);
     }
     // #endregion
 

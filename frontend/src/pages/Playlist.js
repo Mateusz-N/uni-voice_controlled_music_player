@@ -39,13 +39,17 @@ const Playlist = () => {
     const onLogout = () => {
         setLoggedIn(false);
     }
-    const getPlaylist = () => {
+    const getPlaylist = (fromAPI = false) => {
         if(!loggedIn) {
             setPlaylist(placeholderPlaylist);
             return;
         }
         fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'destination': fromAPI ? 'api' : 'db'
+            },
             credentials: 'include'
         })
             .then((response) => {

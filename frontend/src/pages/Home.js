@@ -36,13 +36,14 @@ const Home = () => {
     const onLogout = () => {
         setPlaylists([playlistGenerator]);
     }
-    const getPlaylists = () => {
+    const getPlaylists = (fromAPI = false) => {
         if(Cookies.get('userID')) {
             btnSync.current.classList.add(Styles.spinning);
             fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'destination': fromAPI ? 'api' : 'db'
                 },
                 credentials: 'include'
             })
@@ -59,7 +60,7 @@ const Home = () => {
         }
     }
     const handleSyncWithSpotify = () => {
-        getPlaylists();
+        getPlaylists(true);
     }
     // #endregion
     

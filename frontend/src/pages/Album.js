@@ -39,13 +39,17 @@ const Album = () => {
     const onLogout = () => {
         setLoggedIn(false);
     }
-    const getAlbum = () => {
+    const getAlbum = (fromAPI = false) => {
         if(!loggedIn) {
             setAlbum(placeholderAlbum);
             return;
         }
         fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/album/${albumID}`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'destination': fromAPI ? 'api' : 'db'
+            },
             credentials: 'include'
         })
             .then((response) => {

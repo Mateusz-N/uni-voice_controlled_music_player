@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
@@ -9,6 +9,7 @@ import btn_pause from 'resources/btn_pause.svg';
 
 import Styles from 'components/TrackListItem.module.scss';
 import KebabMenu from './KebabMenu';
+import Modal from './Modal';
 
 const TrackListItem = (props) => {
     // #region Zmienne globalne
@@ -19,7 +20,10 @@ const TrackListItem = (props) => {
     // #endregion
 
     const [trackSaved, setTrackSaved] = useState(track.saved);
+    const [userPlaylists, setUserPlaylists] = useState([]);
+    const [modal_addToPlaylist_open, setModal_addToPlaylist_open] = useState(false);
 
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackSaved = () => {
         const initiallySaved = trackSaved;
         setTrackSaved(prevState => !prevState);
@@ -43,6 +47,38 @@ const TrackListItem = (props) => {
             })
             .catch(console.error);
     }
+    const handleAddTrackToPlaylist = (playlistID) => {
+    }
+    const handleSelectAddToPlaylist = () => {
+        setModal_addToPlaylist_open(true);
+    }
+    const handleModalClose_addToPlaylist = () => {
+        setModal_addToPlaylist_open(false);
+    }
+    // #endregion
+
+    const getUserPlaylists = () => {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                setUserPlaylists(data);
+            })
+            .catch(console.error);
+    }
+
+    useEffect(() => {
+        getUserPlaylists();
+    },[])
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let albumColumn = null;
@@ -68,7 +104,17 @@ const TrackListItem = (props) => {
                 kebabBtnID = {'trackList_item_btnKebab_' + index} // track.id jest zawodne, gdyż pliki lokalne nie posiadają ID
                 styles = {Styles}>
                 {contextMenu_savedTracksAction}
-                <li id = {Styles.trackList_item_contextMenu_addToPlaylist}>Add to playlist...</li>
+                <li id = {Styles.trackList_item_contextMenu_addToPlaylist} onClick = {handleSelectAddToPlaylist}>
+                    Add to playlist...
+                    <Modal open = {modal_addToPlaylist_open} id = {'trackList_item_addToPlaylist_' + index} onClose = {handleModalClose_addToPlaylist}>
+                        <h1>hello world</h1>
+                    </Modal>
+                </li>
+                    {/* <ul id = {Styles.trackList_item_contextMenu_addToPlaylist_playlists}>
+                        {userPlaylists.map((playlist, index) => {
+                            return <li key = {index} onClick = {() => handleAddTrackToPlaylist(playlist.id)}>{playlist.name}</li>
+                        })}
+                    </ul> */}
             </KebabMenu>
     }
     if(track && Object.keys(track).length > 0) {

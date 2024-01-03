@@ -28,10 +28,10 @@ const Artist = () => {
     const btnSync = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
-    const onLogin = () => {
+    const handleLogin = () => {
         setLoggedIn(true);
     }
-    const onLogout = () => {
+    const handleLogout = () => {
         setLoggedIn(false);
     }
     const getArtist = () => {
@@ -118,7 +118,7 @@ const Artist = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'collectionBrowser hasOverviewPanel'>
                 <h1 id = {Styles.catalogHeader}>
                     {artist.name}&nbsp;

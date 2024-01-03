@@ -16,7 +16,7 @@ const ContextMenu = (props) => {
             }));
         }
     });
-    
+
     return(
         <menu id = {ExternalStyles[context + '_contextMenu']} className = {Styles.contextMenu + ' ' + ExternalStyles[context + '_contextMenu']} style = {{maxHeight: props.expanded ? contextMenu_options.current.offsetHeight : 0}}>
             <ul id = {ExternalStyles[context + '_contextMenu_options']} className = {Styles.contextMenu_options} ref = {contextMenu_options}>

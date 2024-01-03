@@ -54,7 +54,7 @@ const NavBar = (props) => {
                         Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
                         Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
                         setLoggedIn(true);
-                        props.handleLogin();
+                        props.onLogin();
                         console.info(data.message);
                     })
                     .catch(console.error);
@@ -83,7 +83,7 @@ const NavBar = (props) => {
                     Cookies.remove('userID');
                     Cookies.remove('userName');
                     Cookies.remove('profilePicURL');
-                    props.handleLogout();
+                    props.onLogout();
                     console.info(data.message);
                 })
                 .catch(console.error);

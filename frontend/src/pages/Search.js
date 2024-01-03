@@ -19,10 +19,10 @@ const Search = () => {
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
-    const onLogin = () => {
+    const handleLogin = () => {
         setLoggedIn(true);
     }
-    const onLogout = () => {
+    const handleLogout = () => {
         setLoggedIn(false);
     }
     // #endregion
@@ -58,7 +58,7 @@ const Search = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser>
                 <h1 id = {Styles.catalogHeader}>
                     Results&nbsp;

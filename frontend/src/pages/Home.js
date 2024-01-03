@@ -40,10 +40,10 @@ const Home = () => {
     const navigate = useNavigate();
 
     // #region Obsługa zdarzeń (Event Handlers)
-    const onLogin = () => {
+    const handleLogin = () => {
         getPlaylists();
     }
-    const onLogout = () => {
+    const handleLogout = () => {
         setPlaylists([playlistGenerator, playlistBuilder]);
     }
     const getPlaylists = () => {
@@ -117,7 +117,7 @@ const Home = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
                     Your catalog&nbsp;

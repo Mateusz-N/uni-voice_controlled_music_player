@@ -24,10 +24,10 @@ const Album = () => {
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
-    const onLogin = () => {
+    const handleLogin = () => {
         setLoggedIn(true);
     }
-    const onLogout = () => {
+    const handleLogout = () => {
         setLoggedIn(false);
     }
     const getAlbum = () => {
@@ -113,7 +113,7 @@ const Album = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar handleLogin = {onLogin} handleLogout = {onLogout} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList tracks = {album.tracks} for = 'album' />
                 <OverviewPanel key = {album.id} data = {album} for = 'album' />

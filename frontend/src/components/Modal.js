@@ -1,23 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import Styles from 'components/Modal.module.scss';
 
 const Modal = (props) => {
-    const [open, setOpen] = useState(props.open);
-    console.log(props.open)
-
     const modalWindowID = Styles['modalWindow_' + props.id];
 
-    // document.body.addEventListener('click', (event) => {
-    //     if(open && event.target !== document.getElementById(modalWindowID)) {
-    //         setOpen(false);
-    //         props.onClose();
-    //     }
-    // });
+    const ref_modalBackdrop = useRef(null);
+    const ref_modalWindow = useRef(null);
 
-    return(!open ? null :
-        <div className = {Styles.modalBackdrop} id = {Styles['modalBackdrop_' + props.id]}>
-            <div className = {Styles.modalWindow} id = {modalWindowID}>
+    useEffect(() => {
+        ref_modalBackdrop.current.addEventListener('click', (event) => {
+            if(ref_modalWindow.current && !ref_modalWindow.current.contains(event.target)) {
+                props.onClose();
+            }
+        });
+    },[])
+
+    return(
+        <div className = {Styles.modalBackdrop} id = {Styles['modalBackdrop_' + props.id]} ref = {ref_modalBackdrop}>
+            <div className = {Styles.modalWindow} id = {modalWindowID} ref = {ref_modalWindow}>
                 <h1>HELLO WORLD</h1>
                 {props.children}
             </div>

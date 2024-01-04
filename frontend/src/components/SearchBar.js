@@ -12,15 +12,30 @@ const SearchBar = () => {
     const searchIcon = useRef(null);
     const navigate = useNavigate();
 
+    const handleSearchFormSubmit = (event) => {
+        event.preventDefault();
+        navigate(`/search?query=${searchInput.current.value}`);
+    }
+    const handleSearchIconClick = (event) => {
+        handleSearchFormSubmit(event);
+    }
+
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        searchForm.current.addEventListener('submit', (event) => {
-            event.preventDefault();
-            navigate(`/search?query=${searchInput.current.value}`);
-        })
-        searchIcon.current.addEventListener('click', () => {
-            searchForm.current.submit();
-        })
+        if(searchForm.current) {
+            searchForm.current.addEventListener('submit', handleSearchFormSubmit);
+        }
+        if(searchIcon.current) {
+            searchIcon.current.addEventListener('click', handleSearchIconClick);
+        }
+        return () => {
+            if(searchForm.current) {
+                searchForm.current.removeEventListener('submit', handleSearchFormSubmit);
+            }
+            if(searchIcon.current) {
+                searchIcon.current.removeEventListener('click', handleSearchIconClick);
+            }
+        }
     }, [navigate]);
     // #endregion
 

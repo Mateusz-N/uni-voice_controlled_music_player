@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
@@ -17,11 +17,12 @@ const TrackListItem = (props) => {
     const index = props.index;
     const playing = props.playing;
     const handleToggleTrackPlayback = props.onPlaybackToggle;
+    const userPlaylists = props.userPlaylists;
     // #endregion
 
     const [trackSaved, setTrackSaved] = useState(track.saved);
-    const [userPlaylists, setUserPlaylists] = useState([]);
     const [modal_addToPlaylist_open, setModal_addToPlaylist_open] = useState(false);
+    const [trackRowActive, setTrackRowActive] = useState(false);
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackSaved = () => {
@@ -47,6 +48,14 @@ const TrackListItem = (props) => {
             })
             .catch(console.error);
     }
+    const handleTrackKebabMenuExpand = () => {
+        setTrackRowActive(true);
+    }
+    const handleTrackKebabMenuCollapse = () => {
+        if(!modal_addToPlaylist_open) {
+            setTrackRowActive(false);
+        }
+    }
     const handleAddTrackToPlaylist = (playlistID) => {
     }
     const handleSelectAddToPlaylist = () => {
@@ -54,31 +63,9 @@ const TrackListItem = (props) => {
     }
     const handleModalClose_addToPlaylist = () => {
         setModal_addToPlaylist_open(false);
+        setTrackRowActive(false);
     }
     // #endregion
-
-    const getUserPlaylists = () => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                setUserPlaylists(data);
-            })
-            .catch(console.error);
-    }
-
-    useEffect(() => {
-        getUserPlaylists();
-    },[])
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let albumColumn = null;
@@ -96,19 +83,26 @@ const TrackListItem = (props) => {
     if(trackSaved) {
         contextMenu_savedTracksAction = <li id = {Styles.trackList_item_contextMenu_removeFromFavorites} onClick = {handleToggleTrackSaved} dangerous = 'true'>Remove from favorites</li>
     }
+    let modal_addToPlaylist = null;
+    if(modal_addToPlaylist_open) {
+        modal_addToPlaylist =
+            <Modal key = {track.id} open = {modal_addToPlaylist_open} id = {'trackList_item_addToPlaylist_' + index} onClose = {handleModalClose_addToPlaylist}>
+                <h1>hello world</h1>
+            </Modal>
+    }
     let kebabMenu = null;
     if(!track.local) {
         kebabMenu = 
             <KebabMenu
                 context = 'trackList_item'
                 kebabBtnID = {'trackList_item_btnKebab_' + index} // track.id jest zawodne, gdyż pliki lokalne nie posiadają ID
-                styles = {Styles}>
+                styles = {Styles}
+                onExpand = {handleTrackKebabMenuExpand}
+                onCollapse = {handleTrackKebabMenuCollapse}
+            >
                 {contextMenu_savedTracksAction}
                 <li id = {Styles.trackList_item_contextMenu_addToPlaylist} onClick = {handleSelectAddToPlaylist}>
                     Add to playlist...
-                    <Modal open = {modal_addToPlaylist_open} id = {'trackList_item_addToPlaylist_' + index} onClose = {handleModalClose_addToPlaylist}>
-                        <h1>hello world</h1>
-                    </Modal>
                 </li>
                     {/* <ul id = {Styles.trackList_item_contextMenu_addToPlaylist_playlists}>
                         {userPlaylists.map((playlist, index) => {
@@ -157,7 +151,11 @@ const TrackListItem = (props) => {
         const albumColumnContents =
             <div className = {Styles.trackList_item_album}>
                 <Link to = {'/album/' + trackAlbum.id}>
-                    <img src = {trackAlbum.images.length > 0 ? trackAlbum.images[0].url : placeholderAlbumCoverSrc} alt = {trackAlbum.name} className = {Styles.trackList_item_albumCover}/>
+                    <img
+                        src = {trackAlbum.images.length > 0 ? trackAlbum.images[0].url : placeholderAlbumCoverSrc}
+                        alt = {trackAlbum.name}
+                        className = {Styles.trackList_item_albumCover}
+                    />
                 </Link>
                 <p>
                     {albumName}
@@ -174,7 +172,7 @@ const TrackListItem = (props) => {
     
     // #region Struktura komponentu (JSX)
     return(
-        <tr key = {index} className = {Styles.trackList_item}>
+        <tr key = {index} className = {Styles.trackList_item + (trackRowActive ? ' ' + Styles.trackList_item_active : '')}>
             <td>{index + 1}</td>
             <td>
                 <div className = {Styles.trackList_item_title}>
@@ -194,6 +192,7 @@ const TrackListItem = (props) => {
             <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
             {dateAddedColumn}
             <td className = {Styles.trackList_item_tdKebab}>
+                {modal_addToPlaylist}
                 {kebabMenu}
             </td>
         </tr>

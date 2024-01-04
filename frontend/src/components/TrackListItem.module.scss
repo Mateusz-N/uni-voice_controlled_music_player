@@ -1,6 +1,6 @@
 .trackList_item {
     position: relative;
-    &:hover {
+    &:hover, &.trackList_item_active {
         background-color: #2a2a2a;
     }
 

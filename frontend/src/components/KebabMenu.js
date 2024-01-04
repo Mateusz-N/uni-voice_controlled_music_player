@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
 import btn_kebab from 'resources/btn_kebab.svg';
 
@@ -24,11 +24,24 @@ const KebabMenu = (props) => {
     const handleToggleItemContextMenu = () => {
         setItemContextMenuExpanded(prevState => !prevState);
     }
-    document.body.addEventListener('click', (event) => {
+    const handleClickOutsideMenu = (event) => {
         if(itemContextMenuExpanded && event.target !== document.getElementById(btnID)) {
             setItemContextMenuExpanded(false);
         }
-    });
+    }
+
+    useEffect(() => {
+        if(itemContextMenuExpanded && props.onExpand) {
+            props.onExpand();
+        }
+        else if(!itemContextMenuExpanded && props.onCollapse) {
+            props.onCollapse();
+        }
+        document.body.addEventListener('click', handleClickOutsideMenu);
+        return () => {
+            document.body.removeEventListener('click', handleClickOutsideMenu);
+        }
+    },[itemContextMenuExpanded])
 
     return(
         <Fragment>

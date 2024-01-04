@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import TrackListItem from 'components/TrackListItem';
 
@@ -6,6 +6,7 @@ import Styles from 'components/TrackList.module.scss';
 
 const TrackList = (props) => {
     const [playingTrackID, setPlayingTrackID] = useState(null);
+    const [userPlaylists, setUserPlaylists] = useState([]);
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackPlayback = (trackID) => {
@@ -17,6 +18,29 @@ const TrackList = (props) => {
         }
     }
     // #endregion
+
+    const getUserPlaylists = () => {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                setUserPlaylists(data);
+            })
+            .catch(console.error);
+    }
+
+    useEffect(() => {
+        getUserPlaylists();
+    },[])
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let tracks = [];
@@ -52,7 +76,15 @@ const TrackList = (props) => {
             <tbody>
                 {tracks.map((track, index) => {
                     const playing = playingTrackID === index;
-                    return <TrackListItem key = {index} track = {track} index = {index} for = {props.for} playing = {playing} onPlaybackToggle = {handleToggleTrackPlayback} />
+                    return <TrackListItem
+                                key = {index}
+                                track = {track}
+                                index = {index}
+                                for = {props.for}
+                                playing = {playing}
+                                onPlaybackToggle = {handleToggleTrackPlayback}
+                                userPlaylists = {userPlaylists}
+                    />
                 })}
             </tbody>
         </table>

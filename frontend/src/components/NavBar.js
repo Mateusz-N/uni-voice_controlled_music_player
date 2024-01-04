@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -19,6 +19,8 @@ const NavBar = (props) => {
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
     const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
     // #endregion
+
+    const ref_profilePic = useRef(null);
 
     // #region Zmienne konfiguracyjne
     const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -92,11 +94,11 @@ const NavBar = (props) => {
     const handleToggleProfileContextMenu = () => {
         setProfileContextMenuExpanded(prevState => !prevState);
     }
-    document.body.addEventListener('click', (event) => {
-        if(profileContextMenuExpanded && event.target !== document.getElementById(Styles.profilePic)) {
+    const handleClickOutsideProfileContextMenu = (event) => {
+        if(profileContextMenuExpanded && !ref_profilePic.current.contains(event.target)) {
             setProfileContextMenuExpanded(false);
         }
-    })
+    }
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
@@ -116,6 +118,12 @@ const NavBar = (props) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
+    useEffect(() => {
+        document.body.addEventListener('click', handleClickOutsideProfileContextMenu);
+        return () => {
+            document.body.removeEventListener('click', handleClickOutsideProfileContextMenu);
+        };
+    },[profileContextMenuExpanded]);
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -138,7 +146,13 @@ const NavBar = (props) => {
             </div>
             <section id = {Styles.navBar_rightSection} className = {Styles.navBar_section}>
                 {loggedIn ?
-                    <img src = {Cookies.get('profilePicURL')} alt = {Cookies.get('userName')} id = {Styles.profilePic} onClick = {handleToggleProfileContextMenu} />
+                    <img
+                        src = {Cookies.get('profilePicURL')}
+                        alt = {Cookies.get('userName')}
+                        id = {Styles.profilePic}
+                        onClick = {handleToggleProfileContextMenu}
+                        ref = {ref_profilePic}
+                    />
                     :
                     <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
                 }

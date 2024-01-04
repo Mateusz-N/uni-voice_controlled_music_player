@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Styles from 'components/Select.module.scss';
 import ContextMenu from './ContextMenu';
@@ -18,12 +18,18 @@ const Select = (props) => {
         props.onSelection(newValue);
         handleToggleExpanded();
     }
-
-    document.body.addEventListener('click', (event) => {
+    const handleClickOutsideSelect = (event) => {
         if(expanded && !event.target.className.includes(Styles.option_default)) {
             setExpanded(false);
         }
-    });
+    }
+
+    useEffect(() => {
+        document.body.addEventListener('click', handleClickOutsideSelect);
+        return () => {
+            document.body.removeEventListener('click', handleClickOutsideSelect);
+        };
+    },[expanded]);
 
     let childNodes = children.map((child, index) => {
         const nodeType = Object.keys(child)[0];

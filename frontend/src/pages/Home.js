@@ -136,7 +136,7 @@ const Home = () => {
                                 <figure key = {index} className = {Styles.catalogItem}>
                                     <main className = {Styles.catalogItem_thumbnail}>
                                         <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)}>
-                                            <img src = {playlist.thumbnailSrc || placeholderAlbumCoverSrc} alt = {playlist.name} className = {Styles.catalogItem_thumbnailImage} />
+                                            <img src = {playlist.thumbnailSrc || (playlist.images && playlist.images[0] ? playlist.images[0].url : placeholderAlbumCoverSrc)} alt = {playlist.name} className = {Styles.catalogItem_thumbnailImage} />
                                         </Link>
                                         {kebabMenu}
                                     </main>

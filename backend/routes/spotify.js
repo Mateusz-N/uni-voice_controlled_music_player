@@ -148,14 +148,7 @@ const handleGetSingleItemRequest = async (accessToken, initialEndpoint, nextEndp
 
 const handleGetMultipleItemsRequest = async (accessToken, initialEndpoint, responseBodyItemsReference) => {
   const onSuccess = (items, res_items, nextEndpoint) => {
-    const itemsPage = getPropertyByString(res_items.data, responseBodyItemsReference).map(item => {
-      return {
-        id: item.id,
-        type: item.type,
-        name: item.name,
-        thumbnailSrc: item.images ? (item.images[0] ? item.images[0].url : null) : null
-      }
-    });
+    const itemsPage = getPropertyByString(res_items.data, responseBodyItemsReference);
     if(!items) {
       items = itemsPage;
     }
@@ -343,7 +336,7 @@ router.get('/artist/:id', async (req, res) => {
   }
 });
 
-/* Przeszukiwanie katalogu Spotify */
+/* Przeszukanie katalogu Spotify */
 router.get('/search', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const query = req.query.query;
@@ -355,7 +348,7 @@ router.get('/search', async (req, res) => {
   res.status(200).send(results);
 })
 
-/* Dodawanie list odtwarzania */
+/* Dodanie listy odtwarzania */
 router.post('/:userID/playlist', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const userID = req.params.userID;
@@ -473,7 +466,7 @@ router.get('/tracks/saved/check', async (req, res) => {
   }
 });
 
-/* Dodanie utwori do polubionych */
+/* Dodanie utworu do polubionych */
 router.put('/tracks/saved', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   handleToggleTrackSaved(req, res, accessToken, 'PUT');
@@ -483,6 +476,33 @@ router.put('/tracks/saved', async (req, res) => {
 router.delete('/tracks/saved', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   handleToggleTrackSaved(req, res, accessToken, 'DELETE');
+});
+
+/* Dodanie utworów do listy odtwarzania */
+router.post('/playlist/:id/tracks', async (req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  const playlistID = req.params.id;
+  const trackURIs = req.body.uris;
+  const res_playlist = await axios({
+    method: 'POST',
+    url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    },
+    data: {
+        uris: trackURIs
+      }
+  });
+  if(res_playlist.status === 201) {
+    res.status(201).send({
+      message: 'Track(s) added successfully!'
+    });
+  }
+  else {
+    res.status(res_playlist.status).send({
+      error: 'Something went wrong!'
+    });
+  }
 });
 // #endregion
 

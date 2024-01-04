@@ -1,5 +1,6 @@
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
@@ -8,8 +9,8 @@ import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
 import Styles from 'components/TrackListItem.module.scss';
-import KebabMenu from './KebabMenu';
-import Modal from './Modal';
+import KebabMenu from 'components/KebabMenu';
+import AddTrackToPlaylistsModal from 'components/AddTrackToPlaylistsModal';
 
 const TrackListItem = (props) => {
     // #region Zmienne globalne
@@ -56,8 +57,6 @@ const TrackListItem = (props) => {
             setTrackRowActive(false);
         }
     }
-    const handleAddTrackToPlaylist = (playlistID) => {
-    }
     const handleSelectAddToPlaylist = () => {
         setModal_addToPlaylist_open(true);
     }
@@ -86,9 +85,13 @@ const TrackListItem = (props) => {
     let modal_addToPlaylist = null;
     if(modal_addToPlaylist_open) {
         modal_addToPlaylist =
-            <Modal key = {track.id} open = {modal_addToPlaylist_open} id = {'trackList_item_addToPlaylist_' + index} onClose = {handleModalClose_addToPlaylist}>
-                <h1>hello world</h1>
-            </Modal>
+            <AddTrackToPlaylistsModal
+                index = {index}
+                track = {track}
+                userPlaylists = {userPlaylists.filter(playlist => playlist.owner.id === Cookies.get('userID'))}
+                open = {modal_addToPlaylist_open}
+                onClose = {handleModalClose_addToPlaylist}
+            />
     }
     let kebabMenu = null;
     if(!track.local) {
@@ -104,11 +107,6 @@ const TrackListItem = (props) => {
                 <li id = {Styles.trackList_item_contextMenu_addToPlaylist} onClick = {handleSelectAddToPlaylist}>
                     Add to playlist...
                 </li>
-                    {/* <ul id = {Styles.trackList_item_contextMenu_addToPlaylist_playlists}>
-                        {userPlaylists.map((playlist, index) => {
-                            return <li key = {index} onClick = {() => handleAddTrackToPlaylist(playlist.id)}>{playlist.name}</li>
-                        })}
-                    </ul> */}
             </KebabMenu>
     }
     if(track && Object.keys(track).length > 0) {

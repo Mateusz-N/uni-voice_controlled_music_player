@@ -18,7 +18,6 @@ const ContextMenu = (props) => {
             }));
         }
     });
-    children.forEach(child => console.log(child.props.className))
 
     return(
         <menu

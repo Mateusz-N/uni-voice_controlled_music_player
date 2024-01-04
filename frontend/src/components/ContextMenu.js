@@ -12,13 +12,20 @@ const ContextMenu = (props) => {
         if(option !== null) {
             children.push(cloneElement(option, {
                 key: index,
-                className: Styles[context + '_contextMenu_option'] + ' ' + Styles.contextMenu_option + (option.props.dangerous ? (' ' + Styles.contextMenu_option_dangerous) : '')
+                className: ExternalStyles[context + '_contextMenu_option']
+                    + ' ' + Styles.contextMenu_option
+                    + (option.props.dangerous ? (' ' + Styles.contextMenu_option_dangerous) : '')
             }));
         }
     });
+    children.forEach(child => console.log(child.props.className))
 
     return(
-        <menu id = {ExternalStyles[context + '_contextMenu']} className = {Styles.contextMenu + ' ' + ExternalStyles[context + '_contextMenu']} style = {{maxHeight: props.expanded ? contextMenu_options.current.offsetHeight : 0}}>
+        <menu
+            id = {ExternalStyles[context + '_contextMenu']}
+            className = {Styles.contextMenu + ' ' + ExternalStyles[context + '_contextMenu']}
+            style = {{maxHeight: props.expanded ? contextMenu_options.current.offsetHeight : 0}}
+        >
             <ul id = {ExternalStyles[context + '_contextMenu_options']} className = {Styles.contextMenu_options} ref = {contextMenu_options}>
                 {children}
             </ul>

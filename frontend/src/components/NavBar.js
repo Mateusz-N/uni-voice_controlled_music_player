@@ -95,7 +95,7 @@ const NavBar = (props) => {
         setProfileContextMenuExpanded(prevState => !prevState);
     }
     const handleClickOutsideProfileContextMenu = (event) => {
-        if(profileContextMenuExpanded && !ref_profilePic.current.contains(event.target)) {
+        if(profileContextMenuExpanded && (ref_profilePic.current && event.target !== ref_profilePic.current || event.target.className.includes(Styles.profile_contextMenu_option))) {
             setProfileContextMenuExpanded(false);
         }
     }

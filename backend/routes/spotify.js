@@ -345,7 +345,6 @@ router.get('/artist/:id', async (req, res) => {
 
 /* Przeszukiwanie katalogu Spotify */
 router.get('/search', async (req, res) => {
-  res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds())
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const query = req.query.query;
   const results = {};
@@ -358,7 +357,6 @@ router.get('/search', async (req, res) => {
 
 /* Dodawanie list odtwarzania */
 router.post('/:userID/playlist', async (req, res) => {
-  res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds());
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const userID = req.params.userID;
   const playlistName = req.body.name || 'Unknown playlist';

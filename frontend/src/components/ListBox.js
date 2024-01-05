@@ -1,3 +1,5 @@
+import Styles from 'components/ListBox.module.scss';
+
 const ListBox = (props) => {
     const options = props.options;
 
@@ -7,7 +9,7 @@ const ListBox = (props) => {
     }
 
     return(
-        <select size = {props.size || 10} multiple = {true} onChange = {handleSelection}>
+        <select size = {props.size || 10} multiple = {true} onChange = {handleSelection} className = {Styles.listBox}>
             {options.map((option, index) => {
                 return <option key = {index} value = {option.id}>{option.name}</option>
             })}

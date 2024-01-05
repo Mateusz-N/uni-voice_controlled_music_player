@@ -1,0 +1,10 @@
+#form_addToPlaylist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#btnSubmit_addToPlaylist, #btnCancel_addToPlaylist {
+    padding: 7px;
+    border-radius: 7px;
+}

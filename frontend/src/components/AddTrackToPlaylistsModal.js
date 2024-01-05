@@ -40,19 +40,19 @@ const AddTrackToPlaylistModal = (props) => {
     const handleSubmitAddToPlaylistForm = (event) => {
         event.preventDefault();
         selectedPlaylists.forEach(playlist => addTrackToPlaylist(playlist));
+        props.onClose();
     }
     const handleCancelAddToPlaylistForm = () => {
         props.onClose();
     }
 
     return(
-        <Modal key = {track.id} open = {open} id = {'trackList_item_addToPlaylist_' + index} onClose = {props.onClose}>
-            <p>Select playlists</p>
+        <Modal key = {track.id} open = {open} title = 'Add track to playlist(s)...' id = {'trackList_item_addToPlaylist_' + index} onClose = {props.onClose}>
             <form id = {Styles.form_addToPlaylist} onSubmit = {handleSubmitAddToPlaylistForm}>
                 <ListBox
                     options = {userPlaylists}
-                    onSelection = {(selectedPlaylistIDs) => handleSelectPlaylists(selectedPlaylistIDs)}>
-                </ListBox>
+                    onSelection = {(selectedPlaylistIDs) => handleSelectPlaylists(selectedPlaylistIDs)}
+                />
                 <section className = 'formControlSection'>
                     <button id = {Styles.btnCancel_addToPlaylist} className = {Styles.btnCancel + ' btnSecondary'} onClick = {handleCancelAddToPlaylistForm} type = 'button'>Cancel</button>
                     <button id = {Styles.btnSubmit_addToPlaylist} className = {Styles.btnSubmit + ' btnPrimary'} onClick = {handleSubmitAddToPlaylistForm}>Apply</button>

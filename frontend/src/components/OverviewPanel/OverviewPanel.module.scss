@@ -7,7 +7,7 @@
     width: 20%;
     padding: 36px;
 
-    overflow-y: scroll;
+    overflow-y: auto;
     background-color: #3a3a3a;
 }
 
@@ -117,7 +117,7 @@
 
 #itemDescriptionSection {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
     
     margin: 6px;

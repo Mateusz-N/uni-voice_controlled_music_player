@@ -16,9 +16,10 @@ const TrackListItem = (props) => {
     // #region Zmienne globalne
     const track = props.track
     const index = props.index;
+    const playlistID = props.playlistID;
     const playing = props.playing;
-    const handleToggleTrackPlayback = props.onPlaybackToggle;
     const userPlaylists = props.userPlaylists;
+    const handleToggleTrackPlayback = props.onPlaybackToggle;
     // #endregion
 
     const [trackSaved, setTrackSaved] = useState(track.saved);
@@ -29,8 +30,31 @@ const TrackListItem = (props) => {
     const handleToggleTrackSaved = () => {
         const initiallySaved = trackSaved;
         setTrackSaved(prevState => !prevState);
+        toggleTrackSaved(initiallySaved);
+    }
+    const handleTrackKebabMenuExpand = () => {
+        setTrackRowActive(true);
+    }
+    const handleTrackKebabMenuCollapse = () => {
+        if(!modal_addToPlaylist_open) {
+            setTrackRowActive(false);
+        }
+    }
+    const handleSelectAddToPlaylist = () => {
+        setModal_addToPlaylist_open(true);
+    }
+    const handleSelectRemoveFromPlaylist = () => {
+        removeTrackFromPlaylist(playlistID);
+    }
+    const handleModalClose_addToPlaylist = () => {
+        setModal_addToPlaylist_open(false);
+        setTrackRowActive(false);
+    }
+    // #endregion
+    
+    const toggleTrackSaved = (saved) => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/tracks/saved?ids=${track.id}`, {
-            method: initiallySaved ? 'DELETE' : 'PUT',
+            method: saved ? 'DELETE' : 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -49,22 +73,28 @@ const TrackListItem = (props) => {
             })
             .catch(console.error);
     }
-    const handleTrackKebabMenuExpand = () => {
-        setTrackRowActive(true);
+    const removeTrackFromPlaylist = (playlistID) => {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}/tracks`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                uris: [`spotify:track:${track.id}`]
+            }),
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                console.info(data.message);
+                props.onPlaylistUpdate();
+            })
+            .catch(console.error);
     }
-    const handleTrackKebabMenuCollapse = () => {
-        if(!modal_addToPlaylist_open) {
-            setTrackRowActive(false);
-        }
-    }
-    const handleSelectAddToPlaylist = () => {
-        setModal_addToPlaylist_open(true);
-    }
-    const handleModalClose_addToPlaylist = () => {
-        setModal_addToPlaylist_open(false);
-        setTrackRowActive(false);
-    }
-    // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let albumColumn = null;
@@ -78,9 +108,22 @@ const TrackListItem = (props) => {
         images: [],
         release_date: '?'
     };
-    let contextMenu_savedTracksAction = <li id = {Styles.trackList_item_contextMenu_addToFavorites} onClick = {handleToggleTrackSaved}>Add to favorites</li>;
+    let contextMenu_savedTracksAction =
+        <li id = {Styles.trackList_item_contextMenu_addToFavorites} onClick = {handleToggleTrackSaved}>
+            Add to favorites
+        </li>;
     if(trackSaved) {
-        contextMenu_savedTracksAction = <li id = {Styles.trackList_item_contextMenu_removeFromFavorites} onClick = {handleToggleTrackSaved} dangerous = 'true'>Remove from favorites</li>
+        contextMenu_savedTracksAction =
+            <li id = {Styles.trackList_item_contextMenu_removeFromFavorites} onClick = {handleToggleTrackSaved} dangerous = 'true'>
+                Remove from favorites
+            </li>
+    }
+    let contextMenu_removeFromPlaylist = null;
+    if(props.for === 'playlist') {
+        contextMenu_removeFromPlaylist =
+            <li id = {Styles.trackList_item_contextMenu_removeFromPlaylist} onClick = {handleSelectRemoveFromPlaylist} dangerous = 'true'>
+                Remove from this playlist
+            </li>
     }
     let modal_addToPlaylist = null;
     if(modal_addToPlaylist_open) {
@@ -91,6 +134,7 @@ const TrackListItem = (props) => {
                 userPlaylists = {userPlaylists.filter(playlist => playlist.owner.id === Cookies.get('userID'))}
                 open = {modal_addToPlaylist_open}
                 onClose = {handleModalClose_addToPlaylist}
+                onPlaylistUpdate = {props.onPlaylistUpdate}
             />
     }
     let kebabMenu = null;
@@ -107,6 +151,7 @@ const TrackListItem = (props) => {
                 <li id = {Styles.trackList_item_contextMenu_addToPlaylist} onClick = {handleSelectAddToPlaylist}>
                     Add to playlist...
                 </li>
+                {contextMenu_removeFromPlaylist}
             </KebabMenu>
     }
     if(track && Object.keys(track).length > 0) {

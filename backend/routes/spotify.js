@@ -181,6 +181,31 @@ const handleToggleTrackSaved = async (req, res, accessToken, method) => {
     });
   }
 }
+
+const handleTrackInPlaylist = async (req, res, accessToken, method) => {
+  const playlistID = req.params.id;
+  const trackURIs = req.body.uris;
+  const res_playlist = await axios({
+    method: method,
+    url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    },
+    data: {
+        uris: trackURIs
+      }
+  });
+  if([200, 201].includes(res_playlist.status)) {
+    res.status(res_playlist.status).send({
+      message: `Track(s) ${method === 'POST' ? 'added' : 'removed'} successfully!`
+    });
+  }
+  else {
+    res.status(res_playlist.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+}
 // #endregion
 
 // #region Punkty końcowe
@@ -481,28 +506,14 @@ router.delete('/tracks/saved', async (req, res) => {
 /* Dodanie utworów do listy odtwarzania */
 router.post('/playlist/:id/tracks', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
-  const playlistID = req.params.id;
-  const trackURIs = req.body.uris;
-  const res_playlist = await axios({
-    method: 'POST',
-    url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    },
-    data: {
-        uris: trackURIs
-      }
-  });
-  if(res_playlist.status === 201) {
-    res.status(201).send({
-      message: 'Track(s) added successfully!'
-    });
-  }
-  else {
-    res.status(res_playlist.status).send({
-      error: 'Something went wrong!'
-    });
-  }
+  handleTrackInPlaylist(req, res, accessToken, 'POST');
+});
+// #endregion
+
+/* Usunięcie utworów z listy odtwarzania */
+router.delete('/playlist/:id/tracks', async (req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  handleTrackInPlaylist(req, res, accessToken, 'DELETE');
 });
 // #endregion
 

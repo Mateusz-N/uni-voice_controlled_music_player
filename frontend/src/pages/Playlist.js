@@ -28,6 +28,9 @@ const Playlist = () => {
     const handleLogout = () => {
         setLoggedIn(false);
     }
+    const handlePlaylistUpdate = () => {
+        setTimeout(getPlaylist, 100); // Odczekaj chwilę, dopóki Spotify nie zaktualizuje swojej bazy danych
+    }
     const getPlaylist = () => {
     /*  UWAGA: Właściwości listy odtwarzania mogą być nieaktualne, jeśli niedawno miała miejsce aktualizacja.
         Jest to prawdopodobnie defekt w punkcie końcowym 'Get Playlist' Spotify API.
@@ -224,8 +227,8 @@ const Playlist = () => {
         <div id = 'page'>
             <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
-                <TrackList tracks = {playlist.tracks} for = 'playlist' />
-                <OverviewPanel key = {playlist.id} data = {playlist} for = 'playlist' />
+                <TrackList key = {'trackList' + playlist.id} tracks = {playlist.tracks} for = 'playlist' playlistID = {playlistID} onPlaylistUpdate = {handlePlaylistUpdate} />
+                <OverviewPanel key = {'overviewPanel' + playlist.id} data = {playlist} for = 'playlist' />
             </CatalogBrowser>
             <PlaybackPanel track = {{
                 duration_ms: '15000',

@@ -41,6 +41,7 @@ const AddTrackToPlaylistModal = (props) => {
         event.preventDefault();
         selectedPlaylists.forEach(playlist => addTrackToPlaylist(playlist));
         props.onClose();
+        props.onPlaylistUpdate();
     }
     const handleCancelAddToPlaylistForm = () => {
         props.onClose();

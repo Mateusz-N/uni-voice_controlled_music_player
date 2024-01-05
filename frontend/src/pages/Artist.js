@@ -7,7 +7,7 @@ import { placeholderArtist } from 'common/placeholderObjects';
 import btn_sync from 'resources/btn_sync.svg';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
-import NavBar from 'components/NavBar';
+import NavBar from 'components/NavBar/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import OverviewPanel from 'components/OverviewPanel/OverviewPanel';

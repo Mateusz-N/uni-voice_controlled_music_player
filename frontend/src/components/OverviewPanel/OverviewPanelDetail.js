@@ -2,8 +2,8 @@ import { useState, Fragment } from 'react';
 
 import { setPropertyByString } from 'common/auxiliaryFunctions';
 
-import EditButton from 'components/EditButton';
-import DetailEditForm from 'components/DetailEditForm';
+import EditButton from 'components/generic/EditButton';
+import DetailEditForm from 'components/generic/DetailEditForm';
 
 import Styles from 'components/OverviewPanel/OverviewPanelDetail.module.scss';
 

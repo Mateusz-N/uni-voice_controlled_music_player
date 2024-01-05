@@ -8,10 +8,10 @@ import btn_generate from 'resources/btn_generate.svg';
 import btn_build from 'resources/btn_build.svg';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
-import NavBar from 'components/NavBar';
+import NavBar from 'components/NavBar/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
-import PlaylistKebabMenu from 'components/PlaylistKebabMenu';
+import PlaylistKebabMenu from 'components/generic/instances/PlaylistKebabMenu';
 
 import Styles from 'pages/Home.module.scss';
 

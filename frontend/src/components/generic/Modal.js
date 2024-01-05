@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import btn_close from 'resources/btn_close.svg';
 
-import Styles from 'components/Modal.module.scss';
+import Styles from 'components/generic/Modal.module.scss';
 
 const Modal = (props) => {
     const modalID = props.id;

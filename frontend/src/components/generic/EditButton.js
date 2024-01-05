@@ -1,6 +1,6 @@
 import btn_edit from 'resources/btn_edit.svg';
 
-import Styles from 'components/EditButton.module.scss';
+import Styles from 'components/generic/EditButton.module.scss';
 
 const EditButton = (props) => {
     const ExternalStyles = props.styles;

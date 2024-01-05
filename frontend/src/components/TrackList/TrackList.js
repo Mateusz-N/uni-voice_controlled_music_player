@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
-import TrackListItem from 'components/TrackListItem';
+import TrackListItem from 'components/TrackList/TrackListItem';
 
-import Styles from 'components/TrackList.module.scss';
+import Styles from 'components/TrackList/TrackList.module.scss';
 
 const TrackList = (props) => {
     const [playingTrackID, setPlayingTrackID] = useState(null);

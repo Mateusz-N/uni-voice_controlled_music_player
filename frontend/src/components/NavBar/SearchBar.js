@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import icon_search from 'resources/icon_search.svg';
 
-import Styles from 'components/SearchBar.module.scss';
+import Styles from 'components/NavBar/SearchBar.module.scss';
 
 const SearchBar = () => {
 

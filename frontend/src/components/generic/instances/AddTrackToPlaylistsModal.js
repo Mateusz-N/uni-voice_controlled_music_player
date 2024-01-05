@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import Modal from 'components/Modal';
-import ListBox from 'components/ListBox';
+import Modal from 'components/generic/Modal';
+import ListBox from 'components/generic/ListBox';
 
-import Styles from 'components/AddTrackToPlaylistsModal.module.scss';
+import Styles from 'components/generic/instances/AddTrackToPlaylistsModal.module.scss';
 
 const AddTrackToPlaylistModal = (props) => {
     const index = props.index;

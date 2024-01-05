@@ -1,4 +1,4 @@
-import Styles from 'components/ListBox.module.scss';
+import Styles from 'components/generic/ListBox.module.scss';
 
 const ListBox = (props) => {
     const options = props.options;

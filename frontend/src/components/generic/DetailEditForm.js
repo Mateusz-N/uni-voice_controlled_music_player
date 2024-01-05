@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Select from 'components/Select';
+import Select from 'components/generic/Select';
 
 const DetailEditForm = (props) => {
     const detailName = props.detail;

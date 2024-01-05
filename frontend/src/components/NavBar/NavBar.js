@@ -6,10 +6,10 @@ import homeIcon from 'resources/home.svg';
 import microphone_idle from 'resources/microphone_idle.svg';
 import microphone_active from 'resources/microphone_active.svg';
 
-import SearchBar from 'components/SearchBar';
-import ContextMenu from 'components/ContextMenu';
+import SearchBar from 'components/NavBar/SearchBar';
+import ContextMenu from 'components/generic/ContextMenu';
 
-import Styles from 'components/NavBar.module.scss';
+import Styles from 'components/NavBar/NavBar.module.scss';
 
 const NavBar = (props) => {
     // #region Zmienne stanu (useState Hooks)

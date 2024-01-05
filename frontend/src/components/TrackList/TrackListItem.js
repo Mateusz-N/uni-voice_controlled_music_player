@@ -8,9 +8,10 @@ import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
-import Styles from 'components/TrackListItem.module.scss';
-import KebabMenu from 'components/KebabMenu';
-import AddTrackToPlaylistsModal from 'components/AddTrackToPlaylistsModal';
+import KebabMenu from 'components/generic/KebabMenu';
+import AddTrackToPlaylistsModal from 'components/generic/instances/AddTrackToPlaylistsModal';
+
+import Styles from 'components/TrackList/TrackListItem.module.scss';
 
 const TrackListItem = (props) => {
     // #region Zmienne globalne

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 
-import Styles from 'components/Select.module.scss';
-import ContextMenu from './ContextMenu';
+import ContextMenu from 'components/generic/ContextMenu';
+
+import Styles from 'components/generic/Select.module.scss';
 
 const Select = (props) => {
     const children = props.children;

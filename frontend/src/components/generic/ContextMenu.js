@@ -1,6 +1,6 @@
 import { useRef, cloneElement } from 'react';
 
-import Styles from 'components/ContextMenu.module.scss';
+import Styles from 'components/generic/ContextMenu.module.scss';
 
 const ContextMenu = (props) => {
     const contextMenu_options = useRef(null);

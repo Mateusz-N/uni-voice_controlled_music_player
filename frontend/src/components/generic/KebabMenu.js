@@ -2,9 +2,9 @@ import { useState, useEffect, Fragment } from 'react';
 
 import btn_kebab from 'resources/btn_kebab.svg';
 
-import ContextMenu from "components/ContextMenu";
+import ContextMenu from "components/generic/ContextMenu";
 
-import Styles from 'components/KebabMenu.module.scss';
+import Styles from 'components/generic/KebabMenu.module.scss';
 
 const KebabMenu = (props) => {
     const ExternalStyles = props.styles || Styles;

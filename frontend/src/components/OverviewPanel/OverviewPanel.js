@@ -6,7 +6,7 @@ import btn_pause from 'resources/btn_pause.svg';
 
 import OverviewPanelDetails from 'components/OverviewPanel/OverviewPanelDetails';
 import OverviewPanelDetail from 'components/OverviewPanel/OverviewPanelDetail';
-import PlaylistKebabMenu from 'components/PlaylistKebabMenu';
+import PlaylistKebabMenu from 'components/generic/instances/PlaylistKebabMenu';
 
 import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
 const OverviewPanel = (props) => {

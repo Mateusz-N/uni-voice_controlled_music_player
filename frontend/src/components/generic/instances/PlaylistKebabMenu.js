@@ -1,4 +1,4 @@
-import KebabMenu from 'components/KebabMenu';
+import KebabMenu from 'components/generic/KebabMenu';
 
 const PlaylistKebabMenu = (props) => {
     const playlistID = props.playlistID;

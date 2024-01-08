@@ -32,6 +32,9 @@ const Playlist = () => {
     const handlePlaylistUpdate = () => {
         setTimeout(getPlaylist, 100); // Odczekaj chwilę, dopóki Spotify nie zaktualizuje swojej bazy danych
     }
+    // #endregion
+
+    // #region Funkcje pomocnicze
     const getPlaylist = () => {
     /*  UWAGA: Właściwości listy odtwarzania mogą być nieaktualne, jeśli niedawno miała miejsce aktualizacja.
         Jest to prawdopodobnie defekt w punkcie końcowym 'Get Playlist' Spotify API.

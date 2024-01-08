@@ -3,7 +3,9 @@ import OverviewPanelDetail from './OverviewPanelDetail';
 import Styles from 'components/OverviewPanel/OverviewPanelDetails.module.scss';
 
 const OverviewPanelDetails = (props) => {
+    // #region Zmienne globalne
     const items = props.items;
+    // #endregion
 
     // #region Struktura komponentu (JSX)
     return(

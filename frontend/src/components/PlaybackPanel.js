@@ -62,10 +62,6 @@ const PlaybackPanel = (props) => {
     const handleNextTrack = () => {
         // to-do
     }
-    const getRelativeProgressBarPointPosition = (event) => {
-        const progressBarBoundingRect = document.getElementById(Styles.progressBar).getBoundingClientRect();
-        return (event.clientX - progressBarBoundingRect.left) / progressBarBoundingRect.width; // Część całości paska na którą wskazuje zdarzenie [0, 1]
-    }
     const handleProgressBarMouseDown = (event) => {
         if(event.button === 0) { // Tylko lewy przycisk myszy
             setProgressBarInDragMode(true);
@@ -107,6 +103,11 @@ const PlaybackPanel = (props) => {
     }
     // #endregion
 
+    // #region Funkcje pomocnicze
+    const getRelativeProgressBarPointPosition = (event) => {
+        const progressBarBoundingRect = document.getElementById(Styles.progressBar).getBoundingClientRect();
+        return (event.clientX - progressBarBoundingRect.left) / progressBarBoundingRect.width; // Część całości paska na którą wskazuje zdarzenie [0, 1]
+    }
     const determineVolumeIcon = () => {
         if(volumePercentage <= 100 && volumePercentage > 75) {
             return volume_75_100;
@@ -124,6 +125,7 @@ const PlaybackPanel = (props) => {
             return volume_muted;
         }
     }
+    // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {

@@ -2,6 +2,7 @@ import { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
+import { requestToggleTrackSaved, requestRemoveTrackFromPlaylist } from 'common/serverRequests';
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
@@ -23,9 +24,11 @@ const TrackListItem = (props) => {
     const handleToggleTrackPlayback = props.onPlaybackToggle;
     // #endregion
 
+    // #region Zmienne stanu (useState Hooks)
     const [trackSaved, setTrackSaved] = useState(track.saved);
     const [modal_addToPlaylist_open, setModal_addToPlaylist_open] = useState(false);
     const [trackRowActive, setTrackRowActive] = useState(false);
+    // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackSaved = () => {
@@ -53,49 +56,19 @@ const TrackListItem = (props) => {
     }
     // #endregion
     
+    // #region Funkcje pomocnicze
     const toggleTrackSaved = (saved) => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/tracks/saved?ids=${track.id}`, {
-            method: saved ? 'DELETE' : 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-                if(response.status === 401) {
-                    throw new Error('Invalid access token!');
-                }
-            })
-            .then((data) => {
-                console.info(data.message);
-            })
-            .catch(console.error);
+        requestToggleTrackSaved(track.id, saved, (data) => {
+            console.info(data.message);
+        });
     }
     const removeTrackFromPlaylist = (playlistID) => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}/tracks`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                uris: [`spotify:track:${track.id}`]
-            }),
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                console.info(data.message);
-                props.onPlaylistUpdate();
-            })
-            .catch(console.error);
+        requestRemoveTrackFromPlaylist(playlistID, [`spotify:track:${track.id}`], (data) => {
+            console.info(data.message);
+            props.onPlaylistUpdate();
+        });
     }
+    // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let albumColumn = null;

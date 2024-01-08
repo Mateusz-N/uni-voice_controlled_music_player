@@ -139,6 +139,28 @@ export const requestAddTrackToPlaylist = async (playlistID, trackURIs, callback)
             callback(data);
         })
         .catch(console.error);
+}
+
+export const requestRemoveTrackFromPlaylist = async (playlistID, trackURIs, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}/tracks`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            uris: trackURIs
+        }),
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
     }
 
 export const requestCreatePlaylist = async (userID, callback) => {
@@ -270,6 +292,28 @@ export const requestGetTracksSavedStatus = async (trackIDs, callback) => {
         })
         .catch(console.error);
 }
+
+export const requestToggleTrackSaved = async (trackID, saved, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/tracks/saved?ids=${trackID}`, {
+        method: saved ? 'DELETE' : 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+            if(response.status === 401) {
+                throw new Error('Invalid access token!');
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
+    }
 
 export const requestSearch = async (query, itemTypes, callback) => {
     const itemTypesParam = itemTypes ? `&type=${itemTypes}` : '';

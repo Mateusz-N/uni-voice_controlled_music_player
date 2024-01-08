@@ -9,19 +9,19 @@ import FormControlSection from 'components/generic/FormControlSection';
 import Styles from 'components/generic/instances/AddTrackToPlaylistsModal.module.scss';
 
 const AddTrackToPlaylistModal = (props) => {
+    // #region Zmienne globalne
     const index = props.index;
     const track = props.track;
     const userPlaylists = props.userPlaylists;
+    // #endregion
 
+    // #region Zmienne stanu (useState Hooks)
     const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+    // #endregion
 
+    // #region Obsługa zdarzeń
     const handleSelectPlaylists = (playlistIDs) => {
         setSelectedPlaylists(playlistIDs)
-    }
-    const addTrackToPlaylist = (playlistID) => {
-        requestAddTrackToPlaylist(playlistID, [`spotify:track:${track.id}`], (data) => {
-            console.info(data.message);
-        });
     }
     const handleSubmitAddToPlaylistForm = (event) => {
         event.preventDefault();
@@ -32,7 +32,17 @@ const AddTrackToPlaylistModal = (props) => {
     const handleCancelAddToPlaylistForm = () => {
         props.onClose();
     }
+    // #endregion
 
+    // #region Funkcje pomocnicze
+    const addTrackToPlaylist = (playlistID) => {
+        requestAddTrackToPlaylist(playlistID, [`spotify:track:${track.id}`], (data) => {
+            console.info(data.message);
+        });
+    }
+    // #endregion
+
+    // #region Struktura komponentu (JSX)
     return(
         <Modal key = {track.id} title = 'Add track to playlist(s)...' id = {'trackList_item_addToPlaylist_' + index} onClose = {props.onClose} styles = {Styles}>
             <form id = {Styles.form_addToPlaylist} onSubmit = {handleSubmitAddToPlaylistForm}>
@@ -50,6 +60,7 @@ const AddTrackToPlaylistModal = (props) => {
             </form>
         </Modal>
     );
+    // #endregion
 }
 
 export default AddTrackToPlaylistModal;

@@ -13,7 +13,9 @@ import CatalogBrowser from 'components/CatalogBrowser';
 import Styles from 'pages/Home.module.scss';
 
 const Search = () => {
+    // #region Zmienne lokacji (useLocation Hooks)
     const windowLocation = useLocation();
+    // #endregion
 
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));

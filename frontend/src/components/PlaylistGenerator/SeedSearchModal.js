@@ -10,13 +10,18 @@ import ListBox from 'components/generic/ListBox';
 import Styles from 'components/PlaylistGenerator/SeedSearchModal.module.scss';
 
 const SeedSearchModal = (props) => {
+    // #region Zmienne globalne
     const seeds = props.seeds;
+    // #endregion
 
+    // #region Zmienne stanu (useState Hooks)
     const [selectedSeedType, setSelectedSeedType] = useState('Artist');
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState({results: [], seedType: null});
     const [searchSwitch, setSearchSwitch] = useState(false);
+    // #endregion
 
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleCancelAddSeedForm = () => {
         props.onCancel();
     }
@@ -31,7 +36,9 @@ const SeedSearchModal = (props) => {
         const seed = searchResults.results.find(result => result.id === seedID);
         props.onSubmit(seed.id, seed.name, searchResults.seedType);
     }
+    // #endregion
     
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         /* Bug: pojedyncze zapytanie powoduje odpowiedź 429: Too many requests */
         if(selectedSeedType.toLowerCase() === 'genre') {
@@ -49,7 +56,9 @@ const SeedSearchModal = (props) => {
             });
         }
     },[searchSwitch]);
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <Modal title = 'Add seed...' id = 'addSeedSearch' styles = {Styles} onClose = {handleCancelAddSeedForm}>
             <main id = {Styles.main_seedSearchModal}>
@@ -96,6 +105,7 @@ const SeedSearchModal = (props) => {
             </main>
         </Modal>
     );
+    // #endregion
 }
 
 export default SeedSearchModal;

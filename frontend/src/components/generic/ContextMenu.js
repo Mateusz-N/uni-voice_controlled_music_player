@@ -3,10 +3,16 @@ import { useRef, cloneElement } from 'react';
 import Styles from 'components/generic/ContextMenu.module.scss';
 
 const ContextMenu = (props) => {
-    const contextMenu_options = useRef(null);
-
+    // #region Zmienne globalne
     const context = props.context;
     const ExternalStyles = props.styles;
+    // #endregion
+
+    // #region Zmienne referencji (useRef Hooks)
+    const contextMenu_options = useRef(null);
+    // #endregion
+
+    // #region Wstępne przetworzenie właściwości (props)
     const children = [];
     props.children.forEach((option, index) => {
         if(option !== null) {
@@ -18,7 +24,9 @@ const ContextMenu = (props) => {
             }));
         }
     });
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <menu
             id = {ExternalStyles[context + '_contextMenu']}
@@ -30,6 +38,7 @@ const ContextMenu = (props) => {
             </ul>
         </menu>
     );
+    // #endregion
 }
 
 export default ContextMenu;

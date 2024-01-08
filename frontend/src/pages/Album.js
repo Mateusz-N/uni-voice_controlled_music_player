@@ -31,6 +31,9 @@ const Album = () => {
     const handleLogout = () => {
         setLoggedIn(false);
     }
+    // #endregion
+
+    // #region Funkcje pomocnicze
     const getAlbum = () => {
         if(!loggedIn) {
             setAlbum(placeholderAlbum);

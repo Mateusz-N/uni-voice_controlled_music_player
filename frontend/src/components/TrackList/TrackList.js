@@ -6,6 +6,7 @@ import TrackListItem from 'components/TrackList/TrackListItem';
 import Styles from 'components/TrackList/TrackList.module.scss';
 
 const TrackList = (props) => {
+    // #region Zmienne stanu (useState Hooks)
     const [playingTrackID, setPlayingTrackID] = useState(null);
     const [userPlaylists, setUserPlaylists] = useState([]);
 
@@ -20,11 +21,13 @@ const TrackList = (props) => {
     }
     // #endregion
 
+    // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         requestGetPlaylists((data) => {
             setUserPlaylists(data);
         });
-    },[])
+    },[]);
+    // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let tracks = [];

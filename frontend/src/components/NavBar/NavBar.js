@@ -22,11 +22,12 @@ const NavBar = (props) => {
     const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
     // #endregion
 
+    // #region Zmienne referencji (useRef Hooks)
     const ref_profilePic = useRef(null);
-    const navigate = useNavigate();
+    // #endregion
 
-    // #region Zmienne konfiguracyjne
-    const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+    // #region Zmienne nawigacji (useNavigate Hooks)
+    const navigate = useNavigate();
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)

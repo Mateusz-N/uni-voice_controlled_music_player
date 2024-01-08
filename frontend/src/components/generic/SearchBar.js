@@ -5,11 +5,13 @@ import icon_search from 'resources/icon_search.svg';
 import Styles from 'components/generic/SearchBar.module.scss';
 
 const SearchBar = (props) => {
-
+    // #region Zmienne referencji (useRef Hooks)
     const searchForm = useRef(null);
     const searchInput = useRef(null);
     const searchIcon = useRef(null);
+    // #endregion
 
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleSearchFormSubmit = (event) => {
         event.preventDefault();
         props.onSubmit(searchInput.current.value);
@@ -17,6 +19,7 @@ const SearchBar = (props) => {
     const handleSearchIconClick = (event) => {
         handleSearchFormSubmit(event);
     }
+    // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {

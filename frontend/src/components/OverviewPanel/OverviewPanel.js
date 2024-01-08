@@ -12,13 +12,17 @@ import PlaylistKebabMenu from 'components/generic/instances/PlaylistKebabMenu';
 
 import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
 const OverviewPanel = (props) => {
+    // #region Zmienne globalne
     const itemData = props.data;
+    // #endregion
     
     // #region Zmienne stanu (useState Hooks)
     const [playlistPaused, setPlaylistPaused] = useState(true);
     // #endregion
 
+    // #region Zmienne nawigacji (useNavigate Hooks)
     const navigate = useNavigate();
+    // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleTogglePlaylistPlayback = () => {

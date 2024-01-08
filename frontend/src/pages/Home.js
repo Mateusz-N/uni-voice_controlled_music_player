@@ -19,6 +19,7 @@ import PlaylistGeneratorModal from 'components/PlaylistGenerator/PlaylistGenerat
 import Styles from 'pages/Home.module.scss';
 
 const Home = () => {
+    // #region Zmienne globalne
     const playlistGenerator = {
         id: '0',
         type: 'generator',
@@ -37,11 +38,20 @@ const Home = () => {
         name: 'Saved tracks',
         thumbnailSrc: placeholderAlbumCoverSrc
     }
+    // #endregion
 
+    // #region Zmienne stanu (useState Hooks)
     const [playlists, setPlaylists] = useState([playlistGenerator, playlistBuilder]);
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
+    // #endregion
+
+    // #region Zmienne referencji (useRef Hooks)
     const btnSync = useRef(null);
+    // #endregion
+
+    // #region Zmienne nawigacji (useNavigate Hooks)
     const navigate = useNavigate();
+    // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
@@ -79,6 +89,7 @@ const Home = () => {
     }
     // #endregion
     
+    // #region Funkcje pomocnicze
     const getPlaylists = () => {
         const userID = Cookies.get('userID');
         if(!userID) {
@@ -99,6 +110,7 @@ const Home = () => {
             return data.playlistID;
         });
     }
+    // #endregion
     
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {

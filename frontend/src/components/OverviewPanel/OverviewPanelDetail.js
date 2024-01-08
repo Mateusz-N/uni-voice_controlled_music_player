@@ -8,7 +8,9 @@ import DetailEditForm from 'components/generic/DetailEditForm';
 import Styles from 'components/OverviewPanel/OverviewPanelDetail.module.scss';
 
 const OverviewPanelDetail = (props) => {
+    // #region Zmienne globalne
     const ExternalStyles = props.styles;
+    // #endregion
 
     // #region Zmienne stanu (useState Hooks)
     const [itemData, setItemData] = useState(props.item);
@@ -38,12 +40,14 @@ const OverviewPanelDetail = (props) => {
     }
     // #endregion
 
+    // #region Funkcje pomocnicze
     const wrapDetail = (children) => {
         if(props.standalone) {
             return <Fragment>{children}</Fragment>
         }
         return <li className = {Styles.overviewPanelDetails_detail}>{children}</li>
     }
+    // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
     let span_itemName =

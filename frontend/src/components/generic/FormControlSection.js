@@ -1,9 +1,12 @@
 import Styles from 'components/generic/FormControlSection.module.scss';
 
 const FormControlSection = (props) => {
+    // #region Zmienne globalne
     const context = props.context;
     const ExternalStyles = props.styles;
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <section className = {Styles.formControlSection}>
             <button
@@ -21,6 +24,7 @@ const FormControlSection = (props) => {
             </button>
         </section>
     );
+    // #endregion
 }
 
 export default FormControlSection;

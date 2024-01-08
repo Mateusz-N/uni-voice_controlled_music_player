@@ -11,58 +11,7 @@ import SeedSearchModal from 'components/PlaylistGenerator/SeedSearchModal';
 import Styles from 'components/PlaylistGenerator/PlaylistGeneratorModal.module.scss';
 
 const PlaylistGeneratorModal = (props) => {
-    const [parameters, setParameters] = useState({});
-    const [seeds, setSeeds] = useState([]);
-    const [seedSearchModalOpen, setSeedSearchModalOpen] = useState(false);
-
-    const ref_form_playlistGenerator = useRef(null);
-
-    const handleSubmitPlaylistGeneratorForm = (event) => {
-        if(!ref_form_playlistGenerator.current.checkValidity()) {
-            ref_form_playlistGenerator.current.reportValidity();
-        }
-        event.preventDefault();
-        const recommendationsURL = new URL(`${process.env.REACT_APP_SERVER_URL}/spotify/recommendations`);
-        ['Artist', 'Genre', 'Track'].forEach(seedType => {
-            const seedSet = seeds.filter(seed => seed.type === seedType).map(seed => seed.id).join(',');
-            if(seedSet.length > 0) {
-                recommendationsURL.searchParams.set('seed_' + seedType.toLowerCase() + 's', seedSet);
-            }
-        });
-        Object.keys(parameters).forEach(parameter => recommendationsURL.searchParams.set(parameter, parameters[parameter]));
-        requestGetRecommendations(recommendationsURL, (data) => {
-            props.onSubmit(data.tracks);
-        })
-    }
-    const handleCancelPlaylistGeneratorForm = () => {
-        props.onCancel();
-    }
-    const handleAddSeed = () => {
-        if(seeds.length >= 5) {
-            console.error('Cannot add any more seeds! The maximum is 5.');
-            return;
-        }
-        setSeedSearchModalOpen(true);
-    }
-    const handleRemoveSeed = (seedID) => {
-        setSeeds(prevState => prevState.filter(seed => seed.id !== seedID));
-    }
-    const handleCancelAddSeedSearch = () => {
-        setSeedSearchModalOpen(false);
-    }
-    const handleSubmitAddSeedSearch = (seedID, seedName, seedType) => {
-        setSeedSearchModalOpen(false);
-        setSeeds(prevState => [...prevState, {id: seedID, type: seedType, text: seedType + ': ' + seedName}]);
-    }
-    const handleUpdateParameters = (parameter) => {
-        const parameterName = Object.keys(parameter)[0];
-        const parameterValue = Object.values(parameter)[0];
-        if(parameterName.includes('track_duration_ms')) {
-            parameterValue *= 60000;
-        }
-        setParameters(prevState => ({...prevState, [parameterName]: parameterValue}));
-    }
-
+    // #region Zmienne globalne
     const minMaxTargetFields = [{
         name: 'acousticness',
         displayName: 'Acousticness',
@@ -148,7 +97,67 @@ const PlaylistGeneratorModal = (props) => {
         max: 1,
         step: 0.01
     }];
+    // #endregion
 
+    // #region Zmienne stanu (useState Hooks)
+    const [parameters, setParameters] = useState({});
+    const [seeds, setSeeds] = useState([]);
+    const [seedSearchModalOpen, setSeedSearchModalOpen] = useState(false);
+    // #endregion
+
+    // #region Zmienne referencji (useRef Hooks)
+    const ref_form_playlistGenerator = useRef(null);
+    // #endregion
+
+    // #region Obsługa zdarzeń (Event Handlers)
+    const handleSubmitPlaylistGeneratorForm = (event) => {
+        if(!ref_form_playlistGenerator.current.checkValidity()) {
+            ref_form_playlistGenerator.current.reportValidity();
+        }
+        event.preventDefault();
+        const recommendationsURL = new URL(`${process.env.REACT_APP_SERVER_URL}/spotify/recommendations`);
+        ['Artist', 'Genre', 'Track'].forEach(seedType => {
+            const seedSet = seeds.filter(seed => seed.type === seedType).map(seed => seed.id).join(',');
+            if(seedSet.length > 0) {
+                recommendationsURL.searchParams.set('seed_' + seedType.toLowerCase() + 's', seedSet);
+            }
+        });
+        Object.keys(parameters).forEach(parameter => recommendationsURL.searchParams.set(parameter, parameters[parameter]));
+        requestGetRecommendations(recommendationsURL, (data) => {
+            props.onSubmit(data.tracks);
+        })
+    }
+    const handleCancelPlaylistGeneratorForm = () => {
+        props.onCancel();
+    }
+    const handleAddSeed = () => {
+        if(seeds.length >= 5) {
+            console.error('Cannot add any more seeds! The maximum is 5.');
+            return;
+        }
+        setSeedSearchModalOpen(true);
+    }
+    const handleRemoveSeed = (seedID) => {
+        setSeeds(prevState => prevState.filter(seed => seed.id !== seedID));
+    }
+    const handleCancelAddSeedSearch = () => {
+        setSeedSearchModalOpen(false);
+    }
+    const handleSubmitAddSeedSearch = (seedID, seedName, seedType) => {
+        setSeedSearchModalOpen(false);
+        setSeeds(prevState => [...prevState, {id: seedID, type: seedType, text: seedType + ': ' + seedName}]);
+    }
+    const handleUpdateParameters = (parameter) => {
+        const parameterName = Object.keys(parameter)[0];
+        const parameterValue = Object.values(parameter)[0];
+        if(parameterName.includes('track_duration_ms')) {
+            parameterValue *= 60000;
+        }
+        setParameters(prevState => ({...prevState, [parameterName]: parameterValue}));
+    }
+    // #endregion
+
+    // #region Przypisanie dynamicznych elementów komponentu
     let seedSearchModal = null;
     if(seedSearchModalOpen) {
         seedSearchModal =
@@ -158,7 +167,9 @@ const PlaylistGeneratorModal = (props) => {
                 onCancel = {handleCancelAddSeedSearch}
             />
     }
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <>
             <Modal title = 'Generate playlist...' id = 'playlistGenerator' styles = {Styles} onClose = {handleCancelPlaylistGeneratorForm}>
@@ -209,6 +220,7 @@ const PlaylistGeneratorModal = (props) => {
             {seedSearchModal}
         </>
     );
+    // #endregion
 }
 
 export default PlaylistGeneratorModal;

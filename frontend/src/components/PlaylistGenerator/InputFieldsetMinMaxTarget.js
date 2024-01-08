@@ -2,6 +2,7 @@ import InputFieldset from 'components/PlaylistGenerator/InputFieldset';
 import InputSection from 'components/PlaylistGenerator/InputSection';
 
 const InputFieldsetMinMaxTarget = (props) => {
+    // #region Zmienne globalne
     const fieldsetName = props.fieldsetName;
     const fieldsetLegend = props.fieldsetLegend;
     const inputName = props.inputName;
@@ -9,11 +10,15 @@ const InputFieldsetMinMaxTarget = (props) => {
     const max = props.max;
     const step = props.step;
     const ExternalStyles = props.styles;
+    // #endregion
 
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleInput = (event) => {
         props.onChange({[event.target.name]: event.target.value});
     }
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <InputFieldset name = {fieldsetName} legend = {fieldsetLegend} styles = {ExternalStyles} className = {ExternalStyles.inputFieldset_minMaxTarget}>
             <InputSection inputName = {inputName + 'Min'} label = 'Min' styles = {ExternalStyles}>
@@ -51,6 +56,7 @@ const InputFieldsetMinMaxTarget = (props) => {
             </InputSection>
         </InputFieldset>
     );
+    // #endregion
 }
 
 export default InputFieldsetMinMaxTarget;

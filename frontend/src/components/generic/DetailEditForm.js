@@ -4,6 +4,7 @@ import Select from 'components/generic/Select';
 import FormControlSection from 'components/generic/FormControlSection';
 
 const DetailEditForm = (props) => {
+    // #region Zmienne globalne
     const detailName = props.detail;
     const defaultValue = props.defaultValue;
     const inputType = props.inputType;
@@ -11,16 +12,22 @@ const DetailEditForm = (props) => {
     const inputChildren = props.inputChildren;
     const excludeControls = props.excludeControls;
     const ExternalStyles = props.styles || {};
+    // #endregion
 
+    // #region Zmienne stanu (useState Hooks)
     const [detailValue, setDetailValue] = useState(defaultValue);
+    // #endregion
 
+    // #region Obsługa zdarzeń (Event Handlers)
     const handleUpdateDetailValue = (newValue) => {
         setDetailValue(newValue);
         if(excludeControls) {
             props.onSubmit(null, newValue);
         }
     }
+    // #endregion
 
+    // #region Przypisanie dynamicznych elementów komponentu
     let input;
     let formStyle;
     if(inputType === 'select') {
@@ -57,7 +64,6 @@ const DetailEditForm = (props) => {
                 {...inputAttributes}
             />
     }
-
     let formControlSection = null;
     if(!excludeControls) {
         formControlSection =
@@ -68,13 +74,16 @@ const DetailEditForm = (props) => {
                 styles = {ExternalStyles}
             />
     }
+    // #endregion
 
+    // #region Struktura komponentu (JSX)
     return(
         <form id = {ExternalStyles['form_item' + detailName]} className = {ExternalStyles['form_item']} onSubmit = {event => props.onSubmit(event, detailValue)} style = {formStyle}>
             {input}
             {formControlSection}
         </form>
     );
+    // #endregion
 }
 
 export default DetailEditForm;

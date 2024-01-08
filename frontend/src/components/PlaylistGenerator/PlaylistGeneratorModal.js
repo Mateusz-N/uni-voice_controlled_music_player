@@ -22,8 +22,7 @@ const PlaylistGeneratorModal = (props) => {
                 recommendationsURL.searchParams.set('seed_' + seedType.toLowerCase() + 's', seedSet);
             }
         });
-        Object.keys(parameters).forEach(parameter => recommendationsURL.searchParams.set(parameter, parameters[parameter]))
-        console.log(recommendationsURL)
+        Object.keys(parameters).forEach(parameter => recommendationsURL.searchParams.set(parameter, parameters[parameter]));
         await fetch(recommendationsURL, {
             method: 'GET',
             headers: {
@@ -37,9 +36,9 @@ const PlaylistGeneratorModal = (props) => {
                 }
             })
             .then((data) => {
+                props.onSubmit(data.tracks);
             })
             .catch(console.error);
-        props.onSubmit();
     }
     const handleCancelPlaylistGeneratorForm = () => {
         props.onCancel();
@@ -62,7 +61,12 @@ const PlaylistGeneratorModal = (props) => {
         setSeeds(prevState => [...prevState, {id: seedID, type: seedType, text: seedType + ': ' + seedName}]);
     }
     const handleUpdateParameters = (parameter) => {
-        setParameters(prevState => ({...prevState, [Object.keys(parameter)[0]]: Object.values(parameter)[0]}));
+        const parameterName = Object.keys(parameter)[0];
+        const parameterValue = Object.values(parameter)[0];
+        if(parameterName.includes('track_duration_ms')) {
+            parameterValue *= 60000;
+        }
+        setParameters(prevState => ({...prevState, [parameterName]: parameterValue}));
     }
 
     const minMaxTargetFields = [{

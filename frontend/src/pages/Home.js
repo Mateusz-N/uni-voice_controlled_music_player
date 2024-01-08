@@ -65,8 +65,28 @@ const Home = () => {
     const handleOpenPlaylistGenerator = () => {
         setPlaylistGeneratorModalOpen(true);
     }
-    const handleGeneratePlaylist = () => {
-        
+    const handleGeneratePlaylist = async (tracks) => {
+        const newPlaylistID = await createPlaylist();
+        await fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${newPlaylistID}/tracks`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                uris: tracks.map(track => `spotify:track:${track.id}`)
+            }),
+            credentials: 'include'
+        })
+            .then((response) => {
+                if(response.ok) {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                console.info(data.message);
+            })
+            .catch(console.error);
+        navigate(`/playlist/${newPlaylistID}`);
     }
     const handleModalClose_playlistGenerator = () => {
         setPlaylistGeneratorModalOpen(false);
@@ -150,7 +170,8 @@ const Home = () => {
                             }
                             let playlistGeneratorModal = null;
                             if(playlistGeneratorModalOpen && playlist.type === 'generator') {
-                                playlistGeneratorModal = <PlaylistGeneratorModal onSubmit = {handleGeneratePlaylist} onCancel = {handleModalClose_playlistGenerator} />
+                                playlistGeneratorModal =
+                                    <PlaylistGeneratorModal onSubmit = {(tracks) => handleGeneratePlaylist(tracks)} onCancel = {handleModalClose_playlistGenerator} />
                             }
                             return(
                                 <figure key = {index} className = {Styles.catalogItem}>

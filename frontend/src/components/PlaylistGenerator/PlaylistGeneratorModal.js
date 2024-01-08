@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import Modal from 'components/generic/Modal';
 import InputFieldsetMinMaxTarget from 'components/PlaylistGenerator/InputFieldsetMinMaxTarget';
@@ -13,7 +13,12 @@ const PlaylistGeneratorModal = (props) => {
     const [seeds, setSeeds] = useState([]);
     const [seedSearchModalOpen, setSeedSearchModalOpen] = useState(false);
 
+    const ref_form_playlistGenerator = useRef(null);
+
     const handleSubmitPlaylistGeneratorForm = async (event) => {
+        if(!ref_form_playlistGenerator.current.checkValidity()) {
+            ref_form_playlistGenerator.current.reportValidity();
+        }
         event.preventDefault();
         const recommendationsURL = new URL(`${process.env.REACT_APP_SERVER_URL}/spotify/recommendations`);
         ['Artist', 'Genre', 'Track'].forEach(seedType => {
@@ -168,7 +173,7 @@ const PlaylistGeneratorModal = (props) => {
     return(
         <>
             <Modal title = 'Generate playlist...' id = 'playlistGenerator' styles = {Styles} onClose = {handleCancelPlaylistGeneratorForm}>
-                <form id = {Styles.form_playlistGenerator}>
+                <form id = {Styles.form_playlistGenerator} ref = {ref_form_playlistGenerator}>
                     <main id = {Styles.form_playlistGeneratorMain}>
                         <section className = {Styles.form_playlistGeneratorSection} id = {Styles.form_playlistGeneratorSection_parameters}>
                             <h3 className = {Styles.form_playlistGeneratorSection_heading}>Parameters</h3>
@@ -191,9 +196,16 @@ const PlaylistGeneratorModal = (props) => {
                             </main>
                         </section>
                         <section className = {Styles.form_playlistGeneratorSection} id = {Styles.form_playlistGeneratorSection_seeds}>
-                            <h3 className = {Styles.form_playlistGeneratorSection_heading}>Seeds</h3>
+                            <h3 className = {Styles.form_playlistGeneratorSection_heading}>Seeds <span className = 'requiredFieldSymbol'>*</span></h3>
                             <main className = {Styles.form_playlistGeneratorSection_main} id = {Styles.form_playlistGenerator_seedChipBox}>
-                                <ChipBox chips = {seeds} context = 'playlistGenerator_seeds' styles = {Styles} onAddChip = {handleAddSeed} onRemoveChip = {handleRemoveSeed} />
+                                <ChipBox
+                                    chips = {seeds}
+                                    placeholder = 'Add at least one and up to 5 different seeds.'
+                                    context = 'playlistGenerator_seeds'
+                                    styles = {Styles}
+                                    onAddChip = {handleAddSeed}
+                                    onRemoveChip = {handleRemoveSeed}
+                                />
                             </main>
                         </section>
                     </main>

@@ -5,12 +5,19 @@ import Styles from 'components/generic/ChipBox.module.scss';
 
 const ChipBox = (props) => {
     const chips = props.chips;
+    const placeholder = props.placeholder;
     const context = props.context;
     const ExternalStyles = props.styles;
+
+    let placeholderText = null;
+    if(chips.length === 0) {
+        placeholderText = <p id = {Styles.placeholder}>{placeholder}</p>;
+    }
 
     return(
         <div className = {Styles.chipBox} id = {ExternalStyles['chipBox_' + context]}>
             <img src = {btn_chipAdd} alt = 'Add' className = {Styles.btn_chipAdd + ' ' + ExternalStyles.btn_chipAdd} onClick = {props.onAddChip} />
+            {placeholderText}
             {chips.map((chip, index) => {
                 return(
                     <div key = {index} className = {Styles.chip + ' ' + ExternalStyles['chip_' + context]}>

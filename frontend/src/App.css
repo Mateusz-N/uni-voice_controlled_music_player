@@ -26,6 +26,10 @@ form textarea {
   resize: none;
 }
 
+.requiredFieldSymbol {
+  color: rgb(255, 55, 55);
+}
+
 .btnPrimary {
   background-color: rgb(255, 200, 0);
   color: #222;

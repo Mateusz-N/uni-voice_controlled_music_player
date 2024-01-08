@@ -1,6 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+ 
+import { requestSearch } from 'common/serverRequests';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
@@ -34,24 +36,11 @@ const Search = () => {
             return;
         }
         const query = new URLSearchParams(windowLocation.search).get('query');
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/search?query=${query}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                Object.keys(data).forEach(type => {
-                    setResults(prevState => [...prevState, ...data[type]]);
-                });
-            })
-            .catch(console.error);
+        requestSearch(query, null, (data) => {
+            Object.keys(data).forEach(type => {
+                setResults(prevState => [...prevState, ...data[type]]);
+            });
+        });
     }, [loggedIn]);
     // #endregion
 

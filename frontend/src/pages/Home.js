@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
+import { requestGetPlaylists, requestCreatePlaylist, requestGeneratePlaylist } from 'common/serverRequests';
+
 import btn_sync from 'resources/btn_sync.svg';
 import btn_generate from 'resources/btn_generate.svg';
 import btn_build from 'resources/btn_build.svg';
@@ -67,26 +69,10 @@ const Home = () => {
     }
     const handleGeneratePlaylist = async (tracks) => {
         const newPlaylistID = await createPlaylist();
-        await fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${newPlaylistID}/tracks`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                uris: tracks.map(track => `spotify:track:${track.id}`)
-            }),
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                console.info(data.message);
-            })
-            .catch(console.error);
-        navigate(`/playlist/${newPlaylistID}`);
+        requestGeneratePlaylist(tracks, newPlaylistID, (data) => {
+            console.info(data.message);
+            navigate(`/playlist/${newPlaylistID}`);
+        });
     }
     const handleModalClose_playlistGenerator = () => {
         setPlaylistGeneratorModalOpen(false);
@@ -99,48 +85,19 @@ const Home = () => {
             return;
         }
         btnSync.current.classList.add(Styles.spinning);
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                setPlaylists([playlistGenerator, playlistBuilder, savedTracks, ...data]);
-                btnSync.current.classList.remove(Styles.spinning);
-            })
-            .catch(console.error);
+        requestGetPlaylists((data) => {
+            setPlaylists([playlistGenerator, playlistBuilder, savedTracks, ...data]);
+            btnSync.current.classList.remove(Styles.spinning);
+        });
     }
     const createPlaylist = async () => {
         const userID = Cookies.get('userID');
         if(!userID) {
             return;
         }
-        return fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/${userID}/playlist`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-                if(response.status === 401) {
-                    throw new Error('Invalid access token!');
-                }
-            })
-            .then((data) => {
-                return data.playlistID;
-            })
-            .catch(console.error);
+        return requestCreatePlaylist(userID, (data) => {
+            return data.playlistID;
+        });
     }
     
     // #region Wywołania zwrotne (useEffect Hooks)

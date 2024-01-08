@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { requestAddTrackToPlaylist } from 'common/serverRequests';
+
 import Modal from 'components/generic/Modal';
 import ListBox from 'components/generic/ListBox';
 import FormControlSection from 'components/generic/FormControlSection';
@@ -17,25 +19,9 @@ const AddTrackToPlaylistModal = (props) => {
         setSelectedPlaylists(playlistIDs)
     }
     const addTrackToPlaylist = (playlistID) => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}/tracks`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                uris: [`spotify:track:${track.id}`]
-            }),
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                console.info(data.message);
-            })
-            .catch(console.error);
+        requestAddTrackToPlaylist(playlistID, [`spotify:track:${track.id}`], (data) => {
+            console.info(data.message);
+        });
     }
     const handleSubmitAddToPlaylistForm = (event) => {
         event.preventDefault();

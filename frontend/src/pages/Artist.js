@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 
+import { requestGetArtist, requestGetArtistAlbums } from 'common/serverRequests';
 import { placeholderArtist } from 'common/placeholderObjects';
 
 import btn_sync from 'resources/btn_sync.svg';
@@ -41,66 +42,46 @@ const Artist = () => {
             return;
         }
         btnSync.current.classList.add(Styles.spinning);
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/artist/${artistID}`, {
-            method: 'GET',
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json()
-                }
-            })
-            .then((data) => {
-                const artist = {
-                    id: artistID,
-                    name: data.name,
-                    thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
-                    genres: data.genres,
-                    followers: data.followers.total,
-                    popularity: data.popularity,
-                    detailsToDisplay: [{
-                        name: 'Name',
-                        content: data.name || '',
-                        showSeparately: true
-                    }, {
-                        name: 'Genres',
-                        content: data.genres ? data.genres.join(', ') : 'N/A',
-                        showSeparately: false
-                    }, {
-                        name: 'Followers',
-                        content: data.followers.total || 'N/A',
-                        showSeparately: false
-                    }, {
-                        name: 'Popularity',
-                        content: data.popularity || 'N/A',
-                        showSeparately: false
-                    }, {
-                        name: 'Description',
-                        content: '',
-                        showSeparately: true
-                    }]
-                }
-                setArtist(artist);
-            })
-            .catch(console.error);
+        requestGetArtist(artistID, (data) => {
+            const artist = {
+                id: artistID,
+                name: data.name,
+                thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
+                genres: data.genres,
+                followers: data.followers.total,
+                popularity: data.popularity,
+                detailsToDisplay: [{
+                    name: 'Name',
+                    content: data.name || '',
+                    showSeparately: true
+                }, {
+                    name: 'Genres',
+                    content: data.genres ? data.genres.join(', ') : 'N/A',
+                    showSeparately: false
+                }, {
+                    name: 'Followers',
+                    content: data.followers.total || 'N/A',
+                    showSeparately: false
+                }, {
+                    name: 'Popularity',
+                    content: data.popularity || 'N/A',
+                    showSeparately: false
+                }, {
+                    name: 'Description',
+                    content: '',
+                    showSeparately: true
+                }]
+            }
+            setArtist(artist);
+        });
         getAlbums(artistID);
     }
     const getAlbums = (artistID) => {
         if(Cookies.get('userID')) {
-            fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/artist/${artistID}/albums`, {
-                method: 'GET',
-                credentials: 'include'
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json()
-                    }
-                })
-                .then((data) => {
-                    setAlbums(data);
-                    btnSync.current.classList.remove(Styles.spinning);
-                })
-                .catch(console.error);
+            requestGetArtistAlbums(artistID, (data) => {
+                setAlbums(data);
+                btnSync.current.classList.remove(Styles.spinning);
+            });
         }
     }
     const handleSyncWithSpotify = () => {

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
+import { requestGetUserProfile, requestLogout, requestSpotifyAuthURL } from 'common/serverRequests';
+
 import homeIcon from 'resources/home.svg';
 import microphone_idle from 'resources/microphone_idle.svg';
 import microphone_active from 'resources/microphone_active.svg';
@@ -37,59 +39,27 @@ const NavBar = (props) => {
         const checkPopup = setInterval(() => {
             if(popup.closed) {
                 clearInterval(checkPopup);
-                fetch(`${SERVER_URL}/spotify/user`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                })
-                    .then((response) => {
-                        if(response.ok) {
-                            return response.json();
-                        }
-                        if(response.status === 401) {
-                            throw new Error('Invalid access token!');
-                        }
-                    })
-                    .then((data) => {
-                        Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
-                        Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
-                        Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
-                        setLoggedIn(true);
-                        props.onLogin();
-                        console.info(data.message);
-                    })
-                    .catch(console.error);
+                requestGetUserProfile((data) => {
+                    Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
+                    Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
+                    Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
+                    setLoggedIn(true);
+                    props.onLogin();
+                    console.info(data.message);
+                });
             }
         }, 100);
     }
     const handleLogout = () => {
     /*  Logika związana z sesją użytkownika opiera się
         na ciasteczkach po stronie klienta, więc wystarczy je usunąć */
-        fetch(`${SERVER_URL}/spotify/logout`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json()
-                    }
-                    if(response.status === 401) {
-                        throw new Error('Invalid access token!');
-                    }
-                })
-                .then((data) => {
-                    Cookies.remove('userID');
-                    Cookies.remove('userName');
-                    Cookies.remove('profilePicURL');
-                    props.onLogout();
-                    console.info(data.message);
-                })
-                .catch(console.error);
+        requestLogout((data) => {
+            Cookies.remove('userID');
+            Cookies.remove('userName');
+            Cookies.remove('profilePicURL');
+            props.onLogout();
+            console.info(data.message);
+        });
         setLoggedIn(false);
     }
     const handleToggleProfileContextMenu = () => {
@@ -111,14 +81,9 @@ const NavBar = (props) => {
             setLoggedIn(true);
         }
         if(spotifyAuthURL === '') {
-            fetch(`${SERVER_URL}/spotify/auth-url`)
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json()
-                    }
-                })
-                .then((data) => setSpotifyAuthURL(data.authURL))
-                .catch(console.error);
+            requestSpotifyAuthURL((data) => {
+                setSpotifyAuthURL(data.authURL);
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);

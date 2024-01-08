@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { requestUpdatePlaylist } from 'common/serverRequests';
+
 import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
@@ -48,32 +50,12 @@ const OverviewPanel = (props) => {
                 detailValue = 'No description.';
             }
         }
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${itemData.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                detailName: detailName,
-                detailValue: detailValue
-            }),
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-                if(response.status === 401) {
-                    throw new Error('Invalid access token!');
-                }
-                if(response.status === 422) {
-                    throw new Error('Request could not be processed. Make sure you are not sending null or undefined data!');
-                }
-            })
-            .then((data) => {
-                console.info(data.message);
-            })
-            .catch(console.error);
+        requestUpdatePlaylist(itemData.id, {
+            name: detailName,
+            value: detailValue
+        }, (data) => {
+            console.info(data.message);
+        });
     }
     // #endregion
     

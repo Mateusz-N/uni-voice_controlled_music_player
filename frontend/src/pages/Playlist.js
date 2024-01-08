@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
+import { requestGetPlaylist, requestGetTracksSavedStatus } from 'common/serverRequests';
 import { placeholderPlaylist } from 'common/placeholderObjects';
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
@@ -39,150 +40,140 @@ const Playlist = () => {
             setPlaylist(placeholderPlaylist);
             return;
         }
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {
-            method: 'GET',
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
+        requestGetPlaylist(playlistID, async (data) => {
+            let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
+                id: playlistID,
+                name: 'Saved tracks',
+                thumbnailSrc: placeholderAlbumCoverSrc,
+                description: '',
+                totalDuration_ms: data.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
+                tracks: data.items.map(item => ({
+                    id: item.track.id,
+                    number: item.track.track_number,
+                    title: item.track.name,
+                    artists: item.track.artists,
+                    album: item.track.album,
+                    duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
+                    genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
+                    dateAdded: item.added_at,
+                    explicit: item.track.explicit,
+                    playable: item.track.is_playable,
+                    local: item.track.is_local
+                })),
+                saved: null,
+                owner: Cookies.get('userName'),
+                public: false
+            }
+            :
+            {
+                id: data.id,
+                name: data.name,
+                thumbnailSrc: (data.images && data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
+                description: data.description,
+                totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
+                artists: data.artists,
+                tracks: data.tracks.items.map(item => ({
+                    id: item.track.id,
+                    number: item.track.track_number,
+                    title: item.track.name,
+                    artists: item.track.artists,
+                    album: item.track.album,
+                    duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
+                    genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
+                    dateAdded: item.added_at,
+                    explicit: item.track.explicit,
+                    playable: item.track.is_playable,
+                    local: item.track.is_local
+                })),
+                saved: null,
+                owner: data.owner.display_name,
+                public: data.public
+            }
+            fetchedPlaylist.detailsToDisplay = [{
+                name: 'Name',
+                content: fetchedPlaylist.name || '',
+                editable: true,
+                showSeparately: true,
+                input: {
+                    type: 'text',
+                    attributes: {placeholder: 'Playlist name'},
+                    excludeControls: false,
+                    children: {}
                 }
-            })
-            .then(async (data) => {
-                let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
-                    id: playlistID,
-                    name: 'Saved tracks',
-                    thumbnailSrc: placeholderAlbumCoverSrc,
-                    description: '',
-                    totalDuration_ms: data.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
-                    tracks: data.items.map(item => ({
-                        id: item.track.id,
-                        number: item.track.track_number,
-                        title: item.track.name,
-                        artists: item.track.artists,
-                        album: item.track.album,
-                        duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
-                        genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
-                        dateAdded: item.added_at,
-                        explicit: item.track.explicit,
-                        playable: item.track.is_playable,
-                        local: item.track.is_local
-                    })),
-                    saved: null,
-                    owner: Cookies.get('userName'),
-                    public: false
+            }, {
+                name: 'Track count',
+                content: fetchedPlaylist.tracks ? fetchedPlaylist.tracks.length || 'N/A' : 'N/A',
+                editable: false,
+                showSeparately: false,
+                input: {
+                    type: 'number',
+                    attributes: {},
+                    excludeControls: false,
+                    children: {}
                 }
-                :
-                {
-                    id: data.id,
-                    name: data.name,
-                    thumbnailSrc: (data.images && data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
-                    description: data.description,
-                    totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
-                    artists: data.artists,
-                    tracks: data.tracks.items.map(item => ({
-                        id: item.track.id,
-                        number: item.track.track_number,
-                        title: item.track.name,
-                        artists: item.track.artists,
-                        album: item.track.album,
-                        duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
-                        genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
-                        dateAdded: item.added_at,
-                        explicit: item.track.explicit,
-                        playable: item.track.is_playable,
-                        local: item.track.is_local
-                    })),
-                    saved: null,
-                    owner: data.owner.display_name,
-                    public: data.public
+            }, {
+                name: 'Total Duration',
+                content: fetchedPlaylist.totalDuration_ms ? millisecondsToFormattedTime(fetchedPlaylist.totalDuration_ms) : 'N/A',
+                editable: false,
+                showSeparately: false,
+                input: {
+                    type: 'number',
+                    attributes: {},
+                    excludeControls: false,
+                    children: {}
                 }
-                fetchedPlaylist.detailsToDisplay = [{
-                    name: 'Name',
-                    content: fetchedPlaylist.name || '',
-                    editable: true,
-                    showSeparately: true,
-                    input: {
-                        type: 'text',
-                        attributes: {placeholder: 'Playlist name'},
-                        excludeControls: false,
-                        children: {}
-                    }
-                }, {
-                    name: 'Track count',
-                    content: fetchedPlaylist.tracks ? fetchedPlaylist.tracks.length || 'N/A' : 'N/A',
-                    editable: false,
-                    showSeparately: false,
-                    input: {
-                        type: 'number',
-                        attributes: {},
-                        excludeControls: false,
-                        children: {}
-                    }
-                }, {
-                    name: 'Total Duration',
-                    content: fetchedPlaylist.totalDuration_ms ? millisecondsToFormattedTime(fetchedPlaylist.totalDuration_ms) : 'N/A',
-                    editable: false,
-                    showSeparately: false,
-                    input: {
-                        type: 'number',
-                        attributes: {},
-                        excludeControls: false,
-                        children: {}
-                    }
-                }, {
-                    name: 'Owner',
-                    content: fetchedPlaylist.owner || 'N/A',
-                    editable: false,
-                    showSeparately: false,
-                    input: {
-                        type: 'text',
-                        attributes: {},
-                        excludeControls: false,
-                        children: {}
-                    }
-                }, {
-                    name: 'Public',
-                    content: (fetchedPlaylist.public === true) ? 'yes' : ((fetchedPlaylist.public === false) ? 'no' : 'N/A'),
-                    editable: true,
-                    showSeparately: false,
-                    input: {
-                        type: 'select',
-                        attributes: {},
-                        excludeControls: true,
-                        children: [{
-                            option: {
-                                attributes: {
-                                    name: 'yes',
-                                    value: 'yes'
-                                },
-                                content: 'yes'
-                        }}, {
-                            option: {
-                                attributes: {
-                                    name: 'no',
-                                    value: 'no'
-                                },
-                                content: 'no'
-                            }
-                        }]
-                    }
-                }, {
-                    name: 'Description',
-                    content: fetchedPlaylist.description || '',
-                    editable: true,
-                    showSeparately: true,
-                    input: {
-                        type: 'text',
-                        attributes: {placeholder: 'Playlist description'},
-                        excludeControls: false,
-                        children: {}
-                    }
-                }];
-                fetchedPlaylist = await getTracksSavedStatus(fetchedPlaylist);
-                setPlaylist(fetchedPlaylist);
-            })
-            .catch(console.error);
+            }, {
+                name: 'Owner',
+                content: fetchedPlaylist.owner || 'N/A',
+                editable: false,
+                showSeparately: false,
+                input: {
+                    type: 'text',
+                    attributes: {},
+                    excludeControls: false,
+                    children: {}
+                }
+            }, {
+                name: 'Public',
+                content: (fetchedPlaylist.public === true) ? 'yes' : ((fetchedPlaylist.public === false) ? 'no' : 'N/A'),
+                editable: true,
+                showSeparately: false,
+                input: {
+                    type: 'select',
+                    attributes: {},
+                    excludeControls: true,
+                    children: [{
+                        option: {
+                            attributes: {
+                                name: 'yes',
+                                value: 'yes'
+                            },
+                            content: 'yes'
+                    }}, {
+                        option: {
+                            attributes: {
+                                name: 'no',
+                                value: 'no'
+                            },
+                            content: 'no'
+                        }
+                    }]
+                }
+            }, {
+                name: 'Description',
+                content: fetchedPlaylist.description || '',
+                editable: true,
+                showSeparately: true,
+                input: {
+                    type: 'text',
+                    attributes: {placeholder: 'Playlist description'},
+                    excludeControls: false,
+                    children: {}
+                }
+            }];
+            fetchedPlaylist = await getTracksSavedStatus(fetchedPlaylist);
+            setPlaylist(fetchedPlaylist);
+        });
     }
     const getTracksSavedStatus = async (playlist) => {
         const trackList = playlist.tracks;
@@ -197,19 +188,9 @@ const Playlist = () => {
                     idArray.push(track.id)
                 }
             };
-            await fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/tracks/saved/check?ids=${idArray.join(',')}`, {
-                method: 'GET',
-                credentials: 'include'
-            })
-                .then((response) => {
-                    if(response.ok) {
-                        return response.json();
-                    }
-                })
-                .then((data) => {
-                    group.map((track, index) => track.saved = data[index]);
-                })
-                .catch(console.error);
+            await requestGetTracksSavedStatus(idArray.join(','), (data) => {
+                group.map((track, index) => track.saved = data[index]);
+            });
         }
         return playlist;
     }

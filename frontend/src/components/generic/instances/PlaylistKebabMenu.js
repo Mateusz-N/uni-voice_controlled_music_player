@@ -1,3 +1,5 @@
+import { requestDeletePlaylist } from 'common/serverRequests';
+
 import KebabMenu from 'components/generic/KebabMenu';
 
 const PlaylistKebabMenu = (props) => {
@@ -6,25 +8,9 @@ const PlaylistKebabMenu = (props) => {
     const ExternalStyles = props.styles;
 
     const handleDeletePlaylist = () => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-                if(response.status === 401) {
-                    throw new Error('Invalid access token!');
-                }
-            })
-            .then((data) => {
-                props.onDeletePlaylist();
-            })
-            .catch(console.error);
+        requestDeletePlaylist(playlistID, (data) => {
+            props.onDeletePlaylist();
+        });
     }
 
     let optionDeletePlaylist = null;

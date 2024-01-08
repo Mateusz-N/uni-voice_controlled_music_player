@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import { requestGetPlaylists } from 'common/serverRequests';
 import TrackListItem from 'components/TrackList/TrackListItem';
 
 import Styles from 'components/TrackList/TrackList.module.scss';
@@ -19,27 +20,10 @@ const TrackList = (props) => {
     }
     // #endregion
 
-    const getUserPlaylists = () => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                setUserPlaylists(data);
-            })
-            .catch(console.error);
-    }
-
     useEffect(() => {
-        getUserPlaylists();
+        requestGetPlaylists((data) => {
+            setUserPlaylists(data);
+        });
     },[])
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined

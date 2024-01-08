@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 
+import { requestGetRecommendations } from 'common/serverRequests';
+
 import Modal from 'components/generic/Modal';
 import InputFieldsetMinMaxTarget from 'components/PlaylistGenerator/InputFieldsetMinMaxTarget';
 import FormControlSection from 'components/generic/FormControlSection';
@@ -15,7 +17,7 @@ const PlaylistGeneratorModal = (props) => {
 
     const ref_form_playlistGenerator = useRef(null);
 
-    const handleSubmitPlaylistGeneratorForm = async (event) => {
+    const handleSubmitPlaylistGeneratorForm = (event) => {
         if(!ref_form_playlistGenerator.current.checkValidity()) {
             ref_form_playlistGenerator.current.reportValidity();
         }
@@ -28,22 +30,9 @@ const PlaylistGeneratorModal = (props) => {
             }
         });
         Object.keys(parameters).forEach(parameter => recommendationsURL.searchParams.set(parameter, parameters[parameter]));
-        await fetch(recommendationsURL, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
+        requestGetRecommendations(recommendationsURL, (data) => {
+            props.onSubmit(data.tracks);
         })
-            .then((response) => {
-                if(response.ok) {
-                    return response.json();
-                }
-            })
-            .then((data) => {
-                props.onSubmit(data.tracks);
-            })
-            .catch(console.error);
     }
     const handleCancelPlaylistGeneratorForm = () => {
         props.onCancel();

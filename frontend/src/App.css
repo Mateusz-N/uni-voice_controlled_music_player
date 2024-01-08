@@ -5,25 +5,25 @@
   width: 100%;
 }
 
+form input, form textarea {
+  border: none;
+  border-radius: 4px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #AAA;
+  background-color: rgba(0, 0, 0, 0.2);
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+
 form input {
   width: 100%;
   box-sizing: border-box;
-
-  border-radius: 6px;
-  color: inherit;
-  background-color: transparent;
-  font: inherit;
 }
 
 form textarea {
   resize: none;
-}
-
-.formControlSection {
-  align-self: flex-end;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
 }
 
 .btnPrimary {

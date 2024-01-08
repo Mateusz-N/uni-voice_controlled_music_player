@@ -1,0 +1,74 @@
+#modalWindow_playlistGenerator {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    top: calc(52px + 50px);
+    bottom: calc(83px + 50px);
+    transform: translateX(-50%);
+}
+
+#form_playlistGenerator {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    overflow: hidden;
+}
+
+#form_playlistGeneratorMain {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    padding: 8px 0;
+    overflow: auto;
+}
+
+.inputFieldset_minMaxTarget {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    
+    border-radius: 8px;
+}
+
+#btnSubmit_playlistGenerator, #btnCancel_playlistGenerator {
+    padding: 7px;
+
+    border-radius: 7px;
+}
+
+.form_playlistGeneratorSection {
+    margin: 0 8px;
+}
+
+.form_playlistGeneratorSection_heading {
+    margin: 8px 0 8px 0;
+    padding-bottom: 4px;
+
+    border-top: 2px solid #666;
+    border-bottom: 2px solid #666;
+    text-align: center;
+}
+
+.form_playlistGeneratorSection_main {
+    margin: 0 8px;
+}
+
+.btn_chipAdd, .chip_playlistGenerator_seeds {
+    height: 24px;
+}
+
+.chip_playlistGenerator_seeds {
+    gap: 4px;
+    max-width: 150px;
+    padding: 4px;
+}
+
+.chipText_playlistGenerator_seeds {
+    padding-right: 4px;
+}
+
+.chip_btnRemove_playlistGenerator_seeds {
+    height: 16px;
+}

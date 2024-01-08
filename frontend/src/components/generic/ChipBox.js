@@ -1,0 +1,31 @@
+import btn_chipRemove from 'resources/btn_chipRemove.svg';
+import btn_chipAdd from 'resources/btn_chipAdd.svg';
+
+import Styles from 'components/generic/ChipBox.module.scss';
+
+const ChipBox = (props) => {
+    const chips = props.chips;
+    const context = props.context;
+    const ExternalStyles = props.styles;
+
+    return(
+        <div className = {Styles.chipBox} id = {ExternalStyles['chipBox_' + context]}>
+            <img src = {btn_chipAdd} alt = 'Add' className = {Styles.btn_chipAdd + ' ' + ExternalStyles.btn_chipAdd} onClick = {props.onAddChip} />
+            {chips.map((chip, index) => {
+                return(
+                    <div key = {index} className = {Styles.chip + ' ' + ExternalStyles['chip_' + context]}>
+                        <img
+                            src = {btn_chipRemove}
+                            alt = 'Remove'
+                            className = {Styles.chip_btnRemove + ' ' + ExternalStyles['chip_btnRemove_' + context]}
+                            onClick = {() => props.onRemoveChip(chip.id)}
+                        />
+                        <p className = {Styles.chipText + ' ' + ExternalStyles['chipText_' + context]} title = {chip.text}>{chip.text}</p>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+export default ChipBox;

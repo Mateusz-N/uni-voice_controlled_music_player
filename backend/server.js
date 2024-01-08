@@ -7,6 +7,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const mysql = require('mysql');
 require('dotenv').config();
+const rateLimit = require('express-rate-limit');
 // #endregion
 
 // #region Importy plików
@@ -49,6 +50,12 @@ const ssl = {
   key: privateKey,
   cert: certificate
 }
+const limiter = rateLimit({
+	windowMs: 60 * 1000,
+	limit: 20,
+	standardHeaders: 'draft-7',
+	legacyHeaders: false,
+})
 
 app.use(cors({
   origin: [CLIENT_URL_HTTP, CLIENT_URL_HTTPS],
@@ -58,6 +65,8 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(limiter)
 app.use('/spotify', spotifyRouter);
 app.use('/discogs', discogsRouter);
 app.use('/musixmatch', musixmatchRouter);

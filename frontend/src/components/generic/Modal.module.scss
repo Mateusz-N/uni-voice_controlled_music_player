@@ -5,7 +5,7 @@
     bottom: 0;
     left: 0;
     z-index: 1;
-    backdrop-filter: brightness(85%);
+    backdrop-filter: brightness(75%);
 }
 
 .modalWindow {
@@ -22,6 +22,8 @@
 .modalTitle {
     height: 36px;
     margin: 0 36px;
+    
+    text-align: center;
 }
 
 .btn_closeModal {

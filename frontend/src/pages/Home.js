@@ -12,6 +12,7 @@ import NavBar from 'components/NavBar/NavBar';
 import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import PlaylistKebabMenu from 'components/generic/instances/PlaylistKebabMenu';
+import PlaylistGeneratorModal from 'components/PlaylistGenerator/PlaylistGeneratorModal';
 
 import Styles from 'pages/Home.module.scss';
 
@@ -36,6 +37,7 @@ const Home = () => {
     }
 
     const [playlists, setPlaylists] = useState([playlistGenerator, playlistBuilder]);
+    const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
     const btnSync = useRef(null);
     const navigate = useNavigate();
 
@@ -46,6 +48,31 @@ const Home = () => {
     const handleLogout = () => {
         setPlaylists([playlistGenerator, playlistBuilder]);
     }
+    const handleSyncWithSpotify = () => {
+        getPlaylists();
+    }
+    const handlePlaylistLinkClick = async (event, playlistType) => {
+        if(playlistType === 'builder') {
+            event.preventDefault();
+            const newPlaylistID = await createPlaylist();
+            navigate(`/playlist/${newPlaylistID}`);
+        }
+        else if(playlistType === 'generator') {
+            event.preventDefault();
+            handleOpenPlaylistGenerator();
+        }
+    }
+    const handleOpenPlaylistGenerator = () => {
+        setPlaylistGeneratorModalOpen(true);
+    }
+    const handleGeneratePlaylist = () => {
+        
+    }
+    const handleModalClose_playlistGenerator = () => {
+        setPlaylistGeneratorModalOpen(false);
+    }
+    // #endregion
+    
     const getPlaylists = () => {
         const userID = Cookies.get('userID');
         if(!userID) {
@@ -95,17 +122,6 @@ const Home = () => {
             })
             .catch(console.error);
     }
-    const handleSyncWithSpotify = () => {
-        getPlaylists();
-    }
-    const handlePlaylistLinkClick = async (event, playlistType) => {
-        if(playlistType === 'builder') {
-            event.preventDefault();
-            const newPlaylistID = await createPlaylist();
-            navigate(`/playlist/${newPlaylistID}`);
-        }
-    }
-    // #endregion
     
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
@@ -128,17 +144,25 @@ const Home = () => {
                         playlists.map((playlist, index) => {
                             const playlistLink = playlist.type === 'playlist' ? '/playlist/' + playlist.id : '/' + playlist.type;
                             let kebabMenu = null;
-                            if(!['0', '1'].includes(playlist.id)) {
+                            if(!['generator', 'builder'].includes(playlist.type)) {
                                 kebabMenu =
                                     <PlaylistKebabMenu playlistID = {playlist.id} context = 'catalogItem' styles = {Styles} onDeletePlaylist = {handleSyncWithSpotify} />
+                            }
+                            let playlistGeneratorModal = null;
+                            if(playlistGeneratorModalOpen && playlist.type === 'generator') {
+                                playlistGeneratorModal = <PlaylistGeneratorModal onSubmit = {handleGeneratePlaylist} onCancel = {handleModalClose_playlistGenerator} />
                             }
                             return(
                                 <figure key = {index} className = {Styles.catalogItem}>
                                     <main className = {Styles.catalogItem_thumbnail}>
                                         <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)}>
-                                            <img src = {playlist.thumbnailSrc || (playlist.images && playlist.images[0] ? playlist.images[0].url : placeholderAlbumCoverSrc)} alt = {playlist.name} className = {Styles.catalogItem_thumbnailImage} />
+                                            <img
+                                                src = {playlist.thumbnailSrc || (playlist.images && playlist.images[0] ? playlist.images[0].url : placeholderAlbumCoverSrc)}
+                                                alt = {playlist.name} className = {Styles.catalogItem_thumbnailImage}
+                                            />
                                         </Link>
                                         {kebabMenu}
+                                        {playlistGeneratorModal}
                                     </main>
                                     <Link to = {playlistLink} onClick = {(event) => handlePlaylistLinkClick(event, playlist.type)} title = {playlist.name}>
                                         <h4 className = {Styles.catalogItem_name}>{playlist.name}</h4>

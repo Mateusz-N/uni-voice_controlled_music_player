@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import Select from 'components/generic/Select';
+import FormControlSection from 'components/generic/FormControlSection';
 
 const DetailEditForm = (props) => {
     const detailName = props.detail;
@@ -60,10 +61,12 @@ const DetailEditForm = (props) => {
     let formControlSection = null;
     if(!excludeControls) {
         formControlSection =
-            <section className = 'formControlSection'>
-                <button id = {ExternalStyles['btnCancel_item' + detailName]} className = {ExternalStyles.btnCancel + ' btnSecondary'} onClick = {event => props.onCancel(event)} type = 'button'>Cancel</button>
-                <button id = {ExternalStyles['btnSubmit_item' + detailName]} className = {ExternalStyles.btnSubmit + ' btnPrimary'} onClick = {event => props.onSubmit(event, detailValue)}>Apply</button>
-            </section>
+            <FormControlSection
+                context = {'item' + detailName}
+                onSubmit = {event => props.onSubmit(event, detailValue)}
+                onCancel = {event => props.onCancel(event)}
+                styles = {ExternalStyles}
+            />
     }
 
     return(

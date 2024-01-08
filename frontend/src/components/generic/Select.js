@@ -38,7 +38,7 @@ const Select = (props) => {
     });
 
     return(
-        <div id = {Styles.select}>
+        <div className = {Styles.select}>
             <div className = {Styles.option_default + ' ' + Styles.option} onClick = {handleToggleExpanded}>
                 {selectedOption}&#x25BE;
             </div>

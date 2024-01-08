@@ -133,7 +133,6 @@ const TrackListItem = (props) => {
                 index = {index}
                 track = {track}
                 userPlaylists = {userPlaylists.filter(playlist => playlist.owner.id === Cookies.get('userID'))}
-                open = {modal_addToPlaylist_open}
                 onClose = {handleModalClose_addToPlaylist}
                 onPlaylistUpdate = {props.onPlaylistUpdate}
             />

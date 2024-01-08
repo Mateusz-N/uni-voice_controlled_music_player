@@ -1,0 +1,40 @@
+.chipBox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn_chipAdd {
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(85%);
+    }
+}
+
+.chip {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+
+    border-radius: 100vh;
+    overflow: hidden;
+    background-color: #CCC;
+}
+
+.chipText {
+    width: 100%;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333;
+}
+
+.chip_btnRemove {
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(85%);
+    }
+}

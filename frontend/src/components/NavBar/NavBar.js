@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import homeIcon from 'resources/home.svg';
 import microphone_idle from 'resources/microphone_idle.svg';
 import microphone_active from 'resources/microphone_active.svg';
 
-import SearchBar from 'components/NavBar/SearchBar';
+import SearchBar from 'components/generic/SearchBar';
 import ContextMenu from 'components/generic/ContextMenu';
 
 import Styles from 'components/NavBar/NavBar.module.scss';
@@ -21,6 +21,7 @@ const NavBar = (props) => {
     // #endregion
 
     const ref_profilePic = useRef(null);
+    const navigate = useNavigate();
 
     // #region Zmienne konfiguracyjne
     const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -99,6 +100,9 @@ const NavBar = (props) => {
             setProfileContextMenuExpanded(false);
         }
     }
+    const handleSearchFormSubmit = (query) => {
+        navigate(`/search?query=${query}`);
+    }
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
@@ -133,7 +137,7 @@ const NavBar = (props) => {
                 <Link to = '/'>
                     <img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} />
                 </Link>
-                <SearchBar />
+                <SearchBar onSubmit = {(query) => handleSearchFormSubmit(query)} />
             </section>
             <div id = {Styles.microphoneContainer}>
                 <img

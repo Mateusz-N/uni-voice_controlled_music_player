@@ -13,6 +13,9 @@ select {
 option {
     padding: 8px;
 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     user-select: none;
 
     &:hover {

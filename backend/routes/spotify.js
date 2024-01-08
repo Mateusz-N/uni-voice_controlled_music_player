@@ -365,8 +365,15 @@ router.get('/artist/:id', async (req, res) => {
 router.get('/search', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const query = req.query.query;
+  let types;
+  if(req.query.types) {
+    types = req.query.types.split(',');
+  }
+  else {
+    types = ['album', 'artist', 'playlist', 'track'];
+  }
   const results = {};
-  for (const type of ['album', 'artist', 'playlist', 'track']) {
+  for (const type of types) {
     const initialEndpoint = `https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=50`;
     results[type] = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, `${type}s.items`);
   }
@@ -515,6 +522,56 @@ router.delete('/playlist/:id/tracks', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   handleTrackInPlaylist(req, res, accessToken, 'DELETE');
 });
+
+/* Przeszukanie katalogu Spotify */
+router.get('/genres', async (req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  const res_genres = await axios.get(
+    'https://api.spotify.com/v1/recommendations/available-genre-seeds',
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+  );
+  if(res_genres.status === 200) {
+    const genres = res_genres.data.genres;
+    res.status(200).send(genres);
+  }
+  else {
+    res.status(res_genres.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+})
+
+/* Pobranie rekomendacji */
+router.get('/recommendations', async (req, res) => {
+  const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
+  const queryObject = req.query;
+  if(queryObject.limit == null ) {
+    queryObject.limit = 100;
+  }
+  const res_recommendations = await axios.get(
+    'https://api.spotify.com/v1/recommendations',
+    {
+      params: queryObject,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
+  );
+  if(res_recommendations.status === 200) {
+    const recommendations = res_recommendations.data;
+    res.status(200).send(recommendations);
+  }
+  else {
+    res.status(res_recommendations.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+})
+
 // #endregion
 
 module.exports = router;

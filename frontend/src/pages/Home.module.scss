@@ -48,8 +48,6 @@
     max-width: 135px;
     aspect-ratio: 1/1;
 
-    cursor: pointer;
-
     &:hover {
         .catalogItem_thumbnailImage {
             filter: brightness(85%);

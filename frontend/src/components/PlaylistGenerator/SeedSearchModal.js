@@ -44,7 +44,10 @@ const SeedSearchModal = (props) => {
         if(selectedSeedType.toLowerCase() === 'genre') {
             requestGetAvailableGenres((data) => {
                 const genres = data.map(genre => ({id: genre, name: genre}));
-                setSearchResults(genres.filter(genre => genre.name.includes(searchQuery) && !seeds.find(seed => (seed.id === genre.id && seed.type === selectedSeedType))));
+                setSearchResults({
+                    results: genres.filter(genre => genre.name.includes(searchQuery) && !seeds.find(seed => (seed.id === genre.id && seed.type === selectedSeedType))),
+                    seedType: 'Genre'
+                });
             });
         }
         else {

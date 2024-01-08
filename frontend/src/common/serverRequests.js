@@ -164,7 +164,7 @@ export const requestRemoveTrackFromPlaylist = async (playlistID, trackURIs, call
     }
 
 export const requestCreatePlaylist = async (userID, callback) => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/${userID}/playlist`, {
+    return fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/${userID}/playlist`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -180,7 +180,7 @@ export const requestCreatePlaylist = async (userID, callback) => {
             }
         })
         .then((data) => {
-            callback(data);
+            return callback(data);
         })
         .catch(console.error);
 }

@@ -79,6 +79,11 @@ const Artist = () => {
     const getAlbums = (artistID) => {
         if(Cookies.get('userID')) {
             requestGetArtistAlbums(artistID, (data) => {
+                data.map(album => {
+                    if(album.images && album.images.length > 0) {
+                        album.thumbnailSrc = album.images[0].url;
+                    }
+                });
                 setAlbums(data);
                 btnSync.current.classList.remove(Styles.spinning);
             });

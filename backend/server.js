@@ -52,7 +52,7 @@ const ssl = {
 }
 const limiter = rateLimit({
 	windowMs: 60 * 1000,
-	limit: 20,
+	limit: 100,
 	standardHeaders: 'draft-7',
 	legacyHeaders: false,
 })

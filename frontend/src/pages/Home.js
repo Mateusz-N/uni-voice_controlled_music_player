@@ -79,7 +79,7 @@ const Home = () => {
     }
     const handleGeneratePlaylist = async (tracks) => {
         const newPlaylistID = await createPlaylist();
-        requestGeneratePlaylist(tracks, newPlaylistID, (data) => {
+        requestGeneratePlaylist(newPlaylistID, tracks, (data) => {
             console.info(data.message);
             navigate(`/playlist/${newPlaylistID}`);
         });
@@ -106,7 +106,7 @@ const Home = () => {
         if(!userID) {
             return;
         }
-        return requestCreatePlaylist(userID, (data) => {
+        return await requestCreatePlaylist(userID, (data) => {
             return data.playlistID;
         });
     }

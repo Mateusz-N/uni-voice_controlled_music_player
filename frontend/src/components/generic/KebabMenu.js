@@ -50,6 +50,7 @@ const KebabMenu = (props) => {
         return () => {
             document.body.removeEventListener('click', handleClickOutsideMenu);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[itemContextMenuExpanded])
     // #endregion
 

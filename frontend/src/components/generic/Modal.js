@@ -24,6 +24,7 @@ const Modal = (props) => {
                 props.onClose();
             }
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
     // #endregion
 

@@ -149,7 +149,7 @@ const PlaylistGeneratorModal = (props) => {
     }
     const handleUpdateParameters = (parameter) => {
         const parameterName = Object.keys(parameter)[0];
-        const parameterValue = Object.values(parameter)[0];
+        let parameterValue = Object.values(parameter)[0];
         if(parameterName.includes('track_duration_ms')) {
             parameterValue *= 60000;
         }

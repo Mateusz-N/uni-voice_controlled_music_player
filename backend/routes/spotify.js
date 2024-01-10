@@ -331,7 +331,7 @@ router.get('/playlists', async (req, res) => {
         const playlists = results.map(playlist => {
           playlist.type = 'playlist';
           playlist.thumbnailSrc = playlist.thumbnail;
-          playlist.owner = req.cookies.userName;
+          playlist.owner = {id: req.cookies.userID, name: req.cookies.userName};
           delete playlist.thumbnail;
           return playlist;
         });

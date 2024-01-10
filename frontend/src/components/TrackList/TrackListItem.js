@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -16,7 +16,8 @@ import Styles from 'components/TrackList/TrackListItem.module.scss';
 
 const TrackListItem = (props) => {
     // #region Zmienne globalne
-    const track = props.track
+    const track = props.track;
+    console.log(track.saved);
     const index = props.index;
     const playlistID = props.playlistID;
     const playing = props.playing;
@@ -70,6 +71,12 @@ const TrackListItem = (props) => {
     }
     // #endregion
 
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        setTrackSaved(track.saved);
+    },[props]);
+    // #endregion
+
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
     let albumColumn = null;
     let releaseDateColumn = null;
@@ -86,6 +93,7 @@ const TrackListItem = (props) => {
         <li id = {Styles.trackList_item_contextMenu_addToFavorites} onClick = {handleToggleTrackSaved}>
             Add to favorites
         </li>;
+    console.log(trackSaved)
     if(trackSaved) {
         contextMenu_savedTracksAction =
             <li id = {Styles.trackList_item_contextMenu_removeFromFavorites} onClick = {handleToggleTrackSaved} dangerous = 'true'>

@@ -58,12 +58,12 @@ const Playlist = () => {
                     album: item.track.album,
                     duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
                     genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
+                    saved: null,
                     dateAdded: item.added_at,
                     explicit: item.track.explicit,
                     playable: item.track.is_playable,
                     local: item.track.is_local
                 })),
-                saved: null,
                 owner: Cookies.get('userName'),
                 public: false
             }
@@ -83,12 +83,12 @@ const Playlist = () => {
                     album: item.track.album,
                     duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
                     genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
+                    saved: null,
                     dateAdded: item.added_at,
                     explicit: item.track.explicit,
                     playable: item.track.is_playable,
                     local: item.track.is_local
                 })),
-                saved: null,
                 owner: data.owner.display_name,
                 public: data.public
             }

@@ -311,95 +311,65 @@ router.get('/playlists', async (req, res) => {
 router.get('/artist/:id/albums', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
-  const requestDestination = req.get('destination') || 'db';
-  let albums;
-  if(requestDestination === 'api') {
-    let initialEndpoint = `https://api.spotify.com/v1/artists/${artistID}/albums`;
-    albums = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
+  const handleGetArtistAlbumsApiResponse = (albums) => {
+    res.status(200).send(albums);
   }
-  else if(requestDestination === 'db') {
-    // db handler
-  }
-  res.status(200).send(albums);
-})
+  SpotifyService.getArtistAlbums(accessToken, artistID, handleGetArtistAlbumsApiResponse);
+});
 
 /* Pobranie konkretnej listy odtwarzania */
 router.get('/playlist/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const playlistID = req.params.id;
   const requestDestination = req.get('destination') || 'db';
-  let playlist;
-  if(requestDestination === 'api') {
-    let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
-    let nextEndpointReference = 'tracks.next';
-    let itemsReference = 'tracks.items';
-    if(playlistID === '1') { // Polubione utwory
-      initialEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
-      nextEndpointReference = 'next';
-      itemsReference = 'items';
-    }
-    playlist = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
+  const handleGetPlaylistApiResponse = (playlist) => {
+    res.status(200).send(playlist);
   }
-  else if(requestDestination === 'db') {
-    // db handler
+  if(requestDestination === 'db') {
+    SpotifyModel.getPlaylist(playlistID, (result) => {
+      console.log(result)
+      if(result) {
+        res.status(200).send(result);
+        return;
+      }
+      SpotifyService.getPlaylist(accessToken, handleGetPlaylistApiResponse);
+    });
   }
-  res.status(200).send(playlist);
+  else if(requestDestination === 'api') {
+    SpotifyService.getPlaylist(accessToken, playlistID, handleGetPlaylistApiResponse);
+  }
 });
 
 /* Pobranie konkretnego albumu */
 router.get('/album/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const albumID = req.params.id;
-  const requestDestination = req.get('destination') || 'db';
-  let album;
-  if(requestDestination === 'api') {
-    const initialEndpoint = `https://api.spotify.com/v1/albums/${albumID}`;
-    const nextEndpointReference = 'tracks.next';
-    const itemsReference = 'tracks.items';
-    album = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
+  const handleGetAlbumApiResponse = (album) => {
+    res.status(200).send(album);
   }
-  else if(requestDestination === 'db') {
-    // db handler
-  }
-  res.status(200).send(album);
+  SpotifyService.getAlbum(accessToken, albumID, handleGetAlbumApiResponse);
 });
 
 /* Pobranie konkretnego wykonawcy */
 router.get('/artist/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
-  const requestDestination = req.get('destination') || 'db';
-  let artist;
-  if(requestDestination === 'api') {
-    const res_artist = await axios.get(
-      `https://api.spotify.com/v1/artists/${artistID}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      }
-    );
+  const handleGetArtistApiResponse = (res_artist) => {
     if(res_artist.status === 200) {
-      artist = res_artist.data;
+      res.status(200).send(res_artist.data);
     }
   }
-  else if(requestDestination === 'db') {
-    // db handler
-  }
-  res.status(200).send(artist);
+  SpotifyService.getArtist(accessToken, artistID, handleGetArtistApiResponse);
 });
 
 /* Przeszukiwanie katalogu Spotify */
 router.get('/search', async (req, res) => {
-  res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds());
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const query = req.query.query;
-  const results = {};
-  for (const type of ['album', 'artist', 'playlist', 'track']) {
-    const initialEndpoint = `https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=50`;
-    results[type] = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, `${type}s.items`);
+  const handleSearchAllApiResponse = (results) => {
+    res.status(200).send(results);
   }
-  res.status(200).send(results);
+  SpotifyService.getArtist(accessToken, query, handleSearchAllApiResponse);
 })
 // #endregion
 

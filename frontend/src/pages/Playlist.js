@@ -39,7 +39,7 @@ const Playlist = () => {
     const onLogout = () => {
         setLoggedIn(false);
     }
-    const getPlaylist = (fromAPI = false) => {
+    const getPlaylist = (fromAPI = true) => {
         if(!loggedIn) {
             setPlaylist(placeholderPlaylist);
             return;

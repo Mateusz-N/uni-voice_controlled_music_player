@@ -1,23 +1,66 @@
 const axios = require('axios');
 
 module.exports = {
-    getUserProfile: async (accessToken, callback) => {
-        axios.get(
-        'https://api.spotify.com/v1/me',
-        {
-            headers: {
-            'Authorization': `Bearer ${accessToken}`
-            }
-        })
-            .then((res_profile) => {
-                callback(res_profile);
-            })
-            .catch(console.error);
-    },
-    getPlaylists: async (accessToken, callback) => {
-        const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
-        callback(await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items'));
+  getUserProfile: async (accessToken, callback) => {
+    axios.get(
+    'https://api.spotify.com/v1/me',
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+      .then((res_profile) => {
+          callback(res_profile);
+      })
+      .catch(console.error);
+  },
+  getPlaylists: async (accessToken, callback) => {
+    const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
+    callback(await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items'));
+  },
+  getPlaylist: async (accessToken, playlistID, callback) => {
+    let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
+    let nextEndpointReference = 'tracks.next';
+    let itemsReference = 'tracks.items';
+    if(playlistID === '1') { // Polubione utwory
+      initialEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
+      nextEndpointReference = 'next';
+      itemsReference = 'items';
     }
+    callback(await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference));
+  },
+  getArtistAlbums: async (accessToken, artistID, callback) => {
+    let initialEndpoint = `https://api.spotify.com/v1/artists/${artistID}/albums`;
+    callback(await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items'));
+  },
+  getAlbum: async (accessToken, albumID, callback) => {
+    const initialEndpoint = `https://api.spotify.com/v1/albums/${albumID}`;
+    const nextEndpointReference = 'tracks.next';
+    const itemsReference = 'tracks.items';
+    callback(await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference));
+  },
+  getArtist: async (accessToken, artistID, callback) => {
+    axios.get(
+      `https://api.spotify.com/v1/artists/${artistID}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    )
+    .then((res_profile) => {
+        callback(res_profile);
+    })
+    .catch(console.error);
+  },
+  searchAll: async (accessToken, query, callback) => {
+    const results = {};
+    for (const type of ['album', 'artist', 'playlist', 'track']) {
+      const initialEndpoint = `https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=50`;
+      results[type] = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, `${type}s.items`);
+    }
+    callback(results);
+  }
 }
 
 const handleGetItemsRequest = async (accessToken, initialEndpoint, onSuccess) => {

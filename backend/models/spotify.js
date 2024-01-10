@@ -56,12 +56,12 @@ module.exports = {
                 console.log('DB: User playlists attached to user!');
             });
         });
+    },
+    getPlaylist: (playlistID, callback) => {
+        const query = `SELECT * FROM playlist WHERE id = '${playlistID}'`;
+        dbConnection.query(query, (err, rows) => {
+            if(err) throw err;
+            callback(rows);
+        });
     }
 }
-
-// const getUserID = (accessToken, callback) => {
-//     dbConnection.query(`SELECT user_id FROM connection WHERE access_token = '${accessToken}'`, (err, rows, fields) => {
-//         if(err) throw err;
-//         callback(rows);
-//     });
-// }

@@ -43,17 +43,21 @@ module.exports = {
         });
     },
     addUserPlaylists: (userID, playlists) => {
-        const playlistsAsTuples = playlists.map(playlist => [playlist.id, playlist.name, playlist.description, playlist.thumbnailSrc, playlist.public, playlist.collaborative])
+        const playlistsAsTuples = playlists.map(playlist => [playlist.id, playlist.name, playlist.description, playlist.thumbnailSrc, playlist.public, playlist.collaborative]);
         const query = `INSERT IGNORE INTO playlist(id, name, description, thumbnail, public, collaborative) VALUES ?`;
-        dbConnection.query(query, [playlistsAsTuples], (err) => {
-            if(err) throw err;
-            console.log('DB: User playlists added!');
-
-            const idPairs = playlists.map(playlist => [userID, playlist.id]);
-            const query = `INSERT IGNORE INTO user_playlists(user_id, playlist_id) VALUES ?`;
-            dbConnection.query(query, [idPairs], (err) => {
-                if(err) throw err;
-                console.log('DB: User playlists attached to user!');
+        truncateTable('user_playlists', () => {
+            truncateTable('playlist', () => {
+                dbConnection.query(query, [playlistsAsTuples], (err) => {
+                    if(err) throw err;
+                    console.log('DB: User playlists added!');
+        
+                    const idPairs = playlists.map(playlist => [userID, playlist.id]);
+                    const query = `INSERT IGNORE INTO user_playlists(user_id, playlist_id) VALUES ?`;
+                    dbConnection.query(query, [idPairs], (err) => {
+                        if(err) throw err;
+                        console.log('DB: User playlists attached to user!');
+                    });
+                });
             });
         });
     },
@@ -64,4 +68,13 @@ module.exports = {
             callback(rows);
         });
     }
+}
+
+const truncateTable = (tableName, callback) => {
+    const query = `DELETE FROM ${tableName}`; // TRUNCATE narusza więzy integralności; DELETE jest wolniejsze, lecz bezpieczniejsze
+    dbConnection.query(query, (err) => {
+        if(err) throw err;
+        callback();
+        console.log(`DB: Table ${tableName} truncated!`);
+    });
 }

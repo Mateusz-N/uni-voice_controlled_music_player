@@ -4,6 +4,8 @@ const queryString = require('node:querystring');
 const axios = require('axios');
 const router = express.Router();
 const crypto = require('crypto');
+const SpotifyModel = require('../models/spotify');
+const SpotifyService = require('../services/spotify');
 // #endregion
 
 // #region Zmienne konfiguracyjne
@@ -68,6 +70,7 @@ const requestAccessToken = async (res, grantType, queryParams) => {
       secure: true,
       sameSite: 'strict'
     });
+    SpotifyModel.registerUserConnection(res_token.data.access_token, res_token.data.refresh_token);
     return res_token.data.access_token;
   }
   else {
@@ -258,7 +261,12 @@ router.post('/logout', async (req, res) => {
     });
     return;
   }
+  SpotifyModel.unregisterUserConnection(accessToken);
   res.clearCookie('accessToken');
+  res.clearCookie('accessToken_expirationDateInSeconds');
+  res.clearCookie('refreshToken');
+  res.clearCookie('userID');
+  res.clearCookie('userName');
   res.status(200).send({
     message: 'Logged out successfully!'
   });
@@ -273,45 +281,80 @@ router.get('/user', async (req, res) => {
     });
     return;
   }
-  const res_profile = await axios.get(
-    'https://api.spotify.com/v1/me',
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
+  const requestDestination = req.get('destination') || 'db';
+  const handleResponse = (res_profile) => {
+    if(res_profile.status === 200) {
+      const profile = {
+        userID: res_profile.data.id,
+        userName: res_profile.data.display_name,
+        profilePicURL: res_profile.data.images[0] ? res_profile.data.images[0].url : null,
+        message: 'Logged in successfully!'
       }
+      SpotifyModel.addUserProfile(accessToken, profile.userID, profile.userName, profile.profilePicURL);
+      res.cookie('userID', profile.userID);
+      res.cookie('userName', profile.userName);
+      res.status(200).send(profile);
     }
-  );
-  if(res_profile.status === 200) {
-    res.status(200).send({
-      userID: res_profile.data.id,
-      userName: res_profile.data.display_name,
-      profilePicURL: res_profile.data.images[0] ? res_profile.data.images[0].url : null,
-      message: 'Logged in successfully!'
+    else {
+      res.status(res_profile.status).send({
+        error: 'Something went wrong!'
+      });
+    }
+  }
+  if(requestDestination === 'db') {
+    SpotifyModel.getUserProfile(accessToken, (results) => {
+      // Jeśli w bazie znaleziono profil, należy go zwrócić...
+      if(results.length > 0) {
+        res.status(200).send(results);
+        return;
+      }
+      // ...W przyciwnym razie, należy pobrać go z API
+      SpotifyService.getUserProfile(accessToken, handleResponse);
     });
   }
-  else {
-    res.status(res_profile.status).send({
-      error: 'Something went wrong!'
-    });
+  else if(requestDestination === 'api') {
+    SpotifyService.getUserProfile(accessToken, handleResponse);
   }
 });
 
 /* Pobranie list odtwarzania w serwisie Spotify zalogowanego użytkownika */
 router.get('/playlists', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
-  const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
-  const playlists = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
-  res.status(200).send(playlists);
+  const requestDestination = req.get('destination') || 'db';
+  const handleGetPlaylistsApiResponse = (playlists) => {
+    SpotifyModel.addUserPlaylists(req.cookies.userID, playlists);
+    res.status(200).send(playlists);
+  }
+  if(requestDestination === 'db') {
+    SpotifyModel.getUserPlaylists(req.cookies.userID, (results) => {
+      if(results.length > 0) {
+        const playlists = results.map(playlist => {
+          playlist.type = 'playlist';
+          playlist.thumbnailSrc = playlist.thumbnail;
+          playlist.owner = req.cookies.userName;
+          delete playlist.thumbnail;
+          return playlist;
+        });
+        res.status(200).send(playlists);
+        return;
+      }
+      SpotifyService.getPlaylists(accessToken, handleGetPlaylistsApiResponse);
+    });
+  }
+  else if(requestDestination === 'api') {
+    SpotifyService.getPlaylists(accessToken, handleGetPlaylistsApiResponse);
+  }
 });
 
 /* Pobranie albumów konkretnego wykonawcy */
 router.get('/artist/:id/albums', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
-  let initialEndpoint = `https://api.spotify.com/v1/artists/${artistID}/albums`;
-  const albums = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items');
-  res.status(200).send(albums);
-})
+  const handleGetArtistAlbumsApiResponse = (albums) => {
+    res.status(200).send(albums);
+  }
+  SpotifyService.getArtistAlbums(accessToken, artistID, handleGetArtistAlbumsApiResponse);
+});
 
 /* Pobranie konkretnej listy odtwarzania */
 router.get('/playlist/:id', async (req, res) => {
@@ -320,45 +363,45 @@ router.get('/playlist/:id', async (req, res) => {
   Np. punkt końcowy 'Get User's Playlists' wyświetla aktualną nazwę listy, a 'Get Playlist' nie. */
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const playlistID = req.params.id;
-  let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
-  let nextEndpointReference = 'tracks.next';
-  let itemsReference = 'tracks.items';
-  if(playlistID === '2') { // Polubione utwory
-    initialEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
-    nextEndpointReference = 'next';
-    itemsReference = 'items';
+  const requestDestination = req.get('destination') || 'db';
+  const handleGetPlaylistApiResponse = (playlist) => {
+    res.status(200).send(playlist);
   }
-  const playlist = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
-  res.status(200).send(playlist);
+  if(requestDestination === 'db') {
+    SpotifyModel.getPlaylist(playlistID, (result) => {
+      console.log(result)
+      if(result) {
+        res.status(200).send(result);
+        return;
+      }
+      SpotifyService.getPlaylist(accessToken, handleGetPlaylistApiResponse);
+    });
+  }
+  else if(requestDestination === 'api') {
+    SpotifyService.getPlaylist(accessToken, playlistID, handleGetPlaylistApiResponse);
+  }
 });
 
 /* Pobranie konkretnego albumu */
 router.get('/album/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const albumID = req.params.id;
-  const initialEndpoint = `https://api.spotify.com/v1/albums/${albumID}`;
-  const nextEndpointReference = 'tracks.next';
-  const itemsReference = 'tracks.items';
-  const album = await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference);
-  res.status(200).send(album);
+  const handleGetAlbumApiResponse = (album) => {
+    res.status(200).send(album);
+  }
+  SpotifyService.getAlbum(accessToken, albumID, handleGetAlbumApiResponse);
 });
 
 /* Pobranie konkretnego wykonawcy */
 router.get('/artist/:id', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const artistID = req.params.id;
-  const res_artist = await axios.get(
-    `https://api.spotify.com/v1/artists/${artistID}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+  const handleGetArtistApiResponse = (res_artist) => {
+    if(res_artist.status === 200) {
+      res.status(200).send(res_artist.data);
     }
-  );
-  if(res_artist.status === 200) {
-    const artist = res_artist.data;
-    res.status(200).send(artist);
   }
+  SpotifyService.getArtist(accessToken, artistID, handleGetArtistApiResponse);
 });
 
 /* Przeszukanie katalogu Spotify */
@@ -372,12 +415,10 @@ router.get('/search', async (req, res) => {
   else {
     types = ['album', 'artist', 'playlist', 'track'];
   }
-  const results = {};
-  for (const type of types) {
-    const initialEndpoint = `https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=50`;
-    results[type] = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, `${type}s.items`);
+  const handleSearchAllApiResponse = (results) => {
+    res.status(200).send(results);
   }
-  res.status(200).send(results);
+  SpotifyService.search(accessToken, query, types, handleSearchAllApiResponse);
 })
 
 /* Dodanie listy odtwarzania */

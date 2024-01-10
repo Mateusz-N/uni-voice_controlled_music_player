@@ -35,14 +35,14 @@ const Artist = () => {
     const handleLogout = () => {
         setLoggedIn(false);
     }
-    const getArtist = () => {
+    const getArtist = (fromAPI = false) => {
         if(!loggedIn) {
             setArtist(placeholderArtist);
             setAlbums([]);
             return;
         }
         btnSync.current.classList.add(Styles.spinning);
-        requestGetArtist(artistID, (data) => {
+        requestGetArtist(fromAPI, artistID, (data) => {
             const artist = {
                 id: artistID,
                 name: data.name,
@@ -90,7 +90,7 @@ const Artist = () => {
         }
     }
     const handleSyncWithSpotify = () => {
-        getArtist();
+        getArtist(true);
     }
     // #endregion
 

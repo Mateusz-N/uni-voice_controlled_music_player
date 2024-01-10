@@ -34,12 +34,12 @@ const Album = () => {
     // #endregion
 
     // #region Funkcje pomocnicze
-    const getAlbum = () => {
+    const getAlbum = (fromAPI = false) => {
         if(!loggedIn) {
             setAlbum(placeholderAlbum);
             return;
         }
-        requestGetAlbum(albumID, (data) => {
+        requestGetAlbum(fromAPI, albumID, (data) => {
             const album = {
                 id: albumID,
                 name: data.name,

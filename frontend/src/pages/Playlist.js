@@ -35,7 +35,7 @@ const Playlist = () => {
     // #endregion
 
     // #region Funkcje pomocnicze
-    const getPlaylist = () => {
+    const getPlaylist = (fromAPI = true) => {
     /*  UWAGA: Właściwości listy odtwarzania mogą być nieaktualne, jeśli niedawno miała miejsce aktualizacja.
         Jest to prawdopodobnie defekt w punkcie końcowym 'Get Playlist' Spotify API.
         Np. punkt końcowy 'Get User's Playlists' wyświetla aktualną nazwę listy, a 'Get Playlist' nie. */
@@ -43,7 +43,7 @@ const Playlist = () => {
             setPlaylist(placeholderPlaylist);
             return;
         }
-        requestGetPlaylist(playlistID, async (data) => {
+        requestGetPlaylist(fromAPI, playlistID, async (data) => {
             let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
                 id: playlistID,
                 name: 'Saved tracks',

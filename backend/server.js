@@ -3,9 +3,8 @@ const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
-const cors = require('cors')
-const cookieParser = require('cookie-parser')
-const mysql = require('mysql');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const rateLimit = require('express-rate-limit');
 // #endregion
@@ -22,24 +21,6 @@ const SERVER_PORT_HTTPS = process.env.SERVER_PORT_HTTPS || 3060;
 const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
 const CLIENT_URL_HTTP = process.env.CLIENT_URL_HTTP || `http://localhost:${CLIENT_PORT}`;
 const CLIENT_URL_HTTPS = process.env.CLIENT_URL_HTTPS || `https://localhost:${CLIENT_PORT}`;
-// #endregion
-
-// #region Połączenie z bazą danych MySQL
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'praca_inzynierska'
-});
-connection.connect();
-connection.query('SELECT * FROM user', (err, rows, fields) => {
-  if (err) throw err
-  console.log("Lista użytkowników w bazie:");
-  rows.forEach(row => {
-    console.log(JSON.parse(JSON.stringify(row)));
-  });
-})
-connection.end();
 // #endregion
 
 // #region Konfiguracja aplikacji Express

@@ -61,7 +61,7 @@ const Home = () => {
         setPlaylists([playlistGenerator, playlistBuilder]);
     }
     const handleSyncWithSpotify = () => {
-        getPlaylists();
+        getPlaylists(true);
     }
     const handlePlaylistLinkClick = async (event, playlistType) => {
         if(playlistType === 'builder') {
@@ -90,13 +90,13 @@ const Home = () => {
     // #endregion
     
     // #region Funkcje pomocnicze
-    const getPlaylists = () => {
+    const getPlaylists = (fromAPI = false) => {
         const userID = Cookies.get('userID');
         if(!userID) {
             return;
         }
         btnSync.current.classList.add(Styles.spinning);
-        requestGetPlaylists((data) => {
+        requestGetPlaylists(fromAPI, (data) => {
             setPlaylists([playlistGenerator, playlistBuilder, savedTracks, ...data]);
             btnSync.current.classList.remove(Styles.spinning);
         });

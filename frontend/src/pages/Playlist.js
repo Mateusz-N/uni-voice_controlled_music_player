@@ -43,7 +43,7 @@ const Playlist = () => {
             setPlaylist(placeholderPlaylist);
             return;
         }
-        requestGetPlaylist(fromAPI, playlistID, async (data) => {
+        requestGetPlaylist(playlistID, async (data) => {
             let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
                 id: playlistID,
                 name: 'Saved tracks',
@@ -176,7 +176,7 @@ const Playlist = () => {
             }];
             fetchedPlaylist = await getTracksSavedStatus(fetchedPlaylist);
             setPlaylist(fetchedPlaylist);
-        });
+        }, fromAPI);
     }
     const getTracksSavedStatus = async (playlist) => {
         const trackList = playlist.tracks;

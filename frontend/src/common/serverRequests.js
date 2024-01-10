@@ -55,11 +55,12 @@ export const requestLogout = async (callback) => {
         .catch(console.error);
 }
 
-export const requestGetPlaylists = async (callback) => {
+export const requestGetPlaylists = async (callback, fromAPI = false) => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlists`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'destination': fromAPI ? 'api' : 'db'
         },
         credentials: 'include'
     })
@@ -74,9 +75,12 @@ export const requestGetPlaylists = async (callback) => {
         .catch(console.error);
 }
 
-export const requestGetPlaylist = async (playlistID, callback) => {
+export const requestGetPlaylist = async (playlistID, callback, fromAPI = true) => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {
         method: 'GET',
+        headers: {
+            'destination': fromAPI ? 'api' : 'db'
+        },
         credentials: 'include'
     })
         .then((response) => {

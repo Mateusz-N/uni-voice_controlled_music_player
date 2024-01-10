@@ -42,7 +42,7 @@ const Artist = () => {
             return;
         }
         btnSync.current.classList.add(Styles.spinning);
-        requestGetArtist(fromAPI, artistID, (data) => {
+        requestGetArtist(artistID, (data) => {
             const artist = {
                 id: artistID,
                 name: data.name,
@@ -73,7 +73,7 @@ const Artist = () => {
                 }]
             }
             setArtist(artist);
-        });
+        }, fromAPI);
         getAlbums(artistID);
     }
     const getAlbums = (artistID) => {

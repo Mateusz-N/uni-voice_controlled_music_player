@@ -39,7 +39,7 @@ const Album = () => {
             setAlbum(placeholderAlbum);
             return;
         }
-        requestGetAlbum(fromAPI, albumID, (data) => {
+        requestGetAlbum(albumID, (data) => {
             const album = {
                 id: albumID,
                 name: data.name,
@@ -94,7 +94,7 @@ const Album = () => {
                 showSeparately: true
             }];
             setAlbum(album);
-        });
+        }, fromAPI);
     }
     // #endregion
 

@@ -96,10 +96,10 @@ const Home = () => {
             return;
         }
         btnSync.current.classList.add(Styles.spinning);
-        requestGetPlaylists(fromAPI, (data) => {
+        requestGetPlaylists((data) => {
             setPlaylists([playlistGenerator, playlistBuilder, savedTracks, ...data]);
             btnSync.current.classList.remove(Styles.spinning);
-        });
+        }, fromAPI);
     }
     const createPlaylist = async () => {
         const userID = Cookies.get('userID');

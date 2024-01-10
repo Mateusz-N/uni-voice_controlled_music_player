@@ -11,12 +11,14 @@ module.exports = {
     })
       .then((res_profile) => {
           callback(res_profile);
+          console.log('API: User profile retrieved!');
       })
       .catch(console.error);
   },
   getPlaylists: async (accessToken, callback) => {
     const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
     callback(await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items'));
+    console.log('API: Playlists retrieved!');
   },
   getPlaylist: async (accessToken, playlistID, callback) => {
     let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
@@ -28,16 +30,19 @@ module.exports = {
       itemsReference = 'items';
     }
     callback(await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference));
+    console.log('API: Playlist retrieved!');
   },
   getArtistAlbums: async (accessToken, artistID, callback) => {
     let initialEndpoint = `https://api.spotify.com/v1/artists/${artistID}/albums`;
     callback(await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items'));
+    console.log('API: Artist albums retrieved!');
   },
   getAlbum: async (accessToken, albumID, callback) => {
     const initialEndpoint = `https://api.spotify.com/v1/albums/${albumID}`;
     const nextEndpointReference = 'tracks.next';
     const itemsReference = 'tracks.items';
     callback(await handleGetSingleItemRequest(accessToken, initialEndpoint, nextEndpointReference, itemsReference));
+    console.log('API: Album retrieved!');
   },
   getArtist: async (accessToken, artistID, callback) => {
     axios.get(
@@ -50,16 +55,18 @@ module.exports = {
     )
     .then((res_profile) => {
         callback(res_profile);
+        console.log('API: Artist retrieved!');
     })
     .catch(console.error);
   },
-  searchAll: async (accessToken, query, callback) => {
+  search: async (accessToken, query, types, callback) => {
     const results = {};
-    for (const type of ['album', 'artist', 'playlist', 'track']) {
+    for (const type of types) {
       const initialEndpoint = `https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=50`;
       results[type] = await handleGetMultipleItemsRequest(accessToken, initialEndpoint, `${type}s.items`);
     }
     callback(results);
+    console.log('API: Search executed!');
   }
 }
 

@@ -1,0 +1,94 @@
+const axios = require('axios');
+
+module.exports = {
+    getUserProfile: async (accessToken, callback) => {
+        axios.get(
+        'https://api.spotify.com/v1/me',
+        {
+            headers: {
+            'Authorization': `Bearer ${accessToken}`
+            }
+        })
+            .then((res_profile) => {
+                callback(res_profile);
+            })
+            .catch(console.error);
+    },
+    getPlaylists: async (accessToken, callback) => {
+        const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';
+        callback(await handleGetMultipleItemsRequest(accessToken, initialEndpoint, 'items'));
+    }
+}
+
+const handleGetItemsRequest = async (accessToken, initialEndpoint, onSuccess) => {
+    /*Obsługa wszelkiego rodzaju żądań,
+      które pobierają dane z wykorzystaniem paginacji*/
+      let nextEndpoint = initialEndpoint;
+      let items = null;
+      do {
+        const res_items = await axios.get(
+          nextEndpoint,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            },
+          }
+        );
+        if(res_items.status === 200) {
+          [items, nextEndpoint] = onSuccess(items, res_items, nextEndpoint);
+        }
+        else {
+          res.status(res_items.status).send({
+            error: 'Something went wrong!'
+          });
+        }
+      }
+      while(nextEndpoint);
+      return items;
+    }
+    
+    const getPropertyByString = (object, string) => {
+      const properties = string.split('.');
+      while(properties.length > 0) {
+        object = object[properties.shift()];
+      }
+      return object;
+    }
+    
+    const handleGetSingleItemRequest = async (accessToken, initialEndpoint, nextEndpointReference, responseBodyItemsReference) => {
+      const onSuccess = (item, res_item, nextEndpoint) => {
+        const itemPage = res_item.data;
+        if(!item) {
+          item = itemPage;
+          nextEndpoint = getPropertyByString(itemPage, nextEndpointReference);
+        }
+        else {
+          getPropertyByString(item, responseBodyItemsReference).push(...itemPage.items);
+          nextEndpoint = itemPage.next;
+        }
+        return [item, nextEndpoint]
+      }
+      return await handleGetItemsRequest(accessToken, initialEndpoint, onSuccess);
+    }
+    
+    const handleGetMultipleItemsRequest = async (accessToken, initialEndpoint, responseBodyItemsReference) => {
+      const onSuccess = (items, res_items, nextEndpoint) => {
+        const itemsPage = getPropertyByString(res_items.data, responseBodyItemsReference).map(item => {
+          return {
+            id: item.id,
+            type: item.type,
+            name: item.name,
+            thumbnailSrc: item.images ? (item.images[0] ? item.images[0].url : null) : null
+          }
+        });
+        if(!items) {
+          items = itemsPage;
+        }
+        else {
+          items.push(...itemsPage);
+        }
+        nextEndpoint = res_items.data.next;
+        return [items, nextEndpoint]
+      }
+      return await handleGetItemsRequest(accessToken, initialEndpoint, onSuccess);
+    }

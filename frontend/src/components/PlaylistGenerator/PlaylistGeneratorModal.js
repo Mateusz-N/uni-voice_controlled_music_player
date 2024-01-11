@@ -164,11 +164,11 @@ const PlaylistGeneratorModal = (props) => {
     let seedSearchModal = null;
     if(seedSearchModalOpen) {
         seedSearchModal =
-            <SeedSearchModal
+            createPortal(<SeedSearchModal
                 seeds = {seeds}
                 onSubmit = {(seedID, seedName, seedType) => handleSubmitAddSeedSearch(seedID, seedName, seedType)}
                 onCancel = {handleCancelAddSeedSearch}
-            />
+            />, document.body);
     }
     // #endregion
 

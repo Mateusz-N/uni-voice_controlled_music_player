@@ -159,7 +159,10 @@ const Home = () => {
                             let playlistGeneratorModal = null;
                             if(playlistGeneratorModalOpen && playlist.type === 'generator') {
                                 playlistGeneratorModal =
-                                    <PlaylistGeneratorModal onSubmit = {(tracks) => handleGeneratePlaylist(tracks)} onCancel = {handleModalClose_playlistGenerator} />
+                                    createPortal(<PlaylistGeneratorModal
+                                        onSubmit = {(tracks) => handleGeneratePlaylist(tracks)}
+                                        onCancel = {handleModalClose_playlistGenerator}
+                                    />, document.body);
                             }
                             return(
                                 <figure key = {index} className = {Styles.catalogItem}>

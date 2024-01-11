@@ -75,7 +75,7 @@ const TrackListItem = (props) => {
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        setTrackSaved(track.saved);
+        setTrackSaved(props.track.saved);
     },[props]);
     // #endregion
 
@@ -111,13 +111,13 @@ const TrackListItem = (props) => {
     let modal_addToPlaylist = null;
     if(modal_addToPlaylist_open) {
         modal_addToPlaylist =
-            <AddTrackToPlaylistsModal
+            createPortal(<AddTrackToPlaylistsModal
                 index = {index}
                 track = {track}
                 userPlaylists = {userPlaylists.filter(playlist => playlist.owner.id === Cookies.get('userID'))}
                 onClose = {handleModalClose_addToPlaylist}
                 onPlaylistUpdate = {props.onPlaylistUpdate}
-            />
+            />, document.body);
     }
     let kebabMenu = null;
     if(!track.local) {

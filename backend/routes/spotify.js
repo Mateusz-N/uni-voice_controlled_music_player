@@ -60,7 +60,7 @@ const requestAccessToken = async (res, grantType, queryParams) => {
       secure: true,
       sameSite: 'strict'
     });
-    res.cookie('accessToken_expirationDateInSeconds', new Date().getSeconds() + res_token.data.expires_in, {
+    res.cookie('accessToken_expirationDateInSeconds', new Date().getTime() / 1000 + res_token.data.expires_in, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict'
@@ -81,7 +81,7 @@ const requestAccessToken = async (res, grantType, queryParams) => {
 }
 
 const verifyAccessToken = async (res, accessToken, accessToken_expirationDateInSeconds, refreshToken, clientId) => {
-  if(new Date().getSeconds() < accessToken_expirationDateInSeconds) {
+  if(Math.floor(new Date().getTime() / 1000) < accessToken_expirationDateInSeconds) {
     return accessToken;
   }
   const newToken = await requestAccessToken(res, 'refresh_token', {

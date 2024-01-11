@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import { requestGetPlaylists, requestCreatePlaylist, requestGeneratePlaylist } from 'common/serverRequests';
@@ -15,6 +15,7 @@ import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import PlaylistKebabMenu from 'components/generic/instances/PlaylistKebabMenu';
 import PlaylistGeneratorModal from 'components/PlaylistGenerator/PlaylistGeneratorModal';
+import Toast from 'components/generic/Toast';
 
 import Styles from 'pages/Home.module.scss';
 
@@ -43,6 +44,7 @@ const Home = () => {
     // #region Zmienne stanu (useState Hooks)
     const [playlists, setPlaylists] = useState([playlistGenerator, playlistBuilder]);
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
+    const [notification, setNotification] = useState({});
     // #endregion
 
     // #region Zmienne referencji (useRef Hooks)
@@ -74,14 +76,18 @@ const Home = () => {
             handleOpenPlaylistGenerator();
         }
     }
+    const handleDeletePlaylist = () => {
+        setNotification({message: 'Playlist deleted successfully!', type: 'success'});
+        handleSyncWithSpotify();
+    }
     const handleOpenPlaylistGenerator = () => {
         setPlaylistGeneratorModalOpen(true);
     }
     const handleGeneratePlaylist = async (tracks) => {
         const newPlaylistID = await createPlaylist();
         requestGeneratePlaylist(newPlaylistID, tracks, (data) => {
-            console.info(data.message);
-            navigate(`/playlist/${newPlaylistID}`);
+            const notificationMessage = data.message.type === 'success' ? 'Playlist generated successfully!' : data.message.type;
+            navigate(`/playlist/${newPlaylistID}`, {state: {notificationMessage: notificationMessage, notificationType: data.message.type}});
         });
     }
     const handleModalClose_playlistGenerator = () => {
@@ -119,9 +125,22 @@ const Home = () => {
     },[]);
     // #endregion
 
+    // #region Przypisanie dynamicznych elementów komponentu
+    let toastNotification = null;
+    if(notification.message) {
+        toastNotification =
+            createPortal(<Toast
+                message = {notification.message}
+                type = {notification.type} 
+                onAnimationEnd = {() => setNotification({})}
+            />, document.body);
+    }
+    // #endregion
+
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
+            {toastNotification}
             <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
@@ -135,7 +154,7 @@ const Home = () => {
                             let kebabMenu = null;
                             if(!['generator', 'builder'].includes(playlist.type)) {
                                 kebabMenu =
-                                    <PlaylistKebabMenu playlistID = {playlist.id} context = 'catalogItem' styles = {Styles} onDeletePlaylist = {handleSyncWithSpotify} />
+                                    <PlaylistKebabMenu playlistID = {playlist.id} context = 'catalogItem' styles = {Styles} onDeletePlaylist = {handleDeletePlaylist} />
                             }
                             let playlistGeneratorModal = null;
                             if(playlistGeneratorModalOpen && playlist.type === 'generator') {

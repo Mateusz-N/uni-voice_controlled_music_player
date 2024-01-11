@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
@@ -12,6 +14,7 @@ import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList/TrackList';
 import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
+import Toast from 'components/generic/Toast';
 
 const Playlist = () => {
     // #region Zmienne globalne
@@ -21,6 +24,12 @@ const Playlist = () => {
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
     const [playlist, setPlaylist] = useState(placeholderPlaylist);
+    const [notification, setNotification] = useState({});
+    // #endregion
+
+    // #region Zmienne lokalizacji (useLocation Hooks)
+    const location = useLocation();
+    // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
@@ -204,11 +213,31 @@ const Playlist = () => {
         getPlaylist();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[loggedIn]);
+
+    useEffect(() => {
+        if(location.state && location.state.notificationMessage) {
+            setNotification({message: location.state.notificationMessage, type: location.state.notificationType});
+            window.history.replaceState({}, document.title);
+        }
+    },[]);
+    // #endregion
+
+    // #region Przypisanie dynamicznych elementów komponentu
+    let toastNotification = null;
+    if(notification.message) {
+        toastNotification =
+            createPortal(<Toast
+                message = {notification.message}
+                type = {notification.type} 
+                onAnimationEnd = {() => setNotification({})}
+            />, document.body);
+    }
     // #endregion
 
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
+            {toastNotification}
             <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList key = {'trackList' + playlist.id} tracks = {playlist.tracks} for = 'playlist' playlistID = {playlistID} onPlaylistUpdate = {handlePlaylistUpdate} />

@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
- 
+
 import { requestSearch } from 'common/serverRequests';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';

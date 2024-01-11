@@ -26,7 +26,9 @@ const Artist = () => {
     const [albums, setAlbums] = useState([]);
     // #endregion
 
+    // #region Zmienne referencji (useRef Hooks)
     const btnSync = useRef(null);
+    // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {

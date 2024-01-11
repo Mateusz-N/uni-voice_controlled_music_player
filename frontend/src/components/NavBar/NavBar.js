@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -10,6 +11,7 @@ import microphone_active from 'resources/microphone_active.svg';
 
 import SearchBar from 'components/generic/SearchBar';
 import ContextMenu from 'components/generic/ContextMenu';
+import Toast from 'components/generic/Toast';
 
 import Styles from 'components/NavBar/NavBar.module.scss';
 
@@ -20,6 +22,7 @@ const NavBar = (props) => {
     const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
     const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
+    const [notification, setNotification] = useState({});
     // #endregion
 
     // #region Zmienne referencji (useRef Hooks)
@@ -46,7 +49,7 @@ const NavBar = (props) => {
                     Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
                     setLoggedIn(true);
                     props.onLogin();
-                    console.info(data.message);
+                    setNotification(data.message);
                 });
             }
         }, 100);
@@ -59,7 +62,7 @@ const NavBar = (props) => {
             Cookies.remove('userName');
             Cookies.remove('profilePicURL');
             props.onLogout();
-            console.info(data.message);
+            setNotification(data.message);
         });
         setLoggedIn(false);
     }
@@ -96,42 +99,53 @@ const NavBar = (props) => {
     },[profileContextMenuExpanded]);
     // #endregion
 
+    // #region Przypisanie dynamicznych elementów komponentu
+    let toastNotification = null;
+    if(notification.message) {
+        toastNotification =
+            createPortal(<Toast message = {notification.message} type = {notification.type} onAnimationEnd = {() => setNotification({})} />, document.body);
+    }
+    // #endregion
+
     // #region Struktura komponentu (JSX)
     return(
-        <nav id = {Styles.navBar}>
-            <section id = {Styles.navBar_leftSection} className = {Styles.navBar_section}>
-                <Link to = '/'>
-                    <img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} />
-                </Link>
-                <SearchBar onSubmit = {(query) => handleSearchFormSubmit(query)} />
-            </section>
-            <div id = {Styles.microphoneContainer}>
-                <img
-                    src = {microphoneActive ? microphone_active : microphone_idle}
-                    alt = {microphoneEnabled ? (microphoneActive ? 'Capturing voice...' : 'Awaiting input...') : 'Microphone off'}
-                    id = {Styles.microphoneIcon}
-                    className = {microphoneEnabled ? Styles.microphoneIcon_enabled : Styles.microphoneIcon_disabled}
-                    onClick = {handleToggleMicrophone}
-                />
-            </div>
-            <section id = {Styles.navBar_rightSection} className = {Styles.navBar_section}>
-                {loggedIn ?
+        <>
+            {toastNotification}
+            <nav id = {Styles.navBar}>
+                <section id = {Styles.navBar_leftSection} className = {Styles.navBar_section}>
+                    <Link to = '/'>
+                        <img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} />
+                    </Link>
+                    <SearchBar onSubmit = {(query) => handleSearchFormSubmit(query)} />
+                </section>
+                <div id = {Styles.microphoneContainer}>
                     <img
-                        src = {Cookies.get('profilePicURL')}
-                        alt = {Cookies.get('userName')}
-                        id = {Styles.profilePic}
-                        onClick = {handleToggleProfileContextMenu}
-                        ref = {ref_profilePic}
+                        src = {microphoneActive ? microphone_active : microphone_idle}
+                        alt = {microphoneEnabled ? (microphoneActive ? 'Capturing voice...' : 'Awaiting input...') : 'Microphone off'}
+                        id = {Styles.microphoneIcon}
+                        className = {microphoneEnabled ? Styles.microphoneIcon_enabled : Styles.microphoneIcon_disabled}
+                        onClick = {handleToggleMicrophone}
                     />
-                    :
-                    <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
-                }
-                <ContextMenu expanded = {profileContextMenuExpanded} context = 'profile' styles = {Styles}>
-                    <li id = {Styles.profileContextMenu_settings}><Link to = '/settings'>Settings</Link></li>
-                    <li id = {Styles.profileContextMenu_disconnect} onClick = {handleLogout} dangerous = 'true'>Disconnect</li>
-                </ContextMenu>
-            </section>
-        </nav>
+                </div>
+                <section id = {Styles.navBar_rightSection} className = {Styles.navBar_section}>
+                    {loggedIn ?
+                        <img
+                            src = {Cookies.get('profilePicURL')}
+                            alt = {Cookies.get('userName')}
+                            id = {Styles.profilePic}
+                            onClick = {handleToggleProfileContextMenu}
+                            ref = {ref_profilePic}
+                        />
+                        :
+                        <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
+                    }
+                    <ContextMenu expanded = {profileContextMenuExpanded} context = 'profile' styles = {Styles}>
+                        <li id = {Styles.profileContextMenu_settings}><Link to = '/settings'>Settings</Link></li>
+                        <li id = {Styles.profileContextMenu_disconnect} onClick = {handleLogout} dangerous = 'true'>Disconnect</li>
+                    </ContextMenu>
+                </section>
+            </nav>
+        </>
     );
     // #endregion
 }

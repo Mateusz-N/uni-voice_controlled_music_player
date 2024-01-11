@@ -1,4 +1,5 @@
 import { useState, useEffect, Fragment } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -11,13 +12,13 @@ import btn_pause from 'resources/btn_pause.svg';
 
 import KebabMenu from 'components/generic/KebabMenu';
 import AddTrackToPlaylistsModal from 'components/generic/instances/AddTrackToPlaylistsModal';
+import Toast from 'components/generic/Toast';
 
 import Styles from 'components/TrackList/TrackListItem.module.scss';
 
 const TrackListItem = (props) => {
     // #region Zmienne globalne
     const track = props.track;
-    console.log(track.saved);
     const index = props.index;
     const playlistID = props.playlistID;
     const playing = props.playing;
@@ -29,6 +30,7 @@ const TrackListItem = (props) => {
     const [trackSaved, setTrackSaved] = useState(track.saved);
     const [modal_addToPlaylist_open, setModal_addToPlaylist_open] = useState(false);
     const [trackRowActive, setTrackRowActive] = useState(false);
+    const [notification, setNotification] = useState({});
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -56,16 +58,16 @@ const TrackListItem = (props) => {
         setTrackRowActive(false);
     }
     // #endregion
-    
+
     // #region Funkcje pomocnicze
     const toggleTrackSaved = (saved) => {
         requestToggleTrackSaved(track.id, saved, (data) => {
-            console.info(data.message);
+            setNotification(data.message);
         });
     }
     const removeTrackFromPlaylist = (playlistID) => {
         requestRemoveTrackFromPlaylist(playlistID, [`spotify:track:${track.id}`], (data) => {
-            console.info(data.message);
+            setNotification(data.message);
             props.onPlaylistUpdate();
         });
     }
@@ -93,7 +95,6 @@ const TrackListItem = (props) => {
         <li id = {Styles.trackList_item_contextMenu_addToFavorites} onClick = {handleToggleTrackSaved}>
             Add to favorites
         </li>;
-    console.log(trackSaved)
     if(trackSaved) {
         contextMenu_savedTracksAction =
             <li id = {Styles.trackList_item_contextMenu_removeFromFavorites} onClick = {handleToggleTrackSaved} dangerous = 'true'>
@@ -192,34 +193,42 @@ const TrackListItem = (props) => {
         releaseDateColumn = <td>{releaseDateColumnContents}</td>;
         dateAddedColumn = <td>{dateAddedColumnContents}</td>;
     }
+    let toastNotification = null;
+    if(notification.message) {
+        toastNotification =
+            createPortal(<Toast message = {notification.message} type = {notification.type} onAnimationEnd = {() => setNotification({})} />, document.body);
+    }
     // #endregion
     
     // #region Struktura komponentu (JSX)
     return(
-        <tr key = {index} className = {Styles.trackList_item + (trackRowActive ? ' ' + Styles.trackList_item_active : '')}>
-            <td>{index + 1}</td>
-            <td>
-                <div className = {Styles.trackList_item_title}>
-                    <img
-                        src = {playing ?  btn_pause : btn_play}
-                        alt = {playing ? 'Pause' : 'Play'}
-                        className = {Styles.trackList_item_btnTogglePlayback + ' ' + (playing ? Styles.trackList_item_btnPause : Styles.trackList_item_btnPlay)}
-                        onClick = {() => handleToggleTrackPlayback(index)}
-                    />
-                    <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(index)}>{track.title}</p>
-                </div>
-            </td>
-            <td>{artistsColumnContents}</td>
-            {albumColumn}
-            {releaseDateColumn}
-            <td>{track.genres.join(', ')}</td>
-            <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
-            {dateAddedColumn}
-            <td className = {Styles.trackList_item_tdKebab}>
-                {modal_addToPlaylist}
-                {kebabMenu}
-            </td>
-        </tr>
+        <>
+            {toastNotification}
+            <tr key = {index} className = {Styles.trackList_item + (trackRowActive ? ' ' + Styles.trackList_item_active : '')}>
+                <td>{index + 1}</td>
+                <td>
+                    <div className = {Styles.trackList_item_title}>
+                        <img
+                            src = {playing ?  btn_pause : btn_play}
+                            alt = {playing ? 'Pause' : 'Play'}
+                            className = {Styles.trackList_item_btnTogglePlayback + ' ' + (playing ? Styles.trackList_item_btnPause : Styles.trackList_item_btnPlay)}
+                            onClick = {() => handleToggleTrackPlayback(index)}
+                        />
+                        <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(index)}>{track.title}</p>
+                    </div>
+                </td>
+                <td>{artistsColumnContents}</td>
+                {albumColumn}
+                {releaseDateColumn}
+                <td>{track.genres.join(', ')}</td>
+                <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
+                {dateAddedColumn}
+                <td className = {Styles.trackList_item_tdKebab}>
+                    {modal_addToPlaylist}
+                    {kebabMenu}
+                </td>
+            </tr>
+        </>
     );
     // #endregion
 }

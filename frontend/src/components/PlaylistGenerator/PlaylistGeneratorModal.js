@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 import { requestGetRecommendations } from 'common/serverRequests';
 
@@ -7,6 +8,7 @@ import InputFieldsetMinMaxTarget from 'components/PlaylistGenerator/InputFieldse
 import FormControlSection from 'components/generic/FormControlSection';
 import ChipBox from 'components/generic/ChipBox';
 import SeedSearchModal from 'components/PlaylistGenerator/SeedSearchModal';
+import Toast from 'components/generic/Toast';
 
 import Styles from 'components/PlaylistGenerator/PlaylistGeneratorModal.module.scss';
 
@@ -103,6 +105,7 @@ const PlaylistGeneratorModal = (props) => {
     const [parameters, setParameters] = useState({});
     const [seeds, setSeeds] = useState([]);
     const [seedSearchModalOpen, setSeedSearchModalOpen] = useState(false);
+    const [notification, setNotification] = useState({});
     // #endregion
 
     // #region Zmienne referencji (useRef Hooks)
@@ -132,7 +135,7 @@ const PlaylistGeneratorModal = (props) => {
     }
     const handleAddSeed = () => {
         if(seeds.length >= 5) {
-            console.error('Cannot add any more seeds! The maximum is 5.');
+            setNotification({message: 'Cannot add any more seeds! The maximum is 5.', type: 'error'});
             return;
         }
         setSeedSearchModalOpen(true);
@@ -169,9 +172,18 @@ const PlaylistGeneratorModal = (props) => {
     }
     // #endregion
 
+    // #region Przypisanie dynamicznych elementów komponentu
+    let toastNotification = null;
+    if(notification.message) {
+        toastNotification =
+            createPortal(<Toast message = {notification.message} type = {notification.type} onAnimationEnd = {() => setNotification({})} />, document.body);
+    }
+    // #endregion
+
     // #region Struktura komponentu (JSX)
     return(
         <>
+            {toastNotification}
             <Modal title = 'Generate playlist...' id = 'playlistGenerator' styles = {Styles} onClose = {handleCancelPlaylistGeneratorForm}>
                 <form id = {Styles.form_playlistGenerator} ref = {ref_form_playlistGenerator}>
                     <main id = {Styles.form_playlistGeneratorMain}>

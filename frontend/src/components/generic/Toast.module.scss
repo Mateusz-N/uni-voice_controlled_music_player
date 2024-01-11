@@ -1,0 +1,52 @@
+.toast {
+    position: fixed;
+    left: 50%;
+    max-width: 80%;
+
+    padding: 16px;
+
+    border-radius: 27px;
+    background-color: #222;
+    z-index: 1;
+    text-align: center;
+    white-space: pre-line;
+
+    animation-name: popup;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+}
+
+.toast_information {
+    color: #AAF;
+}
+
+.toast_error {
+    color: #FAA;
+}
+
+.toast_success {
+    color: #AFA;
+}
+
+.toast_warning {
+    color: #FFA;
+}
+
+@keyframes popup {
+    0% {
+        transform: translate(-50%, 100%);
+        bottom: 0;
+    }
+    10% {
+        transform: translate(-50%, 0%);
+        bottom: 100px;
+    }
+    90% {
+        transform: translate(-50%, 0%);
+        bottom: 100px;
+    }
+    100% {
+        transform: translate(-50%, 100%);
+        bottom: 0;
+    }
+}

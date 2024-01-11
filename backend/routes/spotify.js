@@ -175,7 +175,10 @@ const handleToggleTrackSaved = async (req, res, accessToken, method) => {
   });
   if(res_toggleTrackSaved.status === 200) {
     res.status(200).send({
-      message: `Track ${method === 'PUT' ? 'added to' : 'removed from'} favorites successfully!`
+      message: {
+        message: `Track ${method === 'PUT' ? 'added to' : 'removed from'} favorites successfully!`,
+        type: 'success'
+      }
     });
   }
   else {
@@ -200,7 +203,10 @@ const handleTrackInPlaylist = async (req, res, accessToken, method) => {
   });
   if([200, 201].includes(res_playlist.status)) {
     res.status(res_playlist.status).send({
-      message: `Track(s) ${method === 'POST' ? 'added' : 'removed'} successfully!`
+      message: {
+        message: `Track(s) ${method === 'POST' ? 'added' : 'removed'} successfully!`,
+        type: 'success'
+      }
     });
   }
   else {
@@ -268,7 +274,10 @@ router.post('/logout', async (req, res) => {
   res.clearCookie('userID');
   res.clearCookie('userName');
   res.status(200).send({
-    message: 'Logged out successfully!'
+    message: {
+      message: 'Logged out successfully!',
+      type: 'success'
+    }
   });
 });
 
@@ -288,7 +297,10 @@ router.get('/user', async (req, res) => {
         userID: res_profile.data.id,
         userName: res_profile.data.display_name,
         profilePicURL: res_profile.data.images[0] ? res_profile.data.images[0].url : null,
-        message: 'Logged in successfully!'
+        message: {
+          message: 'Logged in successfully!',
+          type: 'success'
+        }
       }
       SpotifyModel.addUserProfile(accessToken, profile.userID, profile.userName, profile.profilePicURL);
       res.cookie('userID', profile.userID);
@@ -445,7 +457,10 @@ router.post('/:userID/playlist', async (req, res) => {
   if(res_playlist.status === 201) {
     res.status(201).send({
       playlistID: res_playlist.data.id,
-      message: 'Playlist created successfully!'
+      message: {
+        message: 'Playlist created successfully!',
+        type: 'success'
+      }
     });
   }
   else {
@@ -469,7 +484,10 @@ router.delete('/playlist/:id', async(req, res) => {
   );
   if(res_deletePlaylist.status === 200) {
     res.status(200).send({
-      message: 'Playlist deleted successfully!'
+      message: {
+        message: 'Playlist deleted successfully!',
+        type: 'success'
+      }
     });
   }
   else {
@@ -490,7 +508,10 @@ router.put('/playlist/:id', async (req, res) => {
   const updatedDetailValue = req.body.detailValue;
   if(updatedDetailName == null || updatedDetailValue == null) {
     res.status(422).send({
-      message: 'Missing request data!'
+      message: {
+        message: 'Missing request data!',
+        type: 'error'
+      }
     });
     return;
   }
@@ -506,7 +527,10 @@ router.put('/playlist/:id', async (req, res) => {
   });
   if(res_updatePlaylist.status === 200) {
     res.status(200).send({
-      message: 'Playlist updated successfully!'
+      message: {
+        message: 'Playlist updated successfully!',
+        type: 'success'
+      }
     });
   }
   else {

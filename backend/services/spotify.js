@@ -24,7 +24,7 @@ module.exports = {
     let initialEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}`;
     let nextEndpointReference = 'tracks.next';
     let itemsReference = 'tracks.items';
-    if(playlistID === '1') { // Polubione utwory
+    if(playlistID === '2') { // Polubione utwory
       initialEndpoint = 'https://api.spotify.com/v1/me/tracks?limit=50';
       nextEndpointReference = 'next';
       itemsReference = 'items';

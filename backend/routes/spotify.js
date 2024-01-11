@@ -98,72 +98,6 @@ const retrieveAccessToken = (req) => {
   return [accessToken, accessToken_expirationDateInSeconds, refreshToken];
 }
 
-const handleGetItemsRequest = async (accessToken, initialEndpoint, onSuccess) => {
-/*Obsługa wszelkiego rodzaju żądań,
-  które pobierają dane z wykorzystaniem paginacji*/
-  let nextEndpoint = initialEndpoint;
-  let items = null;
-  do {
-    const res_items = await axios.get(
-      nextEndpoint,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        },
-      }
-    );
-    if(res_items.status === 200) {
-      [items, nextEndpoint] = onSuccess(items, res_items, nextEndpoint);
-    }
-    else {
-      res.status(res_items.status).send({
-        error: 'Something went wrong!'
-      });
-    }
-  }
-  while(nextEndpoint);
-  return items;
-}
-
-const getPropertyByString = (object, string) => {
-  const properties = string.split('.');
-  while(properties.length > 0) {
-    object = object[properties.shift()];
-  }
-  return object;
-}
-
-const handleGetSingleItemRequest = async (accessToken, initialEndpoint, nextEndpointReference, responseBodyItemsReference) => {
-  const onSuccess = (item, res_item, nextEndpoint) => {
-    const itemPage = res_item.data;
-    if(!item) {
-      item = itemPage;
-      nextEndpoint = getPropertyByString(itemPage, nextEndpointReference);
-    }
-    else {
-      getPropertyByString(item, responseBodyItemsReference).push(...itemPage.items);
-      nextEndpoint = itemPage.next;
-    }
-    return [item, nextEndpoint]
-  }
-  return await handleGetItemsRequest(accessToken, initialEndpoint, onSuccess);
-}
-
-const handleGetMultipleItemsRequest = async (accessToken, initialEndpoint, responseBodyItemsReference) => {
-  const onSuccess = (items, res_items, nextEndpoint) => {
-    const itemsPage = getPropertyByString(res_items.data, responseBodyItemsReference);
-    if(!items) {
-      items = itemsPage;
-    }
-    else {
-      items.push(...itemsPage);
-    }
-    nextEndpoint = res_items.data.next;
-    return [items, nextEndpoint]
-  }
-  return await handleGetItemsRequest(accessToken, initialEndpoint, onSuccess);
-}
-
 const handleToggleTrackSaved = async (req, res, accessToken, method) => {
   const IDs = req.query.ids;
   const res_toggleTrackSaved = await axios({
@@ -381,7 +315,6 @@ router.get('/playlist/:id', async (req, res) => {
   }
   if(requestDestination === 'db') {
     SpotifyModel.getPlaylist(playlistID, (result) => {
-      console.log(result)
       if(result) {
         res.status(200).send(result);
         return;

@@ -11,7 +11,8 @@ import btn_play from 'resources/btn_play.svg';
 import btn_pause from 'resources/btn_pause.svg';
 
 import KebabMenu from 'components/generic/KebabMenu';
-import AddTrackToPlaylistsModal from 'components/generic/instances/AddTrackToPlaylistsModal';
+import AddTrackToPlaylistsModal from 'components/TrackList/AddTrackToPlaylistsModal';
+import TrackDetailsModal from 'components/TrackList/TrackDetailsModal';
 import Toast from 'components/generic/Toast';
 
 import Styles from 'components/TrackList/TrackListItem.module.scss';
@@ -29,6 +30,7 @@ const TrackListItem = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [trackSaved, setTrackSaved] = useState(track.saved);
     const [modal_addToPlaylist_open, setModal_addToPlaylist_open] = useState(false);
+    const [modal_trackDetails_open, setModal_trackDetails_open] = useState(false);
     const [trackRowActive, setTrackRowActive] = useState(false);
     const [notification, setNotification] = useState({});
     // #endregion
@@ -55,6 +57,13 @@ const TrackListItem = (props) => {
     }
     const handleModalClose_addToPlaylist = () => {
         setModal_addToPlaylist_open(false);
+        setTrackRowActive(false);
+    }
+    const handleSelectTrackDetails = () => {
+        setModal_trackDetails_open(true);
+    }
+    const handleModalClose_trackDetails = () => {
+        setModal_trackDetails_open(false);
         setTrackRowActive(false);
     }
     // #endregion
@@ -119,6 +128,15 @@ const TrackListItem = (props) => {
                 onPlaylistUpdate = {props.onPlaylistUpdate}
             />, document.body);
     }
+    let modal_trackDetails = null;
+    if(modal_trackDetails_open) {
+        modal_trackDetails =
+            createPortal(<TrackDetailsModal
+                index = {index}
+                track = {track}
+                onClose = {handleModalClose_trackDetails}
+            />, document.body);
+    }
     let kebabMenu = null;
     if(!track.local) {
         kebabMenu = 
@@ -134,6 +152,7 @@ const TrackListItem = (props) => {
                     Add to playlist...
                 </li>
                 {contextMenu_removeFromPlaylist}
+                <li id = {Styles.trackList_item_contextMenu_trackDetails} onClick = {handleSelectTrackDetails}>Track details</li>
             </KebabMenu>
     }
     if(track && Object.keys(track).length > 0) {
@@ -225,6 +244,7 @@ const TrackListItem = (props) => {
                 {dateAddedColumn}
                 <td className = {Styles.trackList_item_tdKebab}>
                     {modal_addToPlaylist}
+                    {modal_trackDetails}
                     {kebabMenu}
                 </td>
             </tr>

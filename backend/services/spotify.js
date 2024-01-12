@@ -3,17 +3,17 @@ const axios = require('axios');
 module.exports = {
   getUserProfile: async (accessToken, callback) => {
     axios.get(
-    'https://api.spotify.com/v1/me',
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    })
-      .then((res_profile) => {
-          callback(res_profile);
-          console.log('API: User profile retrieved!');
+      'https://api.spotify.com/v1/me',
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
       })
-      .catch(console.error);
+        .then((res_profile) => {
+            callback(res_profile);
+            console.log('API: User profile retrieved!');
+        })
+        .catch(console.error);
   },
   getPlaylists: async (accessToken, callback) => {
     const initialEndpoint = 'https://api.spotify.com/v1/me/playlists?limit=50';

@@ -8,7 +8,7 @@ import ListBox from 'components/generic/ListBox';
 import FormControlSection from 'components/generic/FormControlSection';
 import Toast from 'components/generic/Toast';
 
-import Styles from 'components/generic/instances/AddTrackToPlaylistsModal.module.scss';
+import Styles from 'components/TrackList/AddTrackToPlaylistsModal.module.scss';
 
 const AddTrackToPlaylistModal = (props) => {
     // #region Zmienne globalne

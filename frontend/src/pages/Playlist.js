@@ -53,6 +53,7 @@ const Playlist = () => {
             return;
         }
         requestGetPlaylist(playlistID, async (data) => {
+            console.log(data)
             let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
                 id: playlistID,
                 name: 'Saved tracks',

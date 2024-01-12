@@ -4,6 +4,13 @@ const ListBox = (props) => {
     // #region Zmienne globalne
     const options = props.options;
     const multiple = props.multiple;
+    let size = props.size;
+    if(!size) {
+        size = 10;
+    }
+    else if(size < 2) {
+        size = 2;
+    }
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -15,7 +22,7 @@ const ListBox = (props) => {
 
     // #region Struktura komponentu (JSX)
     return(
-        <select size = {props.size || 10} multiple = {multiple} onChange = {handleSelection} className = {Styles.listBox}>
+        <select size = {size} multiple = {multiple} onChange = {handleSelection} className = {Styles.listBox}>
             {options.map((option, index) => {
                 return <option key = {index} value = {option.id} title = {option.name}>{option.name}</option>
             })}

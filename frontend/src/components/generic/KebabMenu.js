@@ -54,7 +54,7 @@ const KebabMenu = (props) => {
     },[itemContextMenuExpanded])
     // #endregion
 
-    // #region Zmienne globalne
+    // #region Struktura komponentu (JSX)
     return(
         <Fragment>
             <img src = {btn_kebab} alt = 'Menu' id = {btnID} className = {Styles.btnKebab + ' ' + ExternalStyles[context + '_btnKebab']} onClick = {handleToggleItemContextMenu} />

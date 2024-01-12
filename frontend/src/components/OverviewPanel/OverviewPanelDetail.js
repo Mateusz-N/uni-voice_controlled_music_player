@@ -45,7 +45,7 @@ const OverviewPanelDetail = (props) => {
         if(props.standalone) {
             return <Fragment>{children}</Fragment>
         }
-        return <li className = {Styles.overviewPanelDetails_detail}>{children}</li>
+        return <li className = {Styles.overviewPanelDetails_detail + ' ' + (editModeActive ? Styles.overviewPanelDetails_detail_editModeActive : '')}>{children}</li>
     }
     // #endregion
 

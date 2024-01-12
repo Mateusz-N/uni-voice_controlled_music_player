@@ -10,6 +10,7 @@ import btn_pause from 'resources/btn_pause.svg';
 import OverviewPanelDetails from 'components/OverviewPanel/OverviewPanelDetails';
 import OverviewPanelDetail from 'components/OverviewPanel/OverviewPanelDetail';
 import PlaylistKebabMenu from 'components/generic/instances/PlaylistKebabMenu';
+import ArtistKebabMenu from 'components/OverviewPanel/ArtistKebabMenu';
 import Toast from 'components/generic/Toast';
 
 import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
@@ -72,6 +73,10 @@ const OverviewPanel = (props) => {
     if(props.for === 'playlist') {
         kebabMenu =
             <PlaylistKebabMenu playlistID = {itemData.id} context = 'itemFigure' styles = {Styles} onDeletePlaylist = {handlePlaylistDelete} />
+    }
+    else if(props.for === 'artist') {
+        kebabMenu =
+            <ArtistKebabMenu artist = {itemData} context = 'itemFigure' styles = {Styles} />
     }
     let toastNotification = null;
     if(notification.message) {

@@ -1,10 +1,10 @@
-.overviewPanelDetails_detail {
+.overviewPanelDetails_detail:not(:last-child) {
+    margin-bottom: 4px;
+}
+
+.overviewPanelDetails_detail_editModeActive {
     display: flex;
     gap: 6px;
-
-    &:not(:last-child) {
-        margin-bottom: 4px;
-    }
 }
 
 .overviewPanelDetails_detailName {

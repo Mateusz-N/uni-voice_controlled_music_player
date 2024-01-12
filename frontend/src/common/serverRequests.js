@@ -395,3 +395,22 @@ export const requestGetTrackDetails = async (trackName, artistName, releaseYear,
         })
         .catch(console.error);
 }
+
+export const requestGetArtistDetails = async (artistName, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/discogs/artist/${artistName}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
+}

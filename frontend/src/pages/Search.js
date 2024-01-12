@@ -43,6 +43,7 @@ const Search = () => {
                 setResults(prevState => [...prevState, ...data[type]]);
             });
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedIn]);
     // #endregion
 
@@ -59,10 +60,18 @@ const Search = () => {
                         results.map((result, index) => {
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
+                                    <main className = {Styles.catalogItem_thumbnail}>
+                                        <Link to = {'/' + result.type + '/' + result.id}>
+                                            <img
+                                                src = {result.thumbnailSrc || placeholderAlbumCoverSrc}
+                                                alt = {result.name}
+                                                className = {`${Styles.catalogItem_thumbnailImage} ${result.type === 'artist' ? Styles.catalogItem_thumbnail_artist : ''}`}
+                                            />
+                                        </Link>
+                                    </main>
                                     <Link to = {'/' + result.type + '/' + result.id}>
-                                        <img src = {result.thumbnailSrc || placeholderAlbumCoverSrc} alt = {result.name} className = {`${Styles.catalogItem_thumbnail} ${result.type === 'artist' ? Styles.catalogItem_thumbnail_artist : ''}`} />
+                                        <h4 className = {Styles.catalogItem_name}>{result.name}</h4>
                                     </Link>
-                                    <Link to = {'/' + result.type + '/' + result.id}><h4 className = {Styles.catalogItem_name}>{result.name}</h4></Link>
                                 </article>
                             );
                         })

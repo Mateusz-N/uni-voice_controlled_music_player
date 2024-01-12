@@ -58,7 +58,7 @@ const Artist = () => {
                     showSeparately: true
                 }, {
                     name: 'Genres',
-                    content: data.genres ? data.genres.join(', ') : 'N/A',
+                    content: data.genres && data.genres.length > 0 ? data.genres.join(', ') : 'N/A',
                     showSeparately: false
                 }, {
                     name: 'Followers',
@@ -81,7 +81,7 @@ const Artist = () => {
     const getAlbums = (artistID) => {
         if(Cookies.get('userID')) {
             requestGetArtistAlbums(artistID, (data) => {
-                data.map(album => {
+                data.forEach(album => {
                     if(album.images && album.images.length > 0) {
                         album.thumbnailSrc = album.images[0].url;
                     }
@@ -117,10 +117,14 @@ const Artist = () => {
                         albums.map((album, index) => {
                             return(
                                 <article key = {index} className = {Styles.catalogItem}>
+                                    <main className = {Styles.catalogItem_thumbnail}>
+                                        <Link to = {'/album/' + album.id}>
+                                            <img src = {album.thumbnailSrc || placeholderAlbumCoverSrc} alt = {album.name} className = {Styles.catalogItem_thumbnailImage} />
+                                        </Link>
+                                    </main>
                                     <Link to = {'/album/' + album.id}>
-                                        <img src = {album.thumbnailSrc || placeholderAlbumCoverSrc} alt = {album.name} className = {Styles.catalogItem_thumbnail} />
+                                        <h4 className = {Styles.catalogItem_name}>{album.name}</h4>
                                     </Link>
-                                    <Link to = {'/album/' + album.id}><h4 className = {Styles.catalogItem_name}>{album.name}</h4></Link>
                                 </article>
                             );
                         })

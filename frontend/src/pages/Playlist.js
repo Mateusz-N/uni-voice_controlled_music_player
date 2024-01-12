@@ -53,7 +53,6 @@ const Playlist = () => {
             return;
         }
         requestGetPlaylist(playlistID, async (data) => {
-            console.log(data)
             let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
                 id: playlistID,
                 name: 'Saved tracks',
@@ -220,6 +219,7 @@ const Playlist = () => {
             setNotification({message: location.state.notificationMessage, type: location.state.notificationType});
             window.history.replaceState({}, document.title);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
     // #endregion
 

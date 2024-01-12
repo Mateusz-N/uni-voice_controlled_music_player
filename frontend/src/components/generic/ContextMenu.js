@@ -1,4 +1,4 @@
-import { useRef, cloneElement } from 'react';
+import { useRef, cloneElement, Children } from 'react';
 
 import Styles from 'components/generic/ContextMenu.module.scss';
 
@@ -14,7 +14,7 @@ const ContextMenu = (props) => {
 
     // #region Wstępne przetworzenie właściwości (props)
     const children = [];
-    props.children.forEach((option, index) => {
+    Children.forEach(props.children, (option, index) => {
         if(option !== null) {
             children.push(cloneElement(option, {
                 key: index,

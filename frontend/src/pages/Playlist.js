@@ -67,7 +67,7 @@ const Playlist = () => {
                     artists: item.track.artists,
                     album: item.track.album,
                     duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
-                    genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
+                    genres: [], // Spotify API obecnie nie dostarcza gatunków utworów w punkcie końcowym pobierania list odtwarzania
                     saved: null,
                     dateAdded: item.added_at,
                     explicit: item.track.explicit,
@@ -92,7 +92,7 @@ const Playlist = () => {
                     artists: item.track.artists,
                     album: item.track.album,
                     duration_ms: item.track.duration_ms.totalMilliseconds || item.track.duration_ms,
-                    genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
+                    genres: [],
                     saved: null,
                     dateAdded: item.added_at,
                     explicit: item.track.explicit,

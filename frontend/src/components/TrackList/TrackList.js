@@ -54,7 +54,9 @@ const TrackList = (props) => {
                     <th>Artist(s)</th>
                     {thAlbum}
                     {thYear}
-                    <th>Genre</th>
+                    {/* <th>Genre</th> */} {/*  Spotify API obecnie nie dostarcza gatunków utworów w punkcie końcowym pobierania list odtwarzania...
+                                                Udostępnia je w punkcie końcowym pobierania utworu...
+                                                Jednak dla dużych list odtwarzania byłoby to bardzo kosztowne */}
                     <th>Duration</th>
                     {thAdded}
                     <th className = {Styles.thKebab}></th>

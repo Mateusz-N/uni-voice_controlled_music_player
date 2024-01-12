@@ -239,7 +239,9 @@ const TrackListItem = (props) => {
                 <td>{artistsColumnContents}</td>
                 {albumColumn}
                 {releaseDateColumn}
-                <td>{track.genres.join(', ')}</td>
+                {/* <td>{track.genres.join(', ')}</td> */} {/*  Spotify API obecnie nie dostarcza gatunków utworów w punkcie końcowym pobierania list odtwarzania...
+                                                                Udostępnia je w punkcie końcowym pobierania utworu...
+                                                                Jednak dla dużych list odtwarzania byłoby to bardzo kosztowne */}
                 <td>{millisecondsToFormattedTime(track.duration_ms)}</td>
                 {dateAddedColumn}
                 <td className = {Styles.trackList_item_tdKebab}>

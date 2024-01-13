@@ -53,8 +53,8 @@ module.exports = {
         }
       }
     )
-    .then((res_profile) => {
-        callback(res_profile);
+    .then((res_artist) => {
+        callback(res_artist);
         console.log('API: Artist retrieved!');
     })
     .catch(console.error);
@@ -67,6 +67,130 @@ module.exports = {
     }
     callback(results);
     console.log('API: Search executed!');
+  },
+  createPlaylist: async (accessToken, userID, playlistProperties, callback) => {
+    axios({
+      method: 'POST',
+      url: `https://api.spotify.com/v1/users/${userID}/playlists`,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      },
+      data: playlistProperties
+    })
+    .then((res_playlist) => {
+        callback(res_playlist);
+        console.log('API: Playlist created!');
+    })
+    .catch(console.error);
+  },
+  deletePlaylist: async (accessToken, playlistID, callback) => {
+    axios.delete(
+      `https://api.spotify.com/v1/playlists/${playlistID}/followers`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    )
+    .then((res_playlist) => {
+        callback(res_playlist);
+        console.log('API: Playlist deleted!');
+    })
+    .catch(console.error);
+  },
+  updatePlaylist: async (accessToken, playlistID, updatedDetailName, updatedDetailValue, callback) => {
+    axios({
+      method: 'PUT',
+      url: `https://api.spotify.com/v1/playlists/${playlistID}`,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      },
+      data: {
+        [updatedDetailName]: updatedDetailValue
+      }
+    })
+    .then((res_playlist) => {
+        callback(res_playlist);
+        console.log('API: Playlist updated!');
+    })
+    .catch(console.error);
+  },
+  checkTracksSaved: async (accessToken, IDs, callback) => {
+    axios.get(
+      `https://api.spotify.com/v1/me/tracks/contains?ids=${IDs}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    )
+    .then((res_check) => {
+        callback(res_check);
+        console.log('API: Tracks\' saved status checked!');
+    })
+    .catch(console.error);
+  },
+  toggleTrackSaved: async (accessToken, method, IDs, callback) => {
+    axios({
+      method: method,
+      url: `https://api.spotify.com/v1/me/tracks?ids=${IDs}`,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then((res_toggleTrackSaved) => {
+        callback(res_toggleTrackSaved);
+        console.log('API: Tracks\' saved status toggled!');
+    })
+    .catch(console.error);
+  },
+  trackInPlaylist: async (accessToken, playlistID, trackURIs, callback) => {
+    axios({
+      method: method,
+      url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      },
+      data: {
+          uris: trackURIs
+        }
+    })
+    .then((res_toggleTrackSaved) => {
+        callback(res_toggleTrackSaved);
+        console.log('API: Tracks\' presence in playlist toggled!');
+    })
+    .catch(console.error);
+  },
+  getGenres: async (accessToken, callback) => {
+    axios.get(
+      'https://api.spotify.com/v1/recommendations/available-genre-seeds',
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    )
+    .then((res_genres) => {
+        callback(res_genres);
+        console.log('API: Genres retrieved!');
+    })
+    .catch(console.error);
+  },
+  getRecommendations: async (accessToken, recommendationParams, callback) => {
+    axios.get(
+      'https://api.spotify.com/v1/recommendations',
+      {
+        params: recommendationParams,
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    )
+    .then((res_genres) => {
+        callback(res_genres);
+        console.log('API: Recommendations retrieved!');
+    })
+    .catch(console.error);
   }
 }
 

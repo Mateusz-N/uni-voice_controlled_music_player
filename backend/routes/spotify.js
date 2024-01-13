@@ -100,54 +100,43 @@ const retrieveAccessToken = (req) => {
 
 const handleToggleTrackSaved = async (req, res, accessToken, method) => {
   const IDs = req.query.ids;
-  const res_toggleTrackSaved = await axios({
-    method: method,
-    url: `https://api.spotify.com/v1/me/tracks?ids=${IDs}`,
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
+  const handleToggleTrackSavedApiResponse = (res_toggleTrackSaved) => {
+    if(res_toggleTrackSaved.status === 200) {
+      res.status(200).send({
+        message: {
+          message: `Track ${method === 'PUT' ? 'added to' : 'removed from'} favorites successfully!`,
+          type: 'success'
+        }
+      });
     }
-  });
-  if(res_toggleTrackSaved.status === 200) {
-    res.status(200).send({
-      message: {
-        message: `Track ${method === 'PUT' ? 'added to' : 'removed from'} favorites successfully!`,
-        type: 'success'
-      }
-    });
+    else {
+      res.status(res_toggleTrackSaved.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
-  else {
-    res.status(res_toggleTrackSaved.status).send({
-      error: 'Something went wrong!'
-    });
-  }
+  SpotifyService.toggleTrackSaved(accessToken, method, IDs, handleToggleTrackSavedApiResponse)
 }
 
 const handleTrackInPlaylist = async (req, res, accessToken, method) => {
   const playlistID = req.params.id;
   const trackURIs = req.body.uris;
-  const res_playlist = await axios({
-    method: method,
-    url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    },
-    data: {
-        uris: trackURIs
-      }
-  });
-  if([200, 201].includes(res_playlist.status)) {
-    res.status(res_playlist.status).send({
-      message: {
-        message: `Track(s) ${method === 'POST' ? 'added' : 'removed'} successfully!`,
-        type: 'success'
-      }
-    });
+  const handleTrackInPlaylistApiResponse = (res_playlist) => {
+    if([200, 201].includes(res_playlist.status)) {
+      res.status(res_playlist.status).send({
+        message: {
+          message: `Track(s) ${method === 'POST' ? 'added' : 'removed'} successfully!`,
+          type: 'success'
+        }
+      });
+    }
+    else {
+      res.status(res_playlist.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
-  else {
-    res.status(res_playlist.status).send({
-      error: 'Something went wrong!'
-    });
-  }
+  SpotifyService.trackInPlaylist(accessToken, playlistID, trackURIs, handleTrackInPlaylistApiResponse);
 }
 // #endregion
 
@@ -374,60 +363,51 @@ router.post('/:userID/playlist', async (req, res) => {
   const isPlaylistPublic = req.body.public || true;
   const isPlaylistCollaborative = req.body.collaborative || false;
   const playlistDescription = req.body.description || '';
-  const res_playlist = await axios({
-    method: 'POST',
-    url: `https://api.spotify.com/v1/users/${userID}/playlists`,
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    },
-    data: {
-        name: playlistName,
-        description: playlistDescription,
-        public: isPlaylistPublic,
-        collaborative: isPlaylistCollaborative
-      }
-  });
-  if(res_playlist.status === 201) {
-    res.status(201).send({
-      playlistID: res_playlist.data.id,
-      message: {
-        message: 'Playlist created successfully!',
-        type: 'success'
-      }
-    });
+  const playlistProperties = {
+    name: playlistName,
+    description: playlistDescription,
+    public: isPlaylistPublic,
+    collaborative: isPlaylistCollaborative
   }
-  else {
-    res.status(res_playlist.status).send({
-      error: 'Something went wrong!'
-    });
+  const handleCreatePlaylistApiResponse = (res_playlist) => {
+    if(res_playlist.status === 201) {
+      res.status(201).send({
+        playlistID: res_playlist.data.id,
+        message: {
+          message: 'Playlist created successfully!',
+          type: 'success'
+        }
+      });
+    }
+    else {
+      res.status(res_playlist.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
+  SpotifyService.createPlaylist(accessToken, userID, playlistProperties, handleCreatePlaylistApiResponse);
 });
 
 /* Usunięcie (w rzeczywistości zaprzestanie śledzenia) listy odtwarzania */
 router.delete('/playlist/:id', async(req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const playlistID = req.params.id;
-  const res_deletePlaylist = await axios.delete(
-    `https://api.spotify.com/v1/playlists/${playlistID}/followers`,
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+  const handleDeletePlaylistApiResponse = (res_playlist) => {
+    if(res_playlist.status === 200) {
+      res.status(200).send({
+        message: {
+          message: 'Playlist deleted successfully!',
+          type: 'success'
+        }
+      });
     }
-  );
-  if(res_deletePlaylist.status === 200) {
-    res.status(200).send({
-      message: {
-        message: 'Playlist deleted successfully!',
-        type: 'success'
-      }
-    });
+    else {
+      res.status(res_playlist.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
-  else {
-    res.status(res_deletePlaylist.status).send({
-      error: 'Something went wrong!'
-    });
-  }
+  SpotifyService.deletePlaylist(accessToken, playlistID, handleDeletePlaylistApiResponse);
 });
 
 /* Aktualizacja metadanych listy odtwarzania */
@@ -439,6 +419,21 @@ router.put('/playlist/:id', async (req, res) => {
   const playlistID = req.params.id;
   const updatedDetailName = req.body.detailName;
   const updatedDetailValue = req.body.detailValue;
+  const handleUpdatePlaylistApiResponse = (res_playlist) => {
+    if(res_playlist.status === 200) {
+      res.status(200).send({
+        message: {
+          message: 'Playlist updated successfully!',
+          type: 'success'
+        }
+      });
+    }
+    else {
+      res.status(res_playlist.status).send({
+        error: 'Something went wrong!'
+      });
+    }
+  }
   if(updatedDetailName == null || updatedDetailValue == null) {
     res.status(422).send({
       message: {
@@ -448,52 +443,25 @@ router.put('/playlist/:id', async (req, res) => {
     });
     return;
   }
-  const res_updatePlaylist = await axios({
-    method: 'PUT',
-    url: `https://api.spotify.com/v1/playlists/${playlistID}`,
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    },
-    data: {
-      [updatedDetailName]: updatedDetailValue
-    }
-  });
-  if(res_updatePlaylist.status === 200) {
-    res.status(200).send({
-      message: {
-        message: 'Playlist updated successfully!',
-        type: 'success'
-      }
-    });
-  }
-  else {
-    res.status(res_updatePlaylist.status).send({
-      error: 'Something went wrong!'
-    });
-  }
+  SpotifyService.updatePlaylist(accessToken, playlistID, updatedDetailName, updatedDetailValue, handleUpdatePlaylistApiResponse);
 });
 
 /* Sprawdzenie, które z podanych utworów zostały polubione przez użytkownika */
 router.get('/tracks/saved/check', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
   const IDs = req.query.ids;
-  const res_check = await axios.get(
-    `https://api.spotify.com/v1/me/tracks/contains?ids=${IDs}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+  const handleCheckTracksSavedApiResponse = (res_check) => {
+    if(res_check.status === 200) {
+      const results = res_check.data;
+      res.status(200).send(results);
     }
-  );
-  if(res_check.status === 200) {
-    const results = res_check.data;
-    res.status(200).send(results);
+    else {
+      res.status(res_check.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
-  else {
-    res.status(res_check.status).send({
-      error: 'Something went wrong!'
-    });
-  }
+  SpotifyService.checkTracksSaved(accessToken, IDs, handleCheckTracksSavedApiResponse);
 });
 
 /* Dodanie utworu do polubionych */
@@ -521,27 +489,22 @@ router.delete('/playlist/:id/tracks', async (req, res) => {
   handleTrackInPlaylist(req, res, accessToken, 'DELETE');
 });
 
-/* Przeszukanie katalogu Spotify */
+/* Pobranie dostępnych gatunków */
 router.get('/genres', async (req, res) => {
   const accessToken = await verifyAccessToken(res, ...retrieveAccessToken(req), CLIENT_ID);
-  const res_genres = await axios.get(
-    'https://api.spotify.com/v1/recommendations/available-genre-seeds',
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+  const handleGetGenresApiResponse = (res_genres) => {
+    if(res_genres.status === 200) {
+      const genres = res_genres.data.genres;
+      res.status(200).send(genres);
     }
-  );
-  if(res_genres.status === 200) {
-    const genres = res_genres.data.genres;
-    res.status(200).send(genres);
+    else {
+      res.status(res_genres.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
-  else {
-    res.status(res_genres.status).send({
-      error: 'Something went wrong!'
-    });
-  }
-})
+  SpotifyService.getGenres(accessToken, handleGetGenresApiResponse);
+});
 
 /* Pobranie rekomendacji */
 router.get('/recommendations', async (req, res) => {
@@ -550,25 +513,19 @@ router.get('/recommendations', async (req, res) => {
   if(queryObject.limit == null ) {
     queryObject.limit = 100;
   }
-  const res_recommendations = await axios.get(
-    'https://api.spotify.com/v1/recommendations',
-    {
-      params: queryObject,
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+  const handleGetRecommendationsApiResponse = (res_recommendations) => {
+    if(res_recommendations.status === 200) {
+      const recommendations = res_recommendations.data;
+      res.status(200).send(recommendations);
     }
-  );
-  if(res_recommendations.status === 200) {
-    const recommendations = res_recommendations.data;
-    res.status(200).send(recommendations);
+    else {
+      res.status(res_recommendations.status).send({
+        error: 'Something went wrong!'
+      });
+    }
   }
-  else {
-    res.status(res_recommendations.status).send({
-      error: 'Something went wrong!'
-    });
-  }
-})
+  SpotifyService.getRecommendations(accessToken, queryObject, handleGetRecommendationsApiResponse);
+});
 
 // #endregion
 

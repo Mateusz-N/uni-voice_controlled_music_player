@@ -1,4 +1,4 @@
-import OverviewPanelDetail from './OverviewPanelDetail';
+import OverviewPanelDetail from 'components/OverviewPanel/OverviewPanelDetail';
 
 import Styles from 'components/OverviewPanel/OverviewPanelDetails.module.scss';
 

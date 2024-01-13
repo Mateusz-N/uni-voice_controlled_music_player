@@ -414,3 +414,22 @@ export const requestGetArtistDetails = async (artistName, callback) => {
         })
         .catch(console.error);
 }
+
+export const requestGetAlbumDetails = async (albumName, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/discogs/album/${albumName}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
+}

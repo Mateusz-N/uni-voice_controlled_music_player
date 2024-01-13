@@ -1,161 +1,67 @@
 import { useEffect, useState } from 'react';
 
-import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
+import { millisecondsToFormattedTime, processUnorganizedItemDetails } from 'common/auxiliaryFunctions';
 import { requestGetTrackDetails } from 'common/serverRequests';
 
-import Modal from 'components/generic/Modal';
-
-import Styles from 'components/TrackList/TrackDetailsModal.module.scss';
+import ItemDetailsModal from 'components/generic/ItemDetailsModal';
 
 const TrackDetailsModal = (props) => {
-    // #region Zmienne globalne
-    const index = props.index;
-    const track = props.track;
-    // #endregion
-
     // #region Zmienne stanu (useState Hooks)
     const [extraDetails, setExtraDetails] = useState({});
     // #endregion
 
+    // #region Zmienne globalne
+    const index = props.index;
+    const track = props.track;
+    const album = props.album ? props.album : track.album;
+    const albumReleaseDate = props.album ? album.releaseDate : album.release_date;
+    // console.log(album)
+    const trackDetails = [{
+        name: 'General information',
+        items: [{
+            displayName: 'Title',
+            value: track.title
+        }, {
+            displayName: 'Artist(s)',
+            value: track.artists ? track.artists.map(artist => artist.name).join(', ') : 'N/A'
+        }, {
+            displayName: 'Album',
+            value: track.album ? track.album.name : 'N/A'
+        }, {
+            displayName: 'Release date',
+            value: track.album ? new Date(track.album.release_date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : 'N/A'
+        }, {
+            displayName: 'Duration',
+            value: millisecondsToFormattedTime(track.duration_ms)
+        }, {
+            displayName: 'Genres',
+            value: extraDetails.genres ? extraDetails.genres.join(', ') : 'N/A'
+        }, {
+            displayName: 'Styles',
+            value: extraDetails.styles ? extraDetails.styles.join(', ') : 'N/A'
+        }, {
+            displayName: 'Label(s)',
+            value: extraDetails.labels ? extraDetails.labels.map(label => label.name).join(', ') : 'N/A'
+        }]
+    }];
+    processUnorganizedItemDetails(extraDetails.companies, 'entity_type_name', 'Credits', trackDetails);
+    processUnorganizedItemDetails(extraDetails.extraartists, 'role', 'Personnel', trackDetails);
+    // #endregion
+
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        requestGetTrackDetails(track.title, track.artists[0].name, track.album.release_date.split('-').shift(), (data) => {
-            setExtraDetails(data);
-        });
+        if(track.artists && track.artists.length > 0 && albumReleaseDate) {
+            requestGetTrackDetails(track.title, track.artists[0].name, albumReleaseDate.split('-').shift(), (data) => {
+                setExtraDetails(data);
+            });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
     // #endregion
 
-    // #region Przypisanie dynamicznych elementów komponentu
-    let companiesField = null;
-    if(extraDetails.companies && extraDetails.companies.length > 0) {
-        const uniqueEntities = [];
-        extraDetails.companies.forEach(company => {
-            const alreadyPresentEntity = uniqueEntities.find(entity => entity.type === company.entity_type_name);
-            if(!alreadyPresentEntity) {
-                uniqueEntities.push({type: company.entity_type_name, companies: [company.name]});
-                return;
-            }
-            alreadyPresentEntity.companies.push(company.name);
-        })
-        companiesField = 
-            <ul className = {Styles.trackDetails_section}>
-                <h3 className = {Styles.trackDetails_sectionHeading}>Credits</h3>
-                {uniqueEntities.map(entity => (
-                    <li key = {entity.type} className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            {entity.type}:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {entity.companies.join(', ')}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-    }
-    let extraArtistsField = null;
-    if(extraDetails.extraartists && extraDetails.extraartists.length > 0) {
-        const uniqueRoles = [];
-        extraDetails.extraartists.forEach(artist => {
-            const alreadyPresentRole = uniqueRoles.find(role => role.name === artist.role);
-            if(!alreadyPresentRole) {
-                uniqueRoles.push({name: artist.role, artists: [artist.name]});
-                return;
-            }
-            alreadyPresentRole.artists.push(artist.name);
-        })
-        extraArtistsField =
-            <ul className = {Styles.trackDetails_section}>
-                <h3 className = {Styles.trackDetails_sectionHeading}>Personnel</h3>
-                {uniqueRoles.map(role => (
-                    <li key = {role.name} className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            {role.name}:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {role.artists.join(', ')}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-    }
-    // #endregion
-
     // #region Struktura komponentu (JSX)
     return(
-        <Modal key = {track.id} title = 'Track details' id = {'trackList_item_trackDetails_' + index} onClose = {props.onClose} styles = {Styles}>
-            <main id = {Styles.trackDetails_main}>
-                <ul className = {Styles.trackDetails_section}>
-                    <h3 className = {Styles.trackDetails_sectionHeading}>General information</h3>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Title:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {track.title}
-                        </span>
-                    </li>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Artist(s):
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {track.artists.map(artist => artist.name).join(', ')}
-                        </span>
-                    </li>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Album:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {track.album.name}
-                        </span>
-                    </li>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Release date:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {new Date(track.album.release_date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}
-                        </span>
-                    </li>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Duration:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {millisecondsToFormattedTime(track.duration_ms)}
-                        </span>
-                    </li>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Genres:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {extraDetails.genres ? extraDetails.genres.join(', ') : 'N/A'}
-                        </span>
-                    </li>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Styles:
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {extraDetails.styles ? extraDetails.styles.join(', ') : 'N/A'}
-                        </span>
-                    </li>
-                    <li className = {Styles.trackDetails_detailItem}>
-                        <span className = {Styles.trackDetails_detailItem_name}>
-                            Label(s):
-                        </span>
-                        <span className = {Styles.trackDetails_detailItem_value}>
-                            {extraDetails.labels ? extraDetails.labels.map(label => label.name).join(', ') : 'N/A'}
-                        </span>
-                    </li>
-                </ul>
-                {companiesField}
-                {extraArtistsField}
-            </main>
-        </Modal>
+        <ItemDetailsModal index = {index} itemType = 'track' details = {trackDetails} onClose = {props.onClose} />
     );
     // #endregion
 }

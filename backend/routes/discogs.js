@@ -48,7 +48,6 @@ router.get('/artist/:name', async (req, res) => {
   }
   DiscogsService.search(queryParameters, 'artist', (res_results) => {
     if(res_results.status === 200) {
-      console.log(res_results)
       const artistID = res_results.data.results[0].id;
       DiscogsService.getArtist(artistID, (res_artist) => {
         if(res_artist.status === 200) {
@@ -57,6 +56,35 @@ router.get('/artist/:name', async (req, res) => {
         }
         else {
           res.status(res_artist.status).send({
+            error: 'Something went wrong!'
+          });
+        }
+      });
+    }
+    else {
+      res.status(res_results.status).send({
+        error: 'Something went wrong!'
+      });
+    }
+  });
+});
+
+/* Pobranie danych o albumie */
+router.get('/album/:name', async (req, res) => {
+  const albumName = req.params.name;
+  const queryParameters = {
+    query: albumName
+  }
+  DiscogsService.search(queryParameters, 'release', (res_results) => {
+    if(res_results.status === 200) {
+      const albumID = res_results.data.results[0].id;
+      DiscogsService.getRelease(albumID, (res_album) => {
+        if(res_album.status === 200) {
+          const album = res_album.data;
+          res.status(200).send(album);
+        }
+        else {
+          res.status(res_album.status).send({
             error: 'Something went wrong!'
           });
         }

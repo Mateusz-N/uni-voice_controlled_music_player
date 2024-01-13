@@ -2,36 +2,44 @@
     display: flex;
     flex-direction: column;
     max-height: calc(100% - 235px);
-    width: max-content;
+    max-width: 800px;
 }
 
-#trackDetails_main {
+.itemDetails_main {
     height: 100%;
     overflow-y: auto;
     padding: 8px 0;
 }
 
-.trackDetails_section {
+.itemDetails_section {
     margin: 0;
     padding: 0;
 }
 
-.trackDetails_detailItem {
+.itemDetails_detailItem {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    align-items: end;
 
     list-style-type: none;
+    line-height: 1.1;
+
+    &:not(:last-of-type) {
+        margin-bottom: 8px;
+    }
 }
 
-.trackDetails_detailItem_name {
+.itemDetails_detailItem_name {
     text-align: right;
     font-weight: bold;
     color: rgb(255, 200, 0);
 }
 
-.trackDetails_sectionHeading {
+.itemDetails_detailItem_value {
+    align-self: end;
+}
+
+.itemDetails_sectionHeading {
     margin: 8px 0 8px 0;
     padding-bottom: 4px;
 

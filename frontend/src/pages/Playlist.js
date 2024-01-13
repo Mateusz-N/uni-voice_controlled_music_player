@@ -241,7 +241,7 @@ const Playlist = () => {
             {toastNotification}
             <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
-                <TrackList key = {'trackList' + playlist.id} tracks = {playlist.tracks} for = 'playlist' playlistID = {playlistID} onPlaylistUpdate = {handlePlaylistUpdate} />
+                <TrackList key = {'trackList' + playlist.id} tracks = {playlist.tracks} for = 'playlist' playlist = {playlist} onPlaylistUpdate = {handlePlaylistUpdate} />
                 <OverviewPanel key = {'overviewPanel' + playlist.id} data = {playlist} for = 'playlist' />
             </CatalogBrowser>
             <PlaybackPanel track = {{

@@ -109,7 +109,7 @@ const Album = () => {
         <div id = 'page'>
             <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
-                <TrackList tracks = {album.tracks} for = 'album' />
+                <TrackList tracks = {album.tracks} for = 'album' playlist = {album} />
                 <OverviewPanel key = {album.id} data = {album} for = 'album' />
             </CatalogBrowser>
             <PlaybackPanel track = {{

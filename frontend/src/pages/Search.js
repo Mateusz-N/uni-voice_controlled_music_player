@@ -58,22 +58,24 @@ const Search = () => {
                 <main id = {Styles.mainSection}>
                     {
                         results.map((result, index) => {
-                            return(
-                                <article key = {index} className = {Styles.catalogItem}>
-                                    <main className = {Styles.catalogItem_thumbnail}>
+                            if(['artist', 'playlist', 'album'].includes(result.type)) { // Inne typy obecnie nie są wspierane
+                                return(
+                                    <article key = {index} className = {Styles.catalogItem}>
+                                        <main className = {Styles.catalogItem_thumbnail}>
+                                            <Link to = {'/' + result.type + '/' + result.id}>
+                                                <img
+                                                    src = {result.thumbnailSrc || placeholderAlbumCoverSrc}
+                                                    alt = {result.name}
+                                                    className = {`${Styles.catalogItem_thumbnailImage} ${result.type === 'artist' ? Styles.catalogItem_thumbnail_artist : ''}`}
+                                                />
+                                            </Link>
+                                        </main>
                                         <Link to = {'/' + result.type + '/' + result.id}>
-                                            <img
-                                                src = {result.thumbnailSrc || placeholderAlbumCoverSrc}
-                                                alt = {result.name}
-                                                className = {`${Styles.catalogItem_thumbnailImage} ${result.type === 'artist' ? Styles.catalogItem_thumbnail_artist : ''}`}
-                                            />
+                                            <h4 className = {Styles.catalogItem_name}>{result.name}</h4>
                                         </Link>
-                                    </main>
-                                    <Link to = {'/' + result.type + '/' + result.id}>
-                                        <h4 className = {Styles.catalogItem_name}>{result.name}</h4>
-                                    </Link>
-                                </article>
-                            );
+                                    </article>
+                                );
+                            }
                         })
                     }
                 </main>

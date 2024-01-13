@@ -70,7 +70,7 @@ const TrackList = (props) => {
                                 track = {track}
                                 index = {index}
                                 for = {props.for}
-                                playlistID = {props.playlistID}
+                                playlist = {props.playlist}
                                 playing = {playing}
                                 userPlaylists = {userPlaylists}
                                 onPlaybackToggle = {handleToggleTrackPlayback}

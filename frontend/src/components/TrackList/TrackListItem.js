@@ -21,7 +21,7 @@ const TrackListItem = (props) => {
     // #region Zmienne globalne
     const track = props.track;
     const index = props.index;
-    const playlistID = props.playlistID;
+    const playlist = props.playlist;
     const playing = props.playing;
     const userPlaylists = props.userPlaylists;
     const handleToggleTrackPlayback = props.onPlaybackToggle;
@@ -53,7 +53,7 @@ const TrackListItem = (props) => {
         setModal_addToPlaylist_open(true);
     }
     const handleSelectRemoveFromPlaylist = () => {
-        removeTrackFromPlaylist(playlistID);
+        removeTrackFromPlaylist(playlist.id);
     }
     const handleModalClose_addToPlaylist = () => {
         setModal_addToPlaylist_open(false);
@@ -130,11 +130,16 @@ const TrackListItem = (props) => {
     }
     let modal_trackDetails = null;
     if(modal_trackDetails_open) {
+        let albumAttribute = {};
+        if(props.for === 'album') {
+            albumAttribute.album = playlist;
+        }
         modal_trackDetails =
             createPortal(<TrackDetailsModal
                 index = {index}
                 track = {track}
                 onClose = {handleModalClose_trackDetails}
+                {...albumAttribute}
             />, document.body);
     }
     let kebabMenu = null;

@@ -74,3 +74,31 @@ export const setPropertyByString = (object, path, value) => {
     }
     return clone;
 }
+
+export const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export const processUnorganizedItemDetails = (items, groupByKey, displayName, trackDetails) => { // Parsowanie danych Discogs API
+    if(items && items.length > 0) {
+        const uniqueGroups = [];
+        items.forEach(item => {
+            const alreadyPresentGroup = uniqueGroups.find(group => group[groupByKey] === item[groupByKey]);
+            if(!alreadyPresentGroup) {
+                uniqueGroups.push({
+                    [groupByKey]: item[groupByKey], items: [item.name]
+                });
+                return;
+            }
+            alreadyPresentGroup.items.push(item.name);
+        });
+        const itemsList = uniqueGroups.map(group => ({
+            displayName: group[groupByKey],
+            value: group.items.join(', ')
+        }));
+        trackDetails.push({
+            name: displayName,
+            items: itemsList
+        });
+    }
+};

@@ -68,7 +68,6 @@ const EmbeddedPlayer = (props) => {
                 ref_EmbedController.current.pause();
                 return;
             }
-            console.log(playingTrackID, embeddedPlayer_playingTrackID);
             if(playingTrackID === embeddedPlayer_playingTrackID) { // Wznowiono/zapauzowano aktualny utwór
                 ref_EmbedController.current.resume();
                 return;
@@ -84,9 +83,11 @@ const EmbeddedPlayer = (props) => {
                 ref_EmbedController.current.removeListener('error', handleEmbedControllerError);
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[playingTrackID]);
     useEffect(() => {
         props.onPlaybackToggle(embeddedPlayerPaused, embeddedPlayer_playingTrackID);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[embeddedPlayerPaused])
     // #endregion
 

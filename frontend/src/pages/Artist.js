@@ -14,7 +14,7 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 import Styles from 'pages/Home.module.scss';
 
-const Artist = () => {
+const Artist = (props) => {
     // #region Zmienne globalne
     const artistID = window.location.href.split('/').pop();
     // #endregion

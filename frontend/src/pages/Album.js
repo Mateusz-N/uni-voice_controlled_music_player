@@ -13,9 +13,10 @@ import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList/TrackList';
 import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
-const Album = () => {
+const Album = (props) => {
     // #region Zmienne globalne
     const albumID = window.location.href.split('/').pop();
+    const playingTrackID = props.playingTrackID;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -100,6 +101,7 @@ const Album = () => {
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         getAlbum();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedIn]);
     // #endregion
 
@@ -108,7 +110,14 @@ const Album = () => {
         <div id = 'page'>
             <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
-                <TrackList tracks = {album.tracks} for = 'album' playlist = {album} />
+                <TrackList
+                    key = {'trackList' + album.id}
+                    tracks = {album.tracks}
+                    playingTrackID = {playingTrackID}
+                    for = 'album'
+                    playlist = {album}
+                    onPlaybackToggle = {props.onPlaybackToggle}
+                />
                 <OverviewPanel key = {album.id} data = {album} for = 'album' />
             </CatalogBrowser>
         </div>

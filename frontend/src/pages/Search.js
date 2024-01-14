@@ -11,7 +11,7 @@ import CatalogBrowser from 'components/CatalogBrowser';
 
 import Styles from 'pages/Home.module.scss';
 
-const Search = () => {
+const Search = (props) => {
     // #region Zmienne lokacji (useLocation Hooks)
     const windowLocation = useLocation();
     // #endregion
@@ -75,6 +75,7 @@ const Search = () => {
                                     </article>
                                 );
                             }
+                            return null;
                         })
                     }
                 </main>

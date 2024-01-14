@@ -8,17 +8,12 @@ import Styles from 'components/TrackList/TrackList.module.scss';
 
 const TrackList = (props) => {
     // #region Zmienne stanu (useState Hooks)
-    const [playingTrackID, setPlayingTrackID] = useState(null);
     const [userPlaylists, setUserPlaylists] = useState([]);
+    // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackPlayback = (trackID) => {
-        if(playingTrackID !== trackID) {
-            setPlayingTrackID(trackID);
-        }
-        else {
-            setPlayingTrackID(null);
-        }
+        props.onPlaybackToggle(trackID);
     }
     // #endregion
 
@@ -65,17 +60,17 @@ const TrackList = (props) => {
             </thead>
             <tbody>
                 {tracks.map((track, index) => {
-                    const playing = playingTrackID === index;
+                    const playing = props.playingTrackID === track.id;
                     return <TrackListItem
-                                key = {index}
-                                track = {track}
-                                index = {index}
-                                for = {props.for}
-                                playlist = {props.playlist}
-                                playing = {playing}
-                                userPlaylists = {userPlaylists}
-                                onPlaybackToggle = {handleToggleTrackPlayback}
-                                onPlaylistUpdate = {props.onPlaylistUpdate}
+                        key = {index}
+                        track = {track}
+                        index = {index}
+                        for = {props.for}
+                        playlist = {props.playlist}
+                        playing = {playing}
+                        userPlaylists = {userPlaylists}
+                        onPlaybackToggle = {handleToggleTrackPlayback}
+                        onPlaylistUpdate = {props.onPlaylistUpdate}
                     />
                 })}
             </tbody>

@@ -236,9 +236,9 @@ const TrackListItem = (props) => {
                             src = {playing ?  btn_pause : btn_play}
                             alt = {playing ? 'Pause' : 'Play'}
                             className = {Styles.trackList_item_btnTogglePlayback + ' ' + (playing ? Styles.trackList_item_btnPause : Styles.trackList_item_btnPlay)}
-                            onClick = {() => handleToggleTrackPlayback(index)}
+                            onClick = {() => handleToggleTrackPlayback(track.id)}
                         />
-                        <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(index)}>{track.title}</p>
+                        <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(track.id)}>{track.title}</p>
                     </div>
                 </td>
                 <td>{artistsColumnContents}</td>

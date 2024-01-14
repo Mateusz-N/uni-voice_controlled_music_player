@@ -18,6 +18,7 @@ import PlaylistGeneratorModal from 'components/PlaylistGenerator/PlaylistGenerat
 import Toast from 'components/generic/Toast';
 
 import Styles from 'pages/Home.module.scss';
+import EmbeddedPlayer from 'components/EmbeddedPlayer';
 
 const Home = () => {
     // #region Zmienne globalne
@@ -185,13 +186,14 @@ const Home = () => {
                     }
                 </main>
             </CatalogBrowser>
-            <PlaybackPanel track = {{
+            {/* <PlaybackPanel track = {{
                 duration_ms: '15000',
                 trackTitle: 'Song',
                 artists: ['Artist'],
                 albumTitle: 'Album',
                 albumCoverSrc: placeholderAlbumCoverSrc
-            }} />
+            }} /> */}
+            <EmbeddedPlayer track />
         </div>
     );
     // #endregion

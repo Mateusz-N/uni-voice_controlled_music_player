@@ -11,16 +11,14 @@ import btn_build from 'resources/btn_build.svg';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
 import NavBar from 'components/NavBar/NavBar';
-import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import PlaylistKebabMenu from 'components/generic/instances/PlaylistKebabMenu';
 import PlaylistGeneratorModal from 'components/PlaylistGenerator/PlaylistGeneratorModal';
 import Toast from 'components/generic/Toast';
 
 import Styles from 'pages/Home.module.scss';
-import EmbeddedPlayer from 'components/EmbeddedPlayer';
 
-const Home = () => {
+const Home = (props) => {
     // #region Zmienne globalne
     const playlistGenerator = {
         id: '0',
@@ -193,7 +191,7 @@ const Home = () => {
                 albumTitle: 'Album',
                 albumCoverSrc: placeholderAlbumCoverSrc
             }} /> */}
-            <EmbeddedPlayer track />
+            {/* <EmbeddedPlayer controller = {EmbedController} playingTrackID = {playingTrackID} onMount = {props.onEmbeddedPlayerMount} onPlaybackToggle = {props.onEmbedPlaybackToggle} /> */}
         </div>
     );
     // #endregion

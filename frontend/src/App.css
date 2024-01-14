@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+a {
+  color: inherit;
+}
+
 form input, form textarea {
   border: none;
   border-radius: 4px;

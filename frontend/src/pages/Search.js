@@ -7,7 +7,6 @@ import { requestSearch } from 'common/serverRequests';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
 import NavBar from 'components/NavBar/NavBar';
-import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 
 import Styles from 'pages/Home.module.scss';
@@ -80,13 +79,6 @@ const Search = () => {
                     }
                 </main>
             </CatalogBrowser>
-            <PlaybackPanel track = {{
-                duration_ms: '15000',
-                trackTitle: 'Song',
-                artists: ['Artist'],
-                albumTitle: 'Album',
-                albumCoverSrc: placeholderAlbumCoverSrc
-            }} />
         </div>
     );
     // #endregion

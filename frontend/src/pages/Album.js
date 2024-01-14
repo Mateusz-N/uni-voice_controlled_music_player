@@ -9,7 +9,6 @@ import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
 import NavBar from 'components/NavBar/NavBar';
-import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList/TrackList';
 import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
@@ -112,13 +111,6 @@ const Album = () => {
                 <TrackList tracks = {album.tracks} for = 'album' playlist = {album} />
                 <OverviewPanel key = {album.id} data = {album} for = 'album' />
             </CatalogBrowser>
-            <PlaybackPanel track = {{
-                duration_ms: '15000',
-                trackTitle: 'Song',
-                artists: ['Artist'],
-                albumTitle: 'Album',
-                albumCoverSrc: placeholderAlbumCoverSrc
-            }} />
         </div>
     );
     // #endregion

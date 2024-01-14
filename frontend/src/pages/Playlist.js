@@ -10,23 +10,21 @@ import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
 
 import NavBar from 'components/NavBar/NavBar';
-import PlaybackPanel from 'components/PlaybackPanel';
 import CatalogBrowser from 'components/CatalogBrowser';
 import TrackList from 'components/TrackList/TrackList';
 import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 import Toast from 'components/generic/Toast';
-import EmbeddedPlayer from 'components/EmbeddedPlayer';
 
-const Playlist = () => {
+const Playlist = (props) => {
     // #region Zmienne globalne
     const playlistID = window.location.href.split('/').pop();
+    const playingTrackID = props.playingTrackID;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
     const [playlist, setPlaylist] = useState(placeholderPlaylist);
     const [notification, setNotification] = useState({});
-    const [playingTrackID, setPlayingTrackID] = useState(null);
     // #endregion
 
     // #region Zmienne lokalizacji (useLocation Hooks)
@@ -42,17 +40,6 @@ const Playlist = () => {
     }
     const handlePlaylistUpdate = () => {
         setTimeout(getPlaylist, 100); // Odczekaj chwilę, dopóki Spotify nie zaktualizuje swojej bazy danych
-    }
-    const handleToggleTrackPlayback = (trackID) => {
-        if(playingTrackID !== trackID) {
-            setPlayingTrackID(trackID);
-        }
-        else {
-            setPlayingTrackID(null);
-        }
-    }
-    const handleToggleEmbedTrackPlayback = (paused, embeddedPlayer_playingTrackID) => {
-        setPlayingTrackID(paused ? null : embeddedPlayer_playingTrackID);
     }
     // #endregion
 
@@ -260,19 +247,11 @@ const Playlist = () => {
                     playingTrackID = {playingTrackID}
                     for = 'playlist'
                     playlist = {playlist}
-                    onPlaybackToggle = {handleToggleTrackPlayback}
+                    onPlaybackToggle = {props.onPlaybackToggle}
                     onPlaylistUpdate = {handlePlaylistUpdate}
                 />
                 <OverviewPanel key = {'overviewPanel' + playlist.id} data = {playlist} for = 'playlist' />
             </CatalogBrowser>
-            {/* <PlaybackPanel track = {{
-                duration_ms: '15000',
-                trackTitle: 'Song',
-                artists: ['Artist'],
-                albumTitle: 'Album',
-                albumCoverSrc: placeholderAlbumCoverSrc
-            }} /> */}
-            <EmbeddedPlayer playingTrackID = {playingTrackID} onPlaybackToggle = {handleToggleEmbedTrackPlayback} />
         </div>
     );
     // #endregion

@@ -16,12 +16,13 @@ const EmbeddedPlayer = (props) => {
     const ref_embeddedPlayer = useRef(null);
     const ref_IFrameAPI = useRef(null);
     const ref_EmbedController = useRef(null);
+    const ref_playingTrackID = useRef(null);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleEmbedControllerReady = () => {
         ref_EmbedController.current.play();
-        setEmbeddedPlayer_playingTrackID(playingTrackID);
+        setEmbeddedPlayer_playingTrackID(ref_playingTrackID.current);
     }
     const handleEmbedControllerPlaybackUpdate = (controllerState) => {
         setEmbeddedPlayerPaused(controllerState.data.isPaused);
@@ -44,8 +45,8 @@ const EmbeddedPlayer = (props) => {
             document.body.removeChild(script);
         };
     },[]);
-
     useEffect(() => {
+        ref_playingTrackID.current = playingTrackID;
         if(ref_IFrameAPI.current) { // API załadowane
             const element = ref_embeddedPlayer.current;
             const options = {
@@ -67,6 +68,7 @@ const EmbeddedPlayer = (props) => {
                 ref_EmbedController.current.pause();
                 return;
             }
+            console.log(playingTrackID, embeddedPlayer_playingTrackID);
             if(playingTrackID === embeddedPlayer_playingTrackID) { // Wznowiono/zapauzowano aktualny utwór
                 ref_EmbedController.current.resume();
                 return;
@@ -83,7 +85,6 @@ const EmbeddedPlayer = (props) => {
             }
         };
     },[playingTrackID]);
-
     useEffect(() => {
         props.onPlaybackToggle(embeddedPlayerPaused, embeddedPlayer_playingTrackID);
     },[embeddedPlayerPaused])

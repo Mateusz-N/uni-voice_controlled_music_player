@@ -16,7 +16,7 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 const Album = (props) => {
     // #region Zmienne globalne
     const albumID = window.location.href.split('/').pop();
-    const playingTrackID = props.playingTrackID;
+    const playingTrackID = props.playingTrack.id;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)

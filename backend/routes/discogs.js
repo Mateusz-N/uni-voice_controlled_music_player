@@ -4,6 +4,34 @@ const router = express.Router();
 const DiscogsService = require('../services/discogs');
 // #endregion
 
+// #region Funkcje pomocnicze
+const handleSearchApiResponseGeneric = (res, res_results, nextRequest, nextRequestHandler) => {
+  const handleNextRequest = (res_data) => {
+    nextRequestHandler(res_data, res);
+  }
+  if(res_results.status === 200) {
+    const itemID = res_results.data.results[0].id;
+    DiscogsService[nextRequest](itemID, handleNextRequest);
+  }
+  else {
+    res.status(res_results.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+}
+const handleGetReleaseApiResponseGeneric = (res_release, res) => {
+  if(res_release.status === 200) {
+    const release = res_release.data;
+    res.status(200).send(release);
+  }
+  else {
+    res.status(res_release.status).send({
+      error: 'Something went wrong!'
+    });
+  }
+}
+// #endregion
+
 // #region Punkty końcowe
 /* Pobranie danych o utworze */
 router.get('/track', async (req, res) => {
@@ -17,27 +45,10 @@ router.get('/track', async (req, res) => {
     artist: artistName,
     year: releaseYear,
   }
-  DiscogsService.search(queryParameters, 'release', (res_results) => {
-    if(res_results.status === 200) {
-      const trackID = res_results.data.results[0].id;
-      DiscogsService.getRelease(trackID, (res_track) => {
-        if(res_track.status === 200) {
-          const track = res_track.data;
-          res.status(200).send(track);
-        }
-        else {
-          res.status(res_track.status).send({
-            error: 'Something went wrong!'
-          });
-        }
-      });
-    }
-    else {
-      res.status(res_results.status).send({
-        error: 'Something went wrong!'
-      });
-    }
-  });
+  const handleSearchApiResponse = (res_results) => {
+    handleSearchApiResponseGeneric(res, res_results, 'getRelease', handleGetReleaseApiResponseGeneric);
+  }
+  DiscogsService.search(queryParameters, 'release', handleSearchApiResponse);
 });
 
 /* Pobranie danych o wykonawcy */
@@ -46,27 +57,21 @@ router.get('/artist/:name', async (req, res) => {
   const queryParameters = {
     query: artistName
   }
-  DiscogsService.search(queryParameters, 'artist', (res_results) => {
-    if(res_results.status === 200) {
-      const artistID = res_results.data.results[0].id;
-      DiscogsService.getArtist(artistID, (res_artist) => {
-        if(res_artist.status === 200) {
-          const artist = res_artist.data;
-          res.status(200).send(artist);
-        }
-        else {
-          res.status(res_artist.status).send({
-            error: 'Something went wrong!'
-          });
-        }
-      });
+  const handleGetArtistApiResponse = (res_artist) => {
+    if(res_artist.status === 200) {
+      const artist = res_artist.data;
+      res.status(200).send(artist);
     }
     else {
-      res.status(res_results.status).send({
+      res.status(res_artist.status).send({
         error: 'Something went wrong!'
       });
     }
-  });
+  }
+  const handleSearchApiResponse = (res_results) => {
+    handleSearchApiResponseGeneric(res, res_results, 'getArtist', handleGetArtistApiResponse);
+  }
+  DiscogsService.search(queryParameters, 'artist', handleSearchApiResponse);
 });
 
 /* Pobranie danych o albumie */
@@ -75,27 +80,10 @@ router.get('/album/:name', async (req, res) => {
   const queryParameters = {
     query: albumName
   }
-  DiscogsService.search(queryParameters, 'release', (res_results) => {
-    if(res_results.status === 200) {
-      const albumID = res_results.data.results[0].id;
-      DiscogsService.getRelease(albumID, (res_album) => {
-        if(res_album.status === 200) {
-          const album = res_album.data;
-          res.status(200).send(album);
-        }
-        else {
-          res.status(res_album.status).send({
-            error: 'Something went wrong!'
-          });
-        }
-      });
-    }
-    else {
-      res.status(res_results.status).send({
-        error: 'Something went wrong!'
-      });
-    }
-  });
+  const handleSearchApiResponse = (res_results) => {
+    handleSearchApiResponseGeneric(res, res_results, 'getRelease', handleGetReleaseApiResponseGeneric);
+  }
+  DiscogsService.search(queryParameters, 'release', handleSearchApiResponse);
 });
 // #endregion
 

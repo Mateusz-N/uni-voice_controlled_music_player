@@ -236,9 +236,14 @@ const TrackListItem = (props) => {
                             src = {playing ?  btn_pause : btn_play}
                             alt = {playing ? 'Pause' : 'Play'}
                             className = {Styles.trackList_item_btnTogglePlayback + ' ' + (playing ? Styles.trackList_item_btnPause : Styles.trackList_item_btnPlay)}
-                            onClick = {() => handleToggleTrackPlayback(track.id)}
+                            onClick = {() => track.local ? setNotification({message: 'Local tracks are not supported!', type: 'error'}) : handleToggleTrackPlayback(track)}
                         />
-                        <p className = {Styles.trackList_item_titleText} onClick = {() => handleToggleTrackPlayback(track.id)}>{track.title}</p>
+                        <p
+                            className = {Styles.trackList_item_titleText}
+                            onClick = {() => track.local ? setNotification({message: 'Local tracks are not supported!', type: 'error'}) : handleToggleTrackPlayback(track)}
+                        >
+                            {track.title}
+                        </p>
                     </div>
                 </td>
                 <td>{artistsColumnContents}</td>

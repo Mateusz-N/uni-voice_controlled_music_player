@@ -18,7 +18,7 @@ import Toast from 'components/generic/Toast';
 const Playlist = (props) => {
     // #region Zmienne globalne
     const playlistID = window.location.href.split('/').pop();
-    const playingTrackID = props.playingTrackID;
+    const playingTrackID = props.playingTrack.id;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -60,7 +60,7 @@ const Playlist = (props) => {
                 description: '',
                 totalDuration_ms: data.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
                 tracks: data.items.map(item => ({
-                    id: item.track.id,
+                    id: item.track.id || -1,
                     number: item.track.track_number,
                     title: item.track.name,
                     artists: item.track.artists,
@@ -85,7 +85,7 @@ const Playlist = (props) => {
                 totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
                 artists: data.artists,
                 tracks: data.tracks.items.map(item => ({
-                    id: item.track.id,
+                    id: item.track.id || -1,
                     number: item.track.track_number,
                     title: item.track.name,
                     artists: item.track.artists,

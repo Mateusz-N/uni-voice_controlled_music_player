@@ -12,8 +12,8 @@ const TrackList = (props) => {
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
-    const handleToggleTrackPlayback = (trackID) => {
-        props.onPlaybackToggle(trackID);
+    const handleToggleTrackPlayback = (track) => {
+        props.onPlaybackToggle(track);
     }
     // #endregion
 

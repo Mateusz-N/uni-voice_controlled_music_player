@@ -15,7 +15,6 @@ const TrackDetailsModal = (props) => {
     const track = props.track;
     const album = props.album ? props.album : track.album;
     const albumReleaseDate = props.album ? album.releaseDate : album.release_date;
-    // console.log(album)
     const trackDetails = [{
         name: 'General information',
         items: [{

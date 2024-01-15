@@ -433,3 +433,41 @@ export const requestGetAlbumDetails = async (albumName, callback) => {
         })
         .catch(console.error);
 }
+
+export const requestGetSynchronousLyrics = async (trackName, artistName, albumName, trackDuration, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/musixmatch/lyrics/synchronous?track=${trackName}&artist=${artistName}&album=${albumName}&duration=${trackDuration}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
+}
+
+export const requestGetLyrics = async (trackName, artistName, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/musixmatch/lyrics/synchronous?track=${trackName}&artist=${artistName}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
+}

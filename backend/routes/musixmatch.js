@@ -1,26 +1,47 @@
 // #region Import bibliotek
-const express = require('express')
-const queryString = require('node:querystring');
-const axios = require('axios');
+const express = require('express');
 const router = express.Router();
+const MusixmatchService = require('../services/musixmatch');
 // #endregion
 
 const API_KEY = process.env.MUSIXMATCH_API_KEY;
 
 // #region Punkty końcowe
-router.get('/', async (req, res) => {
-    const trackName = 'Rapper\'s Delight';
-    const artistName = 'The Sugarhill Gang';
-    const response = await axios.get('https://api.musixmatch.com/ws/1.1/matcher.lyrics.get', {
-      params: {
-        q_track: trackName,
-        q_artist: artistName,
-        apikey: API_KEY,
-      },
-    });
-
-    const lyrics = response.data.message.body.lyrics.lyrics_body;
-    res.send(`<p>Tekst utworu <strong>${trackName}</strong>: <blockquote><em style="white-space: pre-line">${lyrics}</em></blockquote></p>`);
+/* Pobranie synchronicznego tekstu piosenki */
+router.get('/lyrics/synchronous', async (req, res) => {
+    const trackTitle = req.query.track;
+    const artistName = req.query.artist;
+    const albumName = req.query.album;
+    const trackDuration = req.query.duration;
+    const handleGetSynchronousLyricsApiResponse = (res_lyrics) => {
+      if(res_lyrics.status === 200) {
+        const lyrics = res_lyrics.data;
+        res.status(200).send(lyrics);
+      }
+      else {
+        res.status(res_lyrics.status).send({
+          error: 'Something went wrong!'
+        });
+      }
+    }
+    MusixmatchService.getSynchronousLyrics(trackTitle, artistName, albumName, trackDuration, handleGetSynchronousLyricsApiResponse);
+});
+/* Pobranie statycznego tekstu piosenki (opcja awaryjna) */
+router.get('/lyrics/', async (req, res) => {
+    const trackTitle = req.query.track;
+    const artistName = req.query.artist;
+    const handleGetLyricsApiResponse = (res_lyrics) => {
+      if(res_lyrics.data.message.header.status_code === 200) {
+        const lyrics = res_lyrics.data.message.body.lyrics;
+        res.status(200).send(lyrics);
+      }
+      else {
+        res.status(res_lyrics.data.message.header.status_code).send({
+          error: 'Something went wrong!'
+        });
+      }
+    }
+    MusixmatchService.getLyrics(API_KEY, trackTitle, artistName, handleGetLyricsApiResponse);
 });
 // #endregion
 

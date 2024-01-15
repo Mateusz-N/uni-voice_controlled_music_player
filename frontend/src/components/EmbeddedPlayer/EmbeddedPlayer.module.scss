@@ -1,0 +1,27 @@
+#embeddedPlayerContainer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 83px;
+    padding: 8px;
+
+    z-index: 1;
+    background-color: #222;
+}
+
+#embeddedPlayer {
+    display: block;
+}
+
+#btnLyrics {
+    width: 30px;
+    position: absolute;
+    top: 25px;
+    right: 56px;
+
+    cursor: pointer;
+    &:hover {
+        filter: brightness(85%);
+    }
+}

@@ -20,21 +20,21 @@ const Album = (props) => {
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
-    const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
     const [album, setAlbum] = useState(placeholderAlbum);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
-        setLoggedIn(true);
+        getAlbum();
     }
     const handleLogout = () => {
-        setLoggedIn(false);
+        getAlbum();
     }
     // #endregion
 
     // #region Funkcje pomocnicze
     const getAlbum = (fromAPI = false) => {
+        const loggedIn = !!Cookies.get('userID');
         if(!loggedIn) {
             setAlbum(placeholderAlbum);
             return;
@@ -102,7 +102,7 @@ const Album = (props) => {
     useEffect(() => {
         getAlbum();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loggedIn]);
+    }, []);
     // #endregion
 
     // #region Struktura komponentu (JSX)

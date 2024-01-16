@@ -20,7 +20,6 @@ const Artist = (props) => {
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
-    const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
     const [artist, setArtist] = useState(placeholderArtist);
     const [albums, setAlbums] = useState([]);
     // #endregion
@@ -31,12 +30,19 @@ const Artist = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
-        setLoggedIn(true);
+        getArtist();
     }
     const handleLogout = () => {
-        setLoggedIn(false);
+        getArtist();
     }
+    const handleSyncWithSpotify = () => {
+        getArtist(true);
+    }
+    // #endregion
+
+    // #region Funkcje pomocnicze
     const getArtist = (fromAPI = false) => {
+        const loggedIn = !!Cookies.get('userID');
         if(!loggedIn) {
             setArtist(placeholderArtist);
             setAlbums([]);
@@ -78,20 +84,19 @@ const Artist = (props) => {
         getAlbums(artistID);
     }
     const getAlbums = (artistID) => {
-        if(Cookies.get('userID')) {
-            requestGetArtistAlbums(artistID, (data) => {
-                data.forEach(album => {
-                    if(album.images && album.images.length > 0) {
-                        album.thumbnailSrc = album.images[0].url;
-                    }
-                });
-                setAlbums(data);
-                btnSync.current.classList.remove(Styles.spinning);
-            });
+        const loggedIn = !!Cookies.get('userID');
+        if(!loggedIn) {
+            return;
         }
-    }
-    const handleSyncWithSpotify = () => {
-        getArtist(true);
+        requestGetArtistAlbums(artistID, (data) => {
+            data.forEach(album => {
+                if(album.images && album.images.length > 0) {
+                    album.thumbnailSrc = album.images[0].url;
+                }
+            });
+            setAlbums(data);
+            btnSync.current.classList.remove(Styles.spinning);
+        });
     }
     // #endregion
 
@@ -99,7 +104,7 @@ const Artist = (props) => {
     useEffect(() => {
         getArtist();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[loggedIn])
+    },[]);
     // #endregion
 
     // #region Struktura komponentu (JSX)
@@ -122,7 +127,7 @@ const Artist = (props) => {
                                         </Link>
                                     </main>
                                     <Link to = {'/album/' + album.id}>
-                                        <h4 className = {Styles.catalogItem_name}>{album.name}</h4>
+                                        <h4 className = {Styles.catalogItem_name} title = {album.name}>{album.name}</h4>
                                     </Link>
                                 </article>
                             );

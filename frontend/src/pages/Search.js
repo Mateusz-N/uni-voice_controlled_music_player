@@ -17,21 +17,28 @@ const Search = (props) => {
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
-    const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
     const [results, setResults] = useState([]);
     // #endregion
-
+    
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
-        setLoggedIn(true);
+        getResults();
     }
     const handleLogout = () => {
-        setLoggedIn(false);
+        getResults();
     }
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
+        getResults();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    // #endregion
+
+    // #region Funkcje pomocnicze
+    const getResults = () => {
+        const loggedIn = !!Cookies.get('userID');
         if(!loggedIn) {
             setResults([]);
             return;
@@ -42,8 +49,7 @@ const Search = (props) => {
                 setResults(prevState => [...prevState, ...data[type]]);
             });
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loggedIn]);
+    }
     // #endregion
 
     // #region Struktura komponentu (JSX)

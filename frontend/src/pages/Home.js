@@ -96,8 +96,8 @@ const Home = (props) => {
     
     // #region Funkcje pomocnicze
     const getPlaylists = (fromAPI = false) => {
-        const userID = Cookies.get('userID');
-        if(!userID) {
+        const loggedIn = !!Cookies.get('userID');
+        if(!loggedIn) {
             return;
         }
         btnSync.current.classList.add(Styles.spinning);
@@ -184,14 +184,6 @@ const Home = (props) => {
                     }
                 </main>
             </CatalogBrowser>
-            {/* <PlaybackPanel track = {{
-                duration_ms: '15000',
-                trackTitle: 'Song',
-                artists: ['Artist'],
-                albumTitle: 'Album',
-                albumCoverSrc: placeholderAlbumCoverSrc
-            }} /> */}
-            {/* <EmbeddedPlayer controller = {EmbedController} playingTrackID = {playingTrackID} onMount = {props.onEmbeddedPlayerMount} onPlaybackToggle = {props.onEmbedPlaybackToggle} /> */}
         </div>
     );
     // #endregion

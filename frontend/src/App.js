@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import HomePage from 'pages/Home';
 import PlaylistPage from 'pages/Playlist';
@@ -31,17 +32,17 @@ const App = () => {
   // #endregion
   
   // #region Struktura komponentu (JSX)
-  const playbackAttributes = {playingTrack: playingTrack, onPlaybackToggle: handlePlaybackToggle};
+  const universalProps = {playingTrack: playingTrack, onPlaybackToggle: handlePlaybackToggle};
   return (
     <>
       <EmbeddedPlayer playingTrack = {playingTrack} onPlaybackToggle = {handleEmbedPlaybackToggle} />
       <Routes>
-        <Route path = '/' element = {<HomePage {...playbackAttributes} />} />
-        <Route path = 'playlist/:id' element = {<PlaylistPage {...playbackAttributes} />} />
-        <Route path = 'album/:id' element = {<AlbumPage {...playbackAttributes} />} />
-        <Route path = 'artist/:id' element = {<ArtistPage {...playbackAttributes} />} />
-        <Route path = 'settings' element = {<SettingsPage {...playbackAttributes} />} />
-        <Route path = 'search' element = {<SearchPage {...playbackAttributes} />} />
+        <Route path = '/' element = {<HomePage {...universalProps} />} />
+        <Route path = 'playlist/:id' element = {<PlaylistPage {...universalProps} />} />
+        <Route path = 'album/:id' element = {<AlbumPage {...universalProps} />} />
+        <Route path = 'artist/:id' element = {<ArtistPage {...universalProps} />} />
+        <Route path = 'settings' element = {<SettingsPage {...universalProps} />} />
+        <Route path = 'search' element = {<SearchPage {...universalProps} />} />
       </Routes>
     </> 
   );

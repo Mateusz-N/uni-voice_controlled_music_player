@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 import { requestGetPlaylists } from 'common/serverRequests';
 
@@ -19,6 +20,10 @@ const TrackList = (props) => {
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
+        const loggedIn = !!Cookies.get('userID');
+        if(!loggedIn) {
+            return;
+        }
         requestGetPlaylists((data) => {
             setUserPlaylists(data);
         });

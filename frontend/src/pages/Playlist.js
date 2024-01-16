@@ -22,7 +22,6 @@ const Playlist = (props) => {
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
-    const [loggedIn, setLoggedIn] = useState(!!Cookies.get('userID'));
     const [playlist, setPlaylist] = useState(placeholderPlaylist);
     const [notification, setNotification] = useState({});
     // #endregion
@@ -33,10 +32,10 @@ const Playlist = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
-        setLoggedIn(true);
+        getPlaylist();
     }
     const handleLogout = () => {
-        setLoggedIn(false);
+        getPlaylist();
     }
     const handlePlaylistUpdate = () => {
         setTimeout(getPlaylist, 100); // Odczekaj chwilę, dopóki Spotify nie zaktualizuje swojej bazy danych
@@ -48,6 +47,7 @@ const Playlist = (props) => {
     /*  UWAGA: Właściwości listy odtwarzania mogą być nieaktualne, jeśli niedawno miała miejsce aktualizacja.
         Jest to prawdopodobnie defekt w punkcie końcowym 'Get Playlist' Spotify API.
         Np. punkt końcowy 'Get User's Playlists' wyświetla aktualną nazwę listy, a 'Get Playlist' nie. */
+        const loggedIn = !!Cookies.get('userID');
         if(!loggedIn) {
             setPlaylist(placeholderPlaylist);
             return;
@@ -212,7 +212,7 @@ const Playlist = (props) => {
     useEffect(() => {
         getPlaylist();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[loggedIn]);
+    },[]);
 
     useEffect(() => {
         if(location.state && location.state.notificationMessage) {

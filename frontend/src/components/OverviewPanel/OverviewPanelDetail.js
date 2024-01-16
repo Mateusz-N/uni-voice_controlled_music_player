@@ -1,4 +1,5 @@
 import { useState, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 import { setPropertyByString } from 'common/auxiliaryFunctions';
 
@@ -72,6 +73,9 @@ const OverviewPanelDetail = (props) => {
             className = {Styles.overviewPanelDetails_detailContent}
             {...node_itemContent_customAttributes}
         >
+            {itemData.name === 'Description' && itemData.content ?
+                <span className = {Styles.detailAttribution}>From <Link to = 'https://www.discogs.com/'>Discogs</Link>: </span>
+                : null}
             {itemContent}
         </ItemContentTag>
 

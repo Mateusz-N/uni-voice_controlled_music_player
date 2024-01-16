@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect, Fragment } from 'react';
 import Cookies from 'js-cookie';
 
-import { requestGetAlbum } from 'common/serverRequests';
+import { requestGetAlbum, requestGetAlbumDetails } from 'common/serverRequests';
 import { placeholderAlbum } from 'common/placeholderObjects';
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
@@ -40,7 +40,7 @@ const Album = (props) => {
             return;
         }
         requestGetAlbum(albumID, (data) => {
-            const album = {
+            const fetchedAlbum = {
                 id: albumID,
                 name: data.name,
                 thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
@@ -61,39 +61,44 @@ const Album = (props) => {
                 })),
                 releaseDate: data.release_date
             }
-            album.detailsToDisplay = [{
+            fetchedAlbum.detailsToDisplay = [{
                 name: 'Name',
-                content: album.name || '',
+                content: fetchedAlbum.name || '',
                 showSeparately: true
             }, {
                 name: 'Track count',
-                content: album.tracks ? album.tracks.length || 'N/A' : 'N/A',
+                content: fetchedAlbum.tracks ? fetchedAlbum.tracks.length || 'N/A' : 'N/A',
                 showSeparately: false
             }, {
                 name: 'Total Duration',
-                content: album.totalDuration_ms ? millisecondsToFormattedTime(album.totalDuration_ms) : 'N/A',
+                content: fetchedAlbum.totalDuration_ms ? millisecondsToFormattedTime(fetchedAlbum.totalDuration_ms) : 'N/A',
                 showSeparately: false
             }, {
                 name: 'Artist(s)',
-                content: album.artists ? album.artists.map((artist, index) => {
+                content: fetchedAlbum.artists ? fetchedAlbum.artists.map((artist, index) => {
                     return(
                         <Fragment key = {index}>
                             <Link to = {'/artist/' + artist.id}>{artist.name}</Link>
-                            {index === album.artists.length - 1 ? '' : ', '}
+                            {index === fetchedAlbum.artists.length - 1 ? '' : ', '}
                         </Fragment>
                     )
                 }) : 'N/A',
                 showSeparately: false
             }, {
                 name: 'Released',
-                content: album.releaseDate ? new Date(album.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : 'N/A',
+                content: fetchedAlbum.releaseDate ? new Date(fetchedAlbum.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : 'N/A',
                 showSeparately: false
             }, {
                 name: 'Description',
                 content: '',
                 showSeparately: true
             }];
-            setAlbum(album);
+            requestGetAlbumDetails(fetchedAlbum.name, (data) => {
+                if(data) {
+                    fetchedAlbum.extraDetails = data;
+                }
+                setAlbum(fetchedAlbum);
+            });
         }, fromAPI);
     }
     // #endregion

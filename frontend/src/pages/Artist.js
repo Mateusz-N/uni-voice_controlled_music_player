@@ -50,7 +50,7 @@ const Artist = (props) => {
         }
         btnSync.current.classList.add(Styles.spinning);
         requestGetArtist(artistID, (data) => {
-            const artist = {
+            const fetchedArtist = {
                 id: artistID,
                 name: data.name,
                 thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
@@ -79,11 +79,12 @@ const Artist = (props) => {
                     showSeparately: true
                 }]
             }
-            requestGetArtistDetails(artist.name, (data) => {
+            requestGetArtistDetails(fetchedArtist.name, (data) => {
                 if(data) {
-                    artist.extraDetails = data;
+                    fetchedArtist.extraDetails = data;
+                    fetchedArtist.detailsToDisplay.find(detail => detail.name === 'Description').content = data.profile;
                 }
-                setArtist(artist);
+                setArtist(fetchedArtist);
             });
         }, fromAPI);
         getAlbums(artistID);

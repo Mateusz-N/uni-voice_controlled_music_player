@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { capitalizeFirstLetter } from 'common/auxiliaryFunctions';
 
 import Modal from 'components/generic/Modal';
@@ -21,6 +23,7 @@ const ItemDetailsModal = (props) => {
             styles = {Styles}
         >
             <main className = {Styles.itemDetails_main}>
+            <p className = {Styles.detailsAttribution}>~ Details brought to you by <Link to = 'https://discogs.com/'>Discogs</Link> ~</p>
             {details.map((section, sectionIndex) => {
                 const itemNodes = section.items.map((item, itemIndex) => (
                     <li key = {itemIndex} className = {Styles.itemDetails_detailItem}>

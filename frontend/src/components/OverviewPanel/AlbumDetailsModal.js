@@ -1,15 +1,8 @@
-import { useEffect, useState } from 'react';
-
 import { millisecondsToFormattedTime, processUnorganizedItemDetails } from 'common/auxiliaryFunctions';
-import { requestGetAlbumDetails } from 'common/serverRequests';
 
 import ItemDetailsModal from 'components/generic/ItemDetailsModal';
 
 const AlbumDetailsModal = (props) => {
-    // #region Zmienne stanu (useState Hooks)
-    const [extraDetails, setExtraDetails] = useState({});
-    // #endregion
-
     // #region Zmienne globalne
     const index = props.index;
     const album = props.album;
@@ -32,26 +25,19 @@ const AlbumDetailsModal = (props) => {
             value: album.artists ? album.artists.map(artist => artist.name).join(', ') : 'N/A'
         }, {
             displayName: 'Genres',
-            value: extraDetails.genres ? extraDetails.genres.join(', ') : 'N/A'
+            value: (album.extraDetails && album.extraDetails.genres) ? album.extraDetails.genres.join(', ') : 'N/A'
         }, {
             displayName: 'Styles',
-            value: extraDetails.styles ? extraDetails.styles.join(', ') : 'N/A'
+            value: (album.extraDetails && album.extraDetails.styles) ? album.extraDetails.styles.join(', ') : 'N/A'
         }, {
             displayName: 'Label(s)',
-            value: extraDetails.labels ? extraDetails.labels.map(label => label.name).join(', ') : 'N/A'
+            value: (album.extraDetails && album.extraDetails.labels) ? album.extraDetails.labels.map(label => label.name).join(', ') : 'N/A'
         }]
     }];
-    processUnorganizedItemDetails(extraDetails.companies, 'entity_type_name', 'Credits', albumDetails);
-    processUnorganizedItemDetails(extraDetails.extraartists, 'role', 'Personnel', albumDetails);
-    // #endregion
-
-    // #region Wywołania zwrotne (useEffect Hooks)
-    useEffect(() => {
-        requestGetAlbumDetails(album.name, (data) => {
-            setExtraDetails(data);
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+    if(album.extraDetails) {
+        processUnorganizedItemDetails(album.extraDetails.companies, 'entity_type_name', 'Credits', albumDetails);
+        processUnorganizedItemDetails(album.extraDetails.extraartists, 'role', 'Personnel', albumDetails);
+    }
     // #endregion
 
     // #region Struktura komponentu (JSX)

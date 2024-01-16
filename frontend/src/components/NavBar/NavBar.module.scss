@@ -70,3 +70,19 @@
     top: 100%;
     right: 0;
 }
+
+#spotifyAttribution {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    align-self: center;
+    height: 100%;
+}
+
+#spotifyAttribution > a {
+    display: flex;
+}
+
+#spotifyLogo {
+    height: 21px;
+}

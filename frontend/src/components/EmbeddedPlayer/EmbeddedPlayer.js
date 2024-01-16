@@ -16,7 +16,7 @@ const EmbeddedPlayer = (props) => {
 
     // #region Zmienne stanu (useState Hooks)
     const [embeddedPlayer_playingTrack, setEmbeddedPlayer_playingTrack] = useState({});
-    const [embeddedPlayerPaused, setEmbeddedPlayerPaused] = useState(true);
+    const [embeddedPlayerPaused, setEmbeddedPlayerPaused] = useState({state: true, ended: false});
     const [modal_lyrics_open, setModal_lyrics_open] = useState(false);
     const [currentTimestamp_ms, setCurrentTimestamp_ms] = useState(null);
     const [lyrics, setLyrics] = useState(null);
@@ -31,7 +31,12 @@ const EmbeddedPlayer = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleEmbedControllerReady = () => {
-        ref_EmbedController.current.play();
+        try {
+            ref_EmbedController.current.play();
+        }
+        catch(error) {
+            console.error(error);
+        }
         setEmbeddedPlayer_playingTrack(ref_playingTrack.current);
         requestGetSynchronousLyrics(
             ref_playingTrack.current.title,
@@ -44,11 +49,9 @@ const EmbeddedPlayer = (props) => {
         );
     }
     const handleEmbedControllerPlaybackUpdate = (controllerState) => {
-        setEmbeddedPlayerPaused(controllerState.data.isPaused);
+        const trackEnded = controllerState.data.position === controllerState.data.duration && !controllerState.data.isPaused;
+        setEmbeddedPlayerPaused({state: controllerState.data.isPaused, ended: trackEnded});
         setCurrentTimestamp_ms(controllerState.data.position);
-    }
-    const handleEmbedControllerError = (error) => {
-        console.error(error);
     }
     const handleClickLyricsBtn = () => {
         setModal_lyrics_open(true);
@@ -84,31 +87,34 @@ const EmbeddedPlayer = (props) => {
                 ref_EmbedController.current = EmbedController;
                 EmbedController.addListener('ready', handleEmbedControllerReady);
                 EmbedController.addListener('playback_update', handleEmbedControllerPlaybackUpdate);
-                EmbedController.addListener('error', handleEmbedControllerError);
             };
-            if(!ref_EmbedController.current) { // Odtwarzacz nie załadowany
-                ref_IFrameAPI.current.createController(element, options, callback);
-                return;
-            }
-            if(!playingTrack.id) { // Pauza lub przełączenie utworu
-                if(!embeddedPlayerPaused) {
-                    ref_EmbedController.current.pause();
+            try {
+                if(!ref_EmbedController.current) { // Odtwarzacz nie załadowany
+                    ref_IFrameAPI.current.createController(element, options, callback);
+                    return;
                 }
-                return;
+                if(!playingTrack.id) { // Pauza lub przełączenie utworu
+                    if(!embeddedPlayerPaused.state) {
+                        ref_EmbedController.current.pause();
+                    }
+                    return;
+                }
+                if(playingTrack.id === embeddedPlayer_playingTrack.id) { // Wznowiono/zapauzowano aktualny utwór
+                    ref_EmbedController.current.resume();
+                    return;
+                }
+                ref_EmbedController.current.loadUri(`spotify:track:${playingTrack.id}`); /*  Wywoła zdarzenie 'ready',
+                                                                                            którego funkcja nasłuchująca
+                                                                                            zajmie się rozpoczęciem odtwarzania */
             }
-            if(playingTrack.id === embeddedPlayer_playingTrack.id) { // Wznowiono/zapauzowano aktualny utwór
-                ref_EmbedController.current.resume();
-                return;
+            catch(error) {
+                console.error(error);
             }
-            ref_EmbedController.current.loadUri(`spotify:track:${playingTrack.id}`); /*  Wywoła zdarzenie 'ready',
-                                                                                        którego funkcja nasłuchująca
-                                                                                        zajmie się rozpoczęciem odtwarzania */
         }
         return () => {
             if(ref_EmbedController.current) {
                 ref_EmbedController.current.removeListener('ready', handleEmbedControllerReady);
                 ref_EmbedController.current.removeListener('playback_update', handleEmbedControllerPlaybackUpdate);
-                ref_EmbedController.current.removeListener('error', handleEmbedControllerError);
             }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps

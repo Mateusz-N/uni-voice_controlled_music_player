@@ -8,12 +8,25 @@ import TrackListItem from 'components/TrackList/TrackListItem';
 import Styles from 'components/TrackList/TrackList.module.scss';
 
 const TrackList = (props) => {
+    // #region Zmienne globalne
+    const playlist = props.playlist;
+    let playingTrackID = props.playingTrackID;
+    let playingTrackEnded = props.playingTrackEnded;
+    let tracks = [];
+    let thAlbum = null;
+    let thYear = null;
+    let thAdded = null;
+    // #endregion
+
     // #region Zmienne stanu (useState Hooks)
     const [userPlaylists, setUserPlaylists] = useState([]);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackPlayback = (track) => {
+        if(props.for === 'album') {
+          track.album = playlist;
+        }
         props.onPlaybackToggle(track);
     }
     // #endregion
@@ -28,13 +41,17 @@ const TrackList = (props) => {
             setUserPlaylists(data);
         });
     },[]);
+    useEffect(() => {
+        if(playingTrackEnded) {
+          const nextTrackIndex = tracks.indexOf(tracks.find(track => track.id === playingTrackID)) + 1;
+          const nextTrack = tracks[nextTrackIndex];
+          handleToggleTrackPlayback(nextTrack);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [playingTrackEnded, playingTrackID, tracks]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
-    let tracks = [];
-    let thAlbum = null;
-    let thYear = null;
-    let thAdded = null;
     if(props.tracks) {
         tracks = props.tracks;
     }
@@ -65,13 +82,13 @@ const TrackList = (props) => {
             </thead>
             <tbody>
                 {tracks.map((track, index) => {
-                    const playing = props.playingTrackID === track.id;
+                    const playing = playingTrackID === track.id;
                     return <TrackListItem
                         key = {index}
                         track = {track}
                         index = {index}
                         for = {props.for}
-                        playlist = {props.playlist}
+                        playlist = {playlist}
                         playing = {playing}
                         userPlaylists = {userPlaylists}
                         onPlaybackToggle = {handleToggleTrackPlayback}

@@ -15,26 +15,45 @@ import 'App.css';
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
   const [playingTrack, setPlayingTrack] = useState({id: null, title: null, artistName: null, albumName: null, duration: null});
+  const [playingTrackEnded, setPlayingTrackEnded] = useState(false);
   // #endregion
 
   // #region Obsługa zdarzeń (Event Handlers)
   const handleEmbedPlaybackToggle = (paused, embeddedPlayer_playingTrack) => {
-      setPlayingTrack(paused ? {id: null, title: null, artistName: null, albumName: null, duration: null} : embeddedPlayer_playingTrack);
+    if(paused.ended) {
+      setPlayingTrackEnded(true);
+      return;
+    }
+    if(!paused.state) {
+      setPlayingTrack(embeddedPlayer_playingTrack);
+      return;
+    }
+    if(!playingTrackEnded) {
+      setPlayingTrack({id: null, title: null, artistName: null, albumName: null, duration: null});
+    }
   }
   const handlePlaybackToggle = (track) => {
-      if(playingTrack.id !== track.id) {
-          setPlayingTrack({id: track.id, title: track.title, artistName: track.artists[0].name, albumName: track.album.name, duration: track.duration_ms});
-          return;
-      }
-      setPlayingTrack({id: null, title: null, artistName: null, albumName: null, duration: null});
+    if(playingTrackEnded) {
+      setPlayingTrackEnded(false);
+      setPlayingTrack({id: track.id, title: track.title, artistName: track.artists[0].name, albumName: track.album.name, duration: track.duration_ms});
+      return;
+    }
+    if(playingTrack.id !== track.id) {
+      setPlayingTrack({id: track.id, title: track.title, artistName: track.artists[0].name, albumName: track.album.name, duration: track.duration_ms});
+      return;
+    }
+    setPlayingTrack({id: null, title: null, artistName: null, albumName: null, duration: null});
+  }
+  const handleTrackEnd = () => {
+    setPlayingTrack(playingTrack);
   }
   // #endregion
   
   // #region Struktura komponentu (JSX)
-  const universalProps = {playingTrack: playingTrack, onPlaybackToggle: handlePlaybackToggle};
+  const universalProps = {playingTrack: {...playingTrack, ended: playingTrackEnded}, onPlaybackToggle: handlePlaybackToggle};
   return (
     <>
-      <EmbeddedPlayer playingTrack = {playingTrack} onPlaybackToggle = {handleEmbedPlaybackToggle} />
+      <EmbeddedPlayer playingTrack = {{...playingTrack, ended: playingTrackEnded}} onPlaybackToggle = {handleEmbedPlaybackToggle} onTrackEnd = {handleTrackEnd} />
       <Routes>
         <Route path = '/' element = {<HomePage {...universalProps} />} />
         <Route path = 'playlist/:id' element = {<PlaylistPage {...universalProps} />} />

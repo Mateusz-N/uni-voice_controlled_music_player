@@ -65,6 +65,7 @@ const LyricsModal = (props) => {
         if(!lyrics.syncedLyrics) {
             setNotification({message: 'Couldn\'t find synchronous lyrics. Displaying static lyrics instead.', type: 'information'});
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     // #endregion
 

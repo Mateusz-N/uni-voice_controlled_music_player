@@ -19,6 +19,7 @@ const Playlist = (props) => {
     // #region Zmienne globalne
     const playlistID = window.location.href.split('/').pop();
     const playingTrackID = props.playingTrack.id;
+    const playingTrackEnded = props.playingTrack.ended;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -247,12 +248,19 @@ const Playlist = (props) => {
                     key = {'trackList' + playlist.id}
                     tracks = {playlist.tracks}
                     playingTrackID = {playingTrackID}
+                    playingTrackEnded = {playingTrackEnded}
                     for = 'playlist'
                     playlist = {playlist}
                     onPlaybackToggle = {props.onPlaybackToggle}
                     onPlaylistUpdate = {handlePlaylistUpdate}
                 />
-                <OverviewPanel key = {'overviewPanel' + playlist.id} data = {playlist} for = 'playlist' />
+                <OverviewPanel
+                    key = {'overviewPanel' + playlist.id}
+                    data = {playlist}
+                    for = 'playlist'
+                    playingTrackID = {playingTrackID}
+                    onPlaybackToggle = {props.onPlaybackToggle}
+                />
             </CatalogBrowser>
         </div>
     );

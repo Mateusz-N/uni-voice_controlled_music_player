@@ -17,10 +17,10 @@ import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
 const OverviewPanel = (props) => {
     // #region Zmienne globalne
     const itemData = props.data;
+    const playingTrackID = props.playingTrackID;
     // #endregion
     
     // #region Zmienne stanu (useState Hooks)
-    const [playlistPaused, setPlaylistPaused] = useState(true);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -30,7 +30,11 @@ const OverviewPanel = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleTogglePlaylistPlayback = () => {
-        setPlaylistPaused(prevState => !prevState);
+        const track = itemData.tracks[0];
+        if(props.for === 'album') {
+            track.album = {name: itemData.name}
+        }
+        props.onPlaybackToggle(track);
     }
     const handlePlaylistDelete = () => {
         navigate('/');
@@ -95,9 +99,9 @@ const OverviewPanel = (props) => {
                         <main id = {Styles.itemFigure_thumbnail} onClick = {handleTogglePlaylistPlayback}>
                             <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnailImage} />
                             <img
-                                src = {playlistPaused ? btn_play : btn_pause}
-                                alt = {playlistPaused ? 'Play' : 'Pause'}
-                                id = {playlistPaused ? Styles.playlist_btnPlay : Styles.playlist_btnPause}
+                                src = {playingTrackID ? btn_pause : btn_play}
+                                alt = {playingTrackID ? 'Pause' : 'Play'}
+                                id = {playingTrackID ? Styles.playlist_btnPause : Styles.playlist_btnPlay}
                                 className = {Styles.playlist_btnTogglePlayback}
                             />
                         </main>

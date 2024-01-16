@@ -20,6 +20,7 @@ import Styles from 'components/NavBar/NavBar.module.scss';
 const NavBar = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(false);
+    // eslint-disable-next-line
     const [microphoneActive, setMicrophoneActive] = useState(false);
     const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
@@ -73,7 +74,7 @@ const NavBar = (props) => {
         setProfileContextMenuExpanded(prevState => !prevState);
     }
     const handleClickOutsideProfileContextMenu = (event) => {
-        if(profileContextMenuExpanded && (ref_profilePic.current && event.target !== ref_profilePic.current || event.target.className.includes(Styles.profile_contextMenu_option))) {
+        if(profileContextMenuExpanded && ((ref_profilePic.current && event.target !== ref_profilePic.current) || event.target.className.includes(Styles.profile_contextMenu_option))) {
             setProfileContextMenuExpanded(false);
         }
     }
@@ -105,6 +106,7 @@ const NavBar = (props) => {
         return () => {
             document.body.removeEventListener('click', handleClickOutsideProfileContextMenu);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[profileContextMenuExpanded]);
     // #endregion
 

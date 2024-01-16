@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 
-import { requestGetArtist, requestGetArtistAlbums } from 'common/serverRequests';
+import { requestGetArtist, requestGetArtistAlbums, requestGetArtistDetails } from 'common/serverRequests';
 import { placeholderArtist } from 'common/placeholderObjects';
 
 import btn_sync from 'resources/btn_sync.svg';
@@ -79,7 +79,12 @@ const Artist = (props) => {
                     showSeparately: true
                 }]
             }
-            setArtist(artist);
+            requestGetArtistDetails(artist.name, (data) => {
+                if(data) {
+                    artist.extraDetails = data;
+                }
+                setArtist(artist);
+            });
         }, fromAPI);
         getAlbums(artistID);
     }

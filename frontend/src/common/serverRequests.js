@@ -435,7 +435,7 @@ export const requestGetAlbumDetails = async (albumName, callback) => {
 }
 
 export const requestGetSynchronousLyrics = async (trackName, artistName, albumName, trackDuration, callback) => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/musixmatch/lyrics/synchronous?track=${trackName}&artist=${artistName}&album=${albumName}&duration=${trackDuration}`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/lrclib/lyrics/synchronous?track=${trackName}&artist=${artistName}&album=${albumName}&duration=${trackDuration}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -454,7 +454,7 @@ export const requestGetSynchronousLyrics = async (trackName, artistName, albumNa
 }
 
 export const requestGetLyrics = async (trackName, artistName, callback) => {
-    fetch(`${process.env.REACT_APP_SERVER_URL}/musixmatch/lyrics/synchronous?track=${trackName}&artist=${artistName}`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/lrclib/lyrics/synchronous?track=${trackName}&artist=${artistName}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

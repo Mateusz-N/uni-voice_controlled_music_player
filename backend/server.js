@@ -12,7 +12,7 @@ const rateLimit = require('express-rate-limit');
 // #region Importy plików
 const spotifyRouter = require('./routes/spotify');
 const discogsRouter = require('./routes/discogs');
-const musixmatchRouter = require('./routes/musixmatch');
+const lrclibRouter = require('./routes/lrclib');
 // #endregion
 
 // #region Zmienne środowiskowe
@@ -50,7 +50,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(limiter)
 app.use('/spotify', spotifyRouter);
 app.use('/discogs', discogsRouter);
-app.use('/musixmatch', musixmatchRouter);
+app.use('/lrclib', lrclibRouter);
 
 const serverHTTP = http.createServer(app);
 const serverHTTPS = https.createServer(ssl, app);

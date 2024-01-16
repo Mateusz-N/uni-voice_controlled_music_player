@@ -99,6 +99,7 @@ module.exports = {
     .catch(console.error);
   },
   updatePlaylist: async (accessToken, playlistID, updatedDetailName, updatedDetailValue, callback) => {
+    console.log(updatedDetailName, updatedDetailValue)
     axios({
       method: 'PUT',
       url: `https://api.spotify.com/v1/playlists/${playlistID}`,
@@ -144,7 +145,7 @@ module.exports = {
     })
     .catch(console.error);
   },
-  trackInPlaylist: async (accessToken, playlistID, trackURIs, callback) => {
+  trackInPlaylist: async (accessToken, playlistID, trackURIs, method, callback) => {
     axios({
       method: method,
       url: `https://api.spotify.com/v1/playlists/${playlistID}/tracks`,

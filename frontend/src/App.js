@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Cookies from 'js-cookie';
 
 import HomePage from 'pages/Home';
 import PlaylistPage from 'pages/Playlist';

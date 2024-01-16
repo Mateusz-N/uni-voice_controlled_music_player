@@ -40,7 +40,7 @@ const OverviewPanel = (props) => {
         Jest to prawdopodobnie defekt w owym punkcie końcowym.
         Ponadto, właściwość 'public' zdaje się w ogóle nie być aktualizowana przez Spotify... */
         detailName = detailName.toLowerCase();
-        if(detailName === 'public') {
+        if(['public', 'collaborative'].includes(detailName)) {
             if(detailValue === 'yes') {
                 detailValue = true;
             }

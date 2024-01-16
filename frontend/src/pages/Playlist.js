@@ -74,7 +74,8 @@ const Playlist = (props) => {
                     local: item.track.is_local
                 })),
                 owner: Cookies.get('userName'),
-                public: false
+                public: false,
+                collaborative: false
             }
             :
             {
@@ -99,7 +100,8 @@ const Playlist = (props) => {
                     local: item.track.is_local
                 })),
                 owner: data.owner.display_name,
-                public: data.public
+                public: data.public,
+                collaborative: data.collaborative
             }
             fetchedPlaylist.detailsToDisplay = [{
                 name: 'Name',

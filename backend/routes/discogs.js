@@ -10,6 +10,15 @@ const handleSearchApiResponseGeneric = (res, res_results, nextRequest, nextReque
     nextRequestHandler(res_data, res);
   }
   if(res_results.status === 200) {
+    if(res_results.data.results.length < 1) {
+      res.status(res_results.status).send({
+        message: {
+          message: `Requested item could not be found. Perhaps the archives are incomplete!`,
+          type: 'warning'
+        }
+      });
+      return;
+    }
     const itemID = res_results.data.results[0].id;
     DiscogsService[nextRequest](itemID, handleNextRequest);
   }

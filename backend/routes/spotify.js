@@ -136,7 +136,7 @@ const handleTrackInPlaylist = async (req, res, accessToken, method) => {
       });
     }
   }
-  SpotifyService.trackInPlaylist(accessToken, playlistID, trackURIs, handleTrackInPlaylistApiResponse);
+  SpotifyService.trackInPlaylist(accessToken, playlistID, trackURIs, method, handleTrackInPlaylistApiResponse);
 }
 // #endregion
 

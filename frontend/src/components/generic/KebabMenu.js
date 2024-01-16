@@ -14,15 +14,6 @@ const KebabMenu = (props) => {
     const btnID = props.kebabBtnID;
     // #endregion
 
-    // #region Obsługa wyjątków
-    if(children == null) {
-        throw new Error('The KebabMenu component must include child elements!');
-    }
-    if(btnID == null) {
-        throw new Error('The KebabMenu component must include a non-null kebabBtnID attribute!');
-    }
-    // #endregion
-
     // #region Zmienne stanu (useState Hooks)
     const [itemContextMenuExpanded, setItemContextMenuExpanded] = useState(false);
     // #endregion
@@ -40,6 +31,12 @@ const KebabMenu = (props) => {
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
+        if(children == null) {
+            return;
+        }
+        if(btnID == null) {
+            throw new Error('The KebabMenu component must include a non-null kebabBtnID attribute!');
+        }
         if(itemContextMenuExpanded && props.onExpand) {
             props.onExpand();
         }

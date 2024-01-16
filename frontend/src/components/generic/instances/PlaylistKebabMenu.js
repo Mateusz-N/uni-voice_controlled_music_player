@@ -28,7 +28,7 @@ const PlaylistKebabMenu = (props) => {
     // #region Struktura komponentu (JSX)
     return(
         <KebabMenu context = {context} styles = {ExternalStyles} kebabBtnID = {context + '_btnKebab_' + playlistID}>
-            <li id = {ExternalStyles[context + '_contextMenu_addTracks']}>Add tracks</li>
+            {/* <li id = {ExternalStyles[context + '_contextMenu_addTracks']}>Add tracks</li> */}
             {optionDeletePlaylist}
         </KebabMenu>
     );

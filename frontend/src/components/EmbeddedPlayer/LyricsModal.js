@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom';
 
 import Modal from 'components/generic/Modal';
 import Toast from 'components/generic/Toast';
@@ -81,6 +82,7 @@ const LyricsModal = (props) => {
             {toastNotification}
             <Modal key = {index} title = 'Lyrics' id = {'lyrics_' + index} onClose = {props.onClose} styles = {Styles}>
                 <main className = {Styles.lyricsModal_main}>
+                    <p className = {Styles.lyricsAttribution}>~ Lyrics brought to you by <Link to = 'https://lrclib.net/'>Lrclib</Link> ~</p>
                     <p className = {Styles.lyrics}>
                         {lyrics.syncedLyrics ?
                             <>

@@ -23,7 +23,7 @@ const ArtistDetailsModal = (props) => {
             value: (artist.extraDetails && artist.extraDetails.members) ? artist.extraDetails.members.filter(member => !member.active).map(member => member.name).join(', ') || 'N/A' : 'N/A'
         }, {
             displayName: 'Genres',
-            value: artist.genres ? artist.genres.join(', ') : 'N/A'
+            value: artist.genres ? artist.genres.join(', ') || 'N/A' : 'N/A'
         }, {
             displayName: 'Profile',
             value: artist.extraDetails ? artist.extraDetails.profile || 'N/A' : 'N/A'

@@ -77,7 +77,9 @@ const EmbeddedPlayer = (props) => {
         };
     },[]);
     useEffect(() => {
-        ref_playingTrack.current = playingTrack;
+        if(playingTrack.id) {
+            ref_playingTrack.current = playingTrack;
+        }
         if(ref_IFrameAPI.current) { // API załadowane
             const element = ref_embeddedPlayer.current;
             const options = {
@@ -105,7 +107,7 @@ const EmbeddedPlayer = (props) => {
                     ref_EmbedController.current.resume();
                     return;
                 }
-                ref_EmbedController.current.loadUri(`spotify:track:${playingTrack.id}`); /*  Wywoła zdarzenie 'ready',
+                ref_EmbedController.current.loadUri(`spotify:track:${playingTrack.id}`); /* Wywoła zdarzenie 'ready',
                                                                                             którego funkcja nasłuchująca
                                                                                             zajmie się rozpoczęciem odtwarzania */
             }

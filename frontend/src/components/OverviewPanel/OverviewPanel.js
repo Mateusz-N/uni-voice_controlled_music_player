@@ -30,7 +30,19 @@ const OverviewPanel = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleTogglePlaylistPlayback = () => {
-        const track = itemData.tracks[0];
+        if(itemData.tracks.length === 0) {
+            return;
+        }
+        let trackIndex = itemData.tracks.length - 1;
+        let track;
+        do {
+            trackIndex++;
+            if(trackIndex >= itemData.tracks.length) {
+                trackIndex = 0;
+            }
+            track = itemData.tracks[trackIndex];
+        }
+        while(track.local);
         if(props.for === 'album') {
             track.album = {name: itemData.name}
         }

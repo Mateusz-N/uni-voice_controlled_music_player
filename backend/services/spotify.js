@@ -153,12 +153,12 @@ module.exports = {
         'Authorization': `Bearer ${accessToken}`
       },
       data: {
-          uris: trackURIs
-        }
+        uris: trackURIs
+      }
     })
-    .then((res_toggleTrackSaved) => {
-        callback(res_toggleTrackSaved);
-        console.log('API: Tracks\' presence in playlist toggled!');
+    .then((res_toggleTrackInPlaylist) => {
+      callback(res_toggleTrackInPlaylist);
+      console.log('API: Tracks\' presence in playlist toggled!');
     })
     .catch(console.error);
   },

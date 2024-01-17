@@ -35,6 +35,12 @@ const Search = (props) => {
     const handleSyncWithSpotify = () => {
         getResults();
     }
+    const handleSearchApiResponse = (data) => {
+        Object.keys(data).forEach(type => {
+            setResults(prevState => [...prevState, ...data[type]]);
+        });
+        btnSync.current.classList.remove(Styles.spinning);
+    }
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
@@ -53,12 +59,7 @@ const Search = (props) => {
         }
         const query = new URLSearchParams(windowLocation.search).get('query');
         btnSync.current.classList.add(Styles.spinning);
-        requestSearch(query, null, (data) => {
-            Object.keys(data).forEach(type => {
-                setResults(prevState => [...prevState, ...data[type]]);
-            });
-            btnSync.current.classList.remove(Styles.spinning);
-        });
+        requestSearch(query, null, handleSearchApiResponse, () => {});
     }
     // #endregion
 

@@ -202,7 +202,7 @@ const Playlist = (props) => {
         for await(const group of groupsOf50) {
             const idArray = [];
             for(const track of group) {
-                if(track.id) {
+                if(track.id && track.id !== -1) {
                     idArray.push(track.id)
                 }
             };

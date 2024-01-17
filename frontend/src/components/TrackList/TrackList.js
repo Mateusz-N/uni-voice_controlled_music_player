@@ -44,9 +44,17 @@ const TrackList = (props) => {
     },[]);
     useEffect(() => {
         if(playingTrackEnded) {
-          const nextTrackIndex = tracks.indexOf(tracks.find(track => track.id === playingTrackID)) + 1;
-          const nextTrack = tracks[nextTrackIndex];
-          handleToggleTrackPlayback(nextTrack);
+            let nextTrackIndex = tracks.indexOf(tracks.find(track => track.id === playingTrackID));
+            let nextTrack;
+            do {
+                nextTrackIndex++;
+                if(nextTrackIndex >= tracks.length) {
+                    nextTrackIndex = 0;
+                }
+                nextTrack = tracks[nextTrackIndex];
+            }
+            while(nextTrack.local);
+            handleToggleTrackPlayback(nextTrack);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [playingTrackEnded, playingTrackID, tracks]);

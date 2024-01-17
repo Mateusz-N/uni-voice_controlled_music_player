@@ -73,7 +73,7 @@ const OverviewPanelDetail = (props) => {
             className = {Styles.overviewPanelDetails_detailContent}
             {...node_itemContent_customAttributes}
         >
-            {itemData.name === 'Description' && itemData.content ?
+            {itemData.name === 'Description' && itemData.content && props.for === 'album' ?
                 <span className = {Styles.detailAttribution}>From <Link to = 'https://www.discogs.com/'>Discogs</Link>: </span>
                 : null}
             {itemContent}

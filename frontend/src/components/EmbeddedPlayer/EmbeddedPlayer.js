@@ -16,7 +16,7 @@ const EmbeddedPlayer = (props) => {
 
     // #region Zmienne stanu (useState Hooks)
     const [embeddedPlayer_playingTrack, setEmbeddedPlayer_playingTrack] = useState({});
-    const [embeddedPlayerPaused, setEmbeddedPlayerPaused] = useState({state: true, ended: false});
+    const [embeddedPlayerPaused, setEmbeddedPlayerPaused] = useState({state: null, ended: false});
     const [modal_lyrics_open, setModal_lyrics_open] = useState(false);
     const [currentTimestamp_ms, setCurrentTimestamp_ms] = useState(null);
     const [lyrics, setLyrics] = useState(null);
@@ -50,7 +50,9 @@ const EmbeddedPlayer = (props) => {
     }
     const handleEmbedControllerPlaybackUpdate = (controllerState) => {
         const trackEnded = controllerState.data.position === controllerState.data.duration && !controllerState.data.isPaused;
-        setEmbeddedPlayerPaused({state: controllerState.data.isPaused, ended: trackEnded});
+        if(controllerState.data.isPaused !== embeddedPlayerPaused.state) {
+            setEmbeddedPlayerPaused({state: controllerState.data.isPaused, ended: trackEnded});
+        }
         setCurrentTimestamp_ms(controllerState.data.position);
     }
     const handleClickLyricsBtn = () => {

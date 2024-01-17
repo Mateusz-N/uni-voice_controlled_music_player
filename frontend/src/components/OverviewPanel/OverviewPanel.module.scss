@@ -2,12 +2,11 @@
     position: fixed;
     box-sizing: border-box;
     top: 52px;
-    // bottom: 83px;
-    bottom: 0px;
+    bottom: 99px;
     right: 0;
     width: 20%;
     padding: 36px;
-    padding-bottom: calc(36px + 99px);
+    padding-bottom: 36px;
 
     overflow-y: auto;
     background-color: #3a3a3a;

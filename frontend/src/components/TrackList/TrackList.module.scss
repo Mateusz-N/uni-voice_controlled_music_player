@@ -1,7 +1,13 @@
-#trackList {
-    table-layout: fixed;
+#trackList_container {
+    position: relative;
+    height: 100%;
     width: 80%;
     padding: 36px;
+}
+
+#trackList {
+    table-layout: fixed;
+    width: 100%;
 
     border-spacing: 0;
 }

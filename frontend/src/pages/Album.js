@@ -22,6 +22,7 @@ const Album = (props) => {
 
     // #region Zmienne stanu (useState Hooks)
     const [album, setAlbum] = useState(placeholderAlbum);
+    const [albumLoading, setAlbumLoading] = useState(false);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -30,6 +31,67 @@ const Album = (props) => {
     }
     const handleLogout = () => {
         getAlbum();
+    }
+    const handleGetAlbumApiResponse = (data) => {
+        const fetchedAlbum = {
+            id: albumID,
+            name: data.name,
+            thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
+            totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.duration_ms.totalMilliseconds || item.duration_ms), 0),
+            artists: data.artists,
+            tracks: data.tracks.items.map(item => ({
+                id: item.id,
+                number: item.track_number,
+                title: item.name,
+                artists: item.artists,
+                album: item.album,
+                duration_ms: item.duration_ms.totalMilliseconds || item.duration_ms,
+                genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
+                dateAdded: item.added_at,
+                explicit: item.explicit,
+                playable: item.is_playable,
+                local: item.is_local
+            })),
+            releaseDate: data.release_date
+        }
+        fetchedAlbum.detailsToDisplay = [{
+            name: 'Name',
+            content: fetchedAlbum.name || '',
+            showSeparately: true
+        }, {
+            name: 'Track count',
+            content: fetchedAlbum.tracks ? fetchedAlbum.tracks.length || 'N/A' : 'N/A',
+            showSeparately: false
+        }, {
+            name: 'Total Duration',
+            content: fetchedAlbum.totalDuration_ms ? millisecondsToFormattedTime(fetchedAlbum.totalDuration_ms) : 'N/A',
+            showSeparately: false
+        }, {
+            name: 'Artist(s)',
+            content: fetchedAlbum.artists ? fetchedAlbum.artists.map((artist, index) => {
+                return(
+                    <Fragment key = {index}>
+                        <Link to = {'/artist/' + artist.id}>{artist.name}</Link>
+                        {index === fetchedAlbum.artists.length - 1 ? '' : ', '}
+                    </Fragment>
+                )
+            }) : 'N/A',
+            showSeparately: false
+        }, {
+            name: 'Released',
+            content: fetchedAlbum.releaseDate ? new Date(fetchedAlbum.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : 'N/A',
+            showSeparately: false
+        }, {
+            name: 'Description',
+            content: '',
+            showSeparately: true
+        }];
+        requestGetAlbumDetails(fetchedAlbum.name, (data) => {
+            if(data) {
+                fetchedAlbum.extraDetails = data;
+            }
+            setAlbum(fetchedAlbum);
+        });
     }
     // #endregion
 
@@ -40,67 +102,8 @@ const Album = (props) => {
             setAlbum(placeholderAlbum);
             return;
         }
-        requestGetAlbum(albumID, (data) => {
-            const fetchedAlbum = {
-                id: albumID,
-                name: data.name,
-                thumbnailSrc: (data.images.length > 0 ? data.images[0].url : placeholderAlbumCoverSrc),
-                totalDuration_ms: data.tracks.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.duration_ms.totalMilliseconds || item.duration_ms), 0),
-                artists: data.artists,
-                tracks: data.tracks.items.map(item => ({
-                    id: item.id,
-                    number: item.track_number,
-                    title: item.name,
-                    artists: item.artists,
-                    album: item.album,
-                    duration_ms: item.duration_ms.totalMilliseconds || item.duration_ms,
-                    genres: ['rock', 'pop'], // To-Do: pobierz z Discogs (?)
-                    dateAdded: item.added_at,
-                    explicit: item.explicit,
-                    playable: item.is_playable,
-                    local: item.is_local
-                })),
-                releaseDate: data.release_date
-            }
-            fetchedAlbum.detailsToDisplay = [{
-                name: 'Name',
-                content: fetchedAlbum.name || '',
-                showSeparately: true
-            }, {
-                name: 'Track count',
-                content: fetchedAlbum.tracks ? fetchedAlbum.tracks.length || 'N/A' : 'N/A',
-                showSeparately: false
-            }, {
-                name: 'Total Duration',
-                content: fetchedAlbum.totalDuration_ms ? millisecondsToFormattedTime(fetchedAlbum.totalDuration_ms) : 'N/A',
-                showSeparately: false
-            }, {
-                name: 'Artist(s)',
-                content: fetchedAlbum.artists ? fetchedAlbum.artists.map((artist, index) => {
-                    return(
-                        <Fragment key = {index}>
-                            <Link to = {'/artist/' + artist.id}>{artist.name}</Link>
-                            {index === fetchedAlbum.artists.length - 1 ? '' : ', '}
-                        </Fragment>
-                    )
-                }) : 'N/A',
-                showSeparately: false
-            }, {
-                name: 'Released',
-                content: fetchedAlbum.releaseDate ? new Date(fetchedAlbum.releaseDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}) : 'N/A',
-                showSeparately: false
-            }, {
-                name: 'Description',
-                content: '',
-                showSeparately: true
-            }];
-            requestGetAlbumDetails(fetchedAlbum.name, (data) => {
-                if(data) {
-                    fetchedAlbum.extraDetails = data;
-                }
-                setAlbum(fetchedAlbum);
-            });
-        }, fromAPI);
+        setAlbumLoading(true);
+        requestGetAlbum(albumID, handleGetAlbumApiResponse, () => setAlbumLoading(false), fromAPI);
     }
     // #endregion
 
@@ -123,6 +126,7 @@ const Album = (props) => {
                     playingTrackEnded = {playingTrackEnded}
                     for = 'album'
                     playlist = {album}
+                    playlistLoading = {albumLoading}
                     onPlaybackToggle = {props.onPlaybackToggle}
                 />
                 <OverviewPanel key = {album.id} data = {album} for = 'album' playingTrackID = {playingTrackID} onPlaybackToggle = {props.onPlaybackToggle} />

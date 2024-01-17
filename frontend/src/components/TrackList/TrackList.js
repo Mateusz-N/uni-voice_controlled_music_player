@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { requestGetPlaylists } from 'common/serverRequests';
 
 import TrackListItem from 'components/TrackList/TrackListItem';
+import Loading from 'components/generic/Loading';
 
 import Styles from 'components/TrackList/TrackList.module.scss';
 
@@ -60,43 +61,50 @@ const TrackList = (props) => {
         thYear = <th>Year</th>;
         thAdded = <th>Added</th>;
     }
+    let loadingIcon = null;
+    if(props.playlistLoading) {
+        loadingIcon = <Loading />
+    }
     // #endregion
 
     // #region Struktura komponentu (JSX)
     return(
-        <table id = {Styles.trackList}>
-            <thead>
-                <tr id = {Styles.trackList_header}>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Artist(s)</th>
-                    {thAlbum}
-                    {thYear}
-                    {/* <th>Genre</th> */}{/*   Spotify API obecnie nie dostarcza gatunków utworów w punkcie końcowym pobierania list odtwarzania...
-                                                Udostępnia je w punkcie końcowym pobierania utworu...
-                                                Jednak dla dużych list odtwarzania byłoby to bardzo kosztowne */}
-                    <th>Duration</th>
-                    {thAdded}
-                    <th className = {Styles.thKebab}></th>
-                </tr>
-            </thead>
-            <tbody>
-                {tracks.map((track, index) => {
-                    const playing = playingTrackID === track.id;
-                    return <TrackListItem
-                        key = {index}
-                        track = {track}
-                        index = {index}
-                        for = {props.for}
-                        playlist = {playlist}
-                        playing = {playing}
-                        userPlaylists = {userPlaylists}
-                        onPlaybackToggle = {handleToggleTrackPlayback}
-                        onPlaylistUpdate = {props.onPlaylistUpdate}
-                    />
-                })}
-            </tbody>
-        </table>
+        <main id = {Styles.trackList_container}>
+            {loadingIcon}
+            <table id = {Styles.trackList}>
+                <thead>
+                    <tr id = {Styles.trackList_header}>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Artist(s)</th>
+                        {thAlbum}
+                        {thYear}
+                        {/* <th>Genre</th> */}{/*   Spotify API obecnie nie dostarcza gatunków utworów w punkcie końcowym pobierania list odtwarzania...
+                                                    Udostępnia je w punkcie końcowym pobierania utworu...
+                                                    Jednak dla dużych list odtwarzania byłoby to bardzo kosztowne */}
+                        <th>Duration</th>
+                        {thAdded}
+                        <th className = {Styles.thKebab}></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tracks.map((track, index) => {
+                        const playing = playingTrackID === track.id;
+                        return <TrackListItem
+                            key = {index}
+                            track = {track}
+                            index = {index}
+                            for = {props.for}
+                            playlist = {playlist}
+                            playing = {playing}
+                            userPlaylists = {userPlaylists}
+                            onPlaybackToggle = {handleToggleTrackPlayback}
+                            onPlaylistUpdate = {props.onPlaylistUpdate}
+                        />
+                    })}
+                </tbody>
+            </table>
+        </main>
     );
     // #endregion
 }

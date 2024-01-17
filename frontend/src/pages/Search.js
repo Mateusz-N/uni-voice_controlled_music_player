@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Cookies from 'js-cookie';
 
 import { requestSearch } from 'common/serverRequests';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
+import btn_sync from 'resources/btn_sync.svg';
 
 import NavBar from 'components/NavBar/NavBar';
 import CatalogBrowser from 'components/CatalogBrowser';
@@ -19,12 +20,19 @@ const Search = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [results, setResults] = useState([]);
     // #endregion
+
+    // #region Zmienne referencji (useRef Hooks)
+    const btnSync = useRef(null);
+    // #endregion
     
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
         getResults();
     }
     const handleLogout = () => {
+        getResults();
+    }
+    const handleSyncWithSpotify = () => {
         getResults();
     }
     // #endregion
@@ -44,10 +52,12 @@ const Search = (props) => {
             return;
         }
         const query = new URLSearchParams(windowLocation.search).get('query');
+        btnSync.current.classList.add(Styles.spinning);
         requestSearch(query, null, (data) => {
             Object.keys(data).forEach(type => {
                 setResults(prevState => [...prevState, ...data[type]]);
             });
+            btnSync.current.classList.remove(Styles.spinning);
         });
     }
     // #endregion
@@ -59,6 +69,7 @@ const Search = (props) => {
             <CatalogBrowser>
                 <h1 id = {Styles.catalogHeader}>
                     Results&nbsp;
+                    <img src = {btn_sync} alt = 'Sync with Spotify' id = {Styles.btnSync} onClick = {handleSyncWithSpotify} ref = {btnSync} />
                 </h1>
                 <main id = {Styles.mainSection}>
                     {

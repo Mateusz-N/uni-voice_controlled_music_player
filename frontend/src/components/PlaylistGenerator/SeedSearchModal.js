@@ -19,6 +19,7 @@ const SeedSearchModal = (props) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState({results: [], seedType: null});
     const [searchSwitch, setSearchSwitch] = useState(false);
+    const [searchLoading, setSearchLoading] = useState(false);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -36,27 +37,30 @@ const SeedSearchModal = (props) => {
         const seed = searchResults.results.find(result => result.id === seedID);
         props.onSubmit(seed.id, seed.name, searchResults.seedType);
     }
+    const handleGetAvailableGenresApiResponse = (data) => {
+        const genres = data.map(genre => ({id: genre, name: genre}));
+        setSearchResults({
+            results: genres.filter(genre => genre.name.includes(searchQuery) && !seeds.find(seed => (seed.id === genre.id && seed.type === selectedSeedType))),
+            seedType: 'Genre'
+        });
+    }
+    const handleSearchApiResponse = (data) => {
+        setSearchResults({
+            results: data[selectedSeedType.toLowerCase()].filter(result => !seeds.find(seed => (seed.id === result.id && seed.type === selectedSeedType))),
+            seedType: selectedSeedType
+        });
+    }
     // #endregion
     
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        /* Bug: pojedyncze zapytanie powoduje odpowiedź 429: Too many requests */
         if(selectedSeedType.toLowerCase() === 'genre') {
-            requestGetAvailableGenres((data) => {
-                const genres = data.map(genre => ({id: genre, name: genre}));
-                setSearchResults({
-                    results: genres.filter(genre => genre.name.includes(searchQuery) && !seeds.find(seed => (seed.id === genre.id && seed.type === selectedSeedType))),
-                    seedType: 'Genre'
-                });
-            });
+            setSearchLoading(true);
+            requestGetAvailableGenres(handleGetAvailableGenresApiResponse, () => setSearchLoading(false));
         }
         else {
-            requestSearch(searchQuery.length > 0 ? searchQuery : '.', selectedSeedType, (data) => {
-                setSearchResults({
-                    results: data[selectedSeedType.toLowerCase()].filter(result => !seeds.find(seed => (seed.id === result.id && seed.type === selectedSeedType))),
-                    seedType: selectedSeedType
-                });
-            });
+            setSearchLoading(true);
+            requestSearch(searchQuery.length > 0 ? searchQuery : '.', selectedSeedType, handleSearchApiResponse, () => setSearchLoading(false));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[searchSwitch]);
@@ -104,6 +108,7 @@ const SeedSearchModal = (props) => {
                     options = {searchResults.results}
                     multiple = {false}
                     size = {searchResults.results.length > 5 ? 5 : searchResults.results.length}
+                    loading = {searchLoading}
                     onSelection = {(selectedSeedID) => handleSelectSeed(selectedSeedID)}
                 />
             </main>

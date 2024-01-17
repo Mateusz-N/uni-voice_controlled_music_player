@@ -75,7 +75,7 @@ export const requestGetPlaylists = async (callback, fromAPI = false) => {
         .catch(console.error);
 }
 
-export const requestGetPlaylist = async (playlistID, callback, fromAPI = true) => {
+export const requestGetPlaylist = async (playlistID, callback, finallyCallback, fromAPI = true) => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/playlist/${playlistID}`, {
         method: 'GET',
         headers: {
@@ -91,7 +91,8 @@ export const requestGetPlaylist = async (playlistID, callback, fromAPI = true) =
         .then(async (data) => {
             callback(data);
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => finallyCallback());
 }
 
 export const requestUpdatePlaylist = async (playlistID, changedDetail, callback) => {
@@ -265,7 +266,7 @@ export const requestGetArtistAlbums = async (artistID, callback) => {
         .catch(console.error);
 }
 
-export const requestGetAlbum = async (albumID, callback) => {
+export const requestGetAlbum = async (albumID, callback, finallyCallback) => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/album/${albumID}`, {
         method: 'GET',
         credentials: 'include'
@@ -278,7 +279,8 @@ export const requestGetAlbum = async (albumID, callback) => {
         .then((data) => {
             callback(data);
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => finallyCallback());
 }
 
 export const requestGetTracksSavedStatus = async (trackIDs, callback) => {
@@ -319,7 +321,7 @@ export const requestToggleTrackSaved = async (trackID, saved, callback) => {
         .catch(console.error);
     }
 
-export const requestSearch = async (query, itemTypes, callback) => {
+export const requestSearch = async (query, itemTypes, callback, finallyCallback) => {
     const itemTypesParam = itemTypes ? `&type=${itemTypes}` : '';
     fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/search?query=${query}${itemTypesParam}`, {
         method: 'GET',
@@ -336,7 +338,8 @@ export const requestSearch = async (query, itemTypes, callback) => {
         .then((data) => {
             callback(data);
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => finallyCallback());
 }
 
 export const requestGetRecommendations = async (recommendationsURL, callback) => {
@@ -358,7 +361,7 @@ export const requestGetRecommendations = async (recommendationsURL, callback) =>
         .catch(console.error);
 }
 
-export const requestGetAvailableGenres = async (callback) => {
+export const requestGetAvailableGenres = async (callback, finallyCallback) => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/genres`, {
         method: 'GET',
         headers: {
@@ -374,7 +377,8 @@ export const requestGetAvailableGenres = async (callback) => {
         .then((data) => {
             callback(data);
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => finallyCallback());
 }
 
 export const requestGetTrackDetails = async (trackName, artistName, releaseYear, callback) => {

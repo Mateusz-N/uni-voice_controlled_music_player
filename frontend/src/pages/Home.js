@@ -41,7 +41,7 @@ const Home = (props) => {
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
-    const [playlists, setPlaylists] = useState([playlistGenerator, playlistBuilder]);
+    const [playlists, setPlaylists] = useState([]);
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
     const [notification, setNotification] = useState({});
     // #endregion
@@ -62,6 +62,11 @@ const Home = (props) => {
         setPlaylists([playlistGenerator, playlistBuilder]);
     }
     const handleSyncWithSpotify = () => {
+        const loggedIn = !!Cookies.get('userID');
+        if(!loggedIn) {
+            setNotification({message: 'You must log in to perform this operation!', type: 'error'});
+            return;
+        }
         getPlaylists(true);
     }
     const handlePlaylistLinkClick = async (event, playlistType) => {

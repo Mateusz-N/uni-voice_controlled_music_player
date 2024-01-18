@@ -118,6 +118,10 @@ const PlaylistGeneratorModal = (props) => {
             ref_form_playlistGenerator.current.reportValidity();
         }
         event.preventDefault();
+        if(seeds.length === 0) {
+            setNotification({message: 'You must add at least one seed!', type: 'error'});
+            return;
+        }
         const recommendationsURL = new URL(`${process.env.REACT_APP_SERVER_URL}/spotify/recommendations`);
         ['Artist', 'Genre', 'Track'].forEach(seedType => {
             const seedSet = seeds.filter(seed => seed.type === seedType).map(seed => seed.id).join(',');

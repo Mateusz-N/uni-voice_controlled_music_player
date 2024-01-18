@@ -18,9 +18,21 @@ import Toast from 'components/generic/Toast';
 import Styles from 'components/NavBar/NavBar.module.scss';
 
 const NavBar = (props) => {
+    const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+    const greetings = ['cześć', 'test', 'dzień dobry'];
+    const grammar = '#JSGF V1.0; grammar greetings; public <greetings> = ' + greetings.join(' | ') + ';';
+    const recognition = new SpeechRecognition();
+    const recognitionList = new SpeechGrammarList();
+    recognitionList.addFromString(grammar, 1);
+    recognition.grammars = recognitionList;
+    recognition.lang = 'pl-PL';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(false);
-    // eslint-disable-next-line
     const [microphoneActive, setMicrophoneActive] = useState(false);
     const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
@@ -87,6 +99,21 @@ const NavBar = (props) => {
     const handleModalClose_about = () => {
         setModal_about_open(false);
     }
+    const handleActivateVoiceInput = () => {
+        recognition.start();
+        recognition.onresult = (event) => {
+            let word = event.results[0][0].transcript;
+            if(greetings.includes(word)) {
+                alert("Witaj!");
+            }
+            else {
+                alert(`"${word}" nie jest rozpoznawalnym poleceniem. Spróbuj jeszcze raz.`);
+            }
+          }
+    }
+    const handleDeactivateVoiceInput = () => {
+        recognition.stop();
+    }
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
@@ -108,6 +135,13 @@ const NavBar = (props) => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[profileContextMenuExpanded]);
+    useEffect(() => {
+        if(microphoneEnabled) {
+            handleActivateVoiceInput();
+            return;
+        }
+        handleDeactivateVoiceInput();
+    },[microphoneEnabled]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu

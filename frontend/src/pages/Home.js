@@ -59,7 +59,7 @@ const Home = (props) => {
         getPlaylists();
     }
     const handleLogout = () => {
-        setPlaylists([playlistGenerator, playlistBuilder]);
+        setPlaylists([]);
     }
     const handleSyncWithSpotify = () => {
         const loggedIn = !!Cookies.get('userID');

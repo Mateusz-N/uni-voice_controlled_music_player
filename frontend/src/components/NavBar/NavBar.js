@@ -18,24 +18,12 @@ import Toast from 'components/generic/Toast';
 import Styles from 'components/NavBar/NavBar.module.scss';
 
 const NavBar = (props) => {
-    const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
-    const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
-    const greetings = ['cześć', 'test', 'dzień dobry'];
-    const grammar = '#JSGF V1.0; grammar greetings; public <greetings> = ' + greetings.join(' | ') + ';';
-    const recognition = new SpeechRecognition();
-    const recognitionList = new SpeechGrammarList();
-    recognitionList.addFromString(grammar, 1);
-    recognition.grammars = recognitionList;
-    recognition.lang = 'pl-PL';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(false);
-    const [microphoneActive, setMicrophoneActive] = useState(false);
-    const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
+    const [recognition, setRecognition] = useState(null);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
+    const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
+    const [microphoneActive, setMicrophoneActive] = useState(false);
     const [spotifyAuthURL, setSpotifyAuthURL] = useState('');
     const [modal_about_open, setModal_about_open] = useState(false);
     const [notification, setNotification] = useState({});
@@ -43,6 +31,8 @@ const NavBar = (props) => {
 
     // #region Zmienne referencji (useRef Hooks)
     const ref_profilePic = useRef(null);
+    const ref_microphoneEnabled = useRef(false);
+    const ref_microphoneActive = useRef(false);
     // #endregion
 
     // #region Zmienne nawigacji (useNavigate Hooks)
@@ -51,6 +41,7 @@ const NavBar = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleMicrophone = () => {
+        ref_microphoneEnabled.current = !ref_microphoneEnabled.current;
         setMicrophoneEnabled(prevState => !prevState);
     }
     const handleLogin = () => {
@@ -99,20 +90,72 @@ const NavBar = (props) => {
     const handleModalClose_about = () => {
         setModal_about_open(false);
     }
-    const handleActivateVoiceInput = () => {
+    const handleEnableVoiceInput = () => {
+        if(!recognition) {
+            return;
+        }
         recognition.start();
-        recognition.onresult = (event) => {
-            let word = event.results[0][0].transcript;
-            if(greetings.includes(word)) {
-                alert("Witaj!");
-            }
-            else {
-                alert(`"${word}" nie jest rozpoznawalnym poleceniem. Spróbuj jeszcze raz.`);
-            }
-          }
     }
-    const handleDeactivateVoiceInput = () => {
+    const handleDisableVoiceInput = () => {
+        if(!recognition) {
+            return;
+        }
+        recognition.onend = null;
         recognition.stop();
+    }
+    // #endregion
+
+    // #region Funkcje pomocnicze
+    const setupSpeechRecognition = () => {
+        const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+        const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+        const commands = ['wyłącz mikrofon', 'zaloguj', 'wyloguj', 'odśwież katalog'];
+        const grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands.join(' | ') + ';';
+        const recognition = new SpeechRecognition();
+        const recognitionList = new SpeechGrammarList();
+        recognitionList.addFromString(grammar, 1);
+        recognition.grammars = recognitionList;
+        recognition.lang = 'pl-PL';
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.onspeechstart = () => {
+            if(ref_microphoneEnabled.current) {
+                ref_microphoneActive.current = true;
+                setMicrophoneActive(true);
+            }
+        }
+        recognition.onresult = (event) => {
+            if(ref_microphoneEnabled.current) {
+                ref_microphoneActive.current = false;
+                setMicrophoneActive(false);
+            }
+            const command = event.results[event.results.length - 1][0].transcript;
+            switchSpeechCommand(command.toLowerCase().trim());
+            console.log("You said: " + command);
+        }
+        recognition.onend = () => {
+            // Włącz ponownie w przypadku automatycznego wyłączenia po chwili nieaktywności
+            handleEnableVoiceInput();
+        }
+        setRecognition(recognition);
+    }
+    const switchSpeechCommand = (command) => {
+        switch(command) {
+            case 'wyłącz mikrofon':
+                ref_microphoneEnabled.current = false;
+                setMicrophoneEnabled(false);
+                break;
+            case 'zaloguj':
+                handleLogin();
+                break;
+            case 'wyloguj':
+                handleLogout();
+                break;
+            case 'odśwież katalog':
+                props.onSyncWithSpotify();
+                break;
+        }
     }
     // #endregion
 
@@ -127,7 +170,7 @@ const NavBar = (props) => {
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+    },[loggedIn]);
     useEffect(() => {
         document.body.addEventListener('click', handleClickOutsideProfileContextMenu);
         return () => {
@@ -136,12 +179,24 @@ const NavBar = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[profileContextMenuExpanded]);
     useEffect(() => {
-        if(microphoneEnabled) {
-            handleActivateVoiceInput();
+        if(ref_microphoneEnabled.current) {
+            handleEnableVoiceInput();
             return;
         }
-        handleDeactivateVoiceInput();
-    },[microphoneEnabled]);
+        handleDisableVoiceInput();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[ref_microphoneEnabled.current]);
+    useEffect(() => {
+        setupSpeechRecognition();
+        return () => {
+            if(recognition) {
+                recognition.onend = null;
+                recognition.onresult = null;
+                recognition.onspeechstart = null;
+                recognition.onspeechend = null;
+            }
+        }
+    },[spotifyAuthURL, ref_microphoneEnabled.current])
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -173,7 +228,7 @@ const NavBar = (props) => {
                 <div id = {Styles.microphoneContainer}>
                     <img
                         src = {microphoneActive ? microphone_active : microphone_idle}
-                        alt = {microphoneEnabled ? (microphoneActive ? 'Capturing voice...' : 'Awaiting input...') : 'Microphone off'}
+                        alt = {microphoneEnabled ? (ref_microphoneActive.current ? 'Capturing voice...' : 'Awaiting input...') : 'Microphone off'}
                         id = {Styles.microphoneIcon}
                         className = {microphoneEnabled ? Styles.microphoneIcon_enabled : Styles.microphoneIcon_disabled}
                         onClick = {handleToggleMicrophone}

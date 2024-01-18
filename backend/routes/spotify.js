@@ -81,6 +81,9 @@ const requestAccessToken = async (res, grantType, queryParams) => {
 }
 
 const verifyAccessToken = async (res, accessToken, accessToken_expirationDateInSeconds, refreshToken, clientId) => {
+  if(!accessToken) {
+    return accessToken;
+  }
   if(Math.floor(new Date().getTime() / 1000) < accessToken_expirationDateInSeconds) {
     return accessToken;
   }

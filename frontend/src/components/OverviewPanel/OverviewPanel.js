@@ -17,7 +17,8 @@ import Styles from 'components/OverviewPanel/OverviewPanel.module.scss';
 const OverviewPanel = (props) => {
     // #region Zmienne globalne
     const itemData = props.data;
-    const playingTrackID = props.playingTrackID;
+    const playingTrack = props.playingTrack;
+    const playlistPlaying = (playingTrack.paused || playingTrack.paused == null || playingTrack.playlistID !== itemData.id);
     // #endregion
     
     // #region Zmienne stanu (useState Hooks)
@@ -34,18 +35,24 @@ const OverviewPanel = (props) => {
             return;
         }
         let trackIndex = itemData.tracks.length - 1;
-        let track;
-        do {
-            trackIndex++;
-            if(trackIndex >= itemData.tracks.length) {
-                trackIndex = 0;
-            }
-            track = itemData.tracks[trackIndex];
+        let track = itemData.tracks[0]; // Odtwarzaj od pierwszego, jeśli odtwarzana jest obecnie inna lista lub żadna
+        if(playingTrack.playlistID === itemData.id) {
+            track = itemData.tracks.find(track => track.id === playingTrack.id);
         }
-        while(track.local);
+        if(playingTrack.ended || playingTrack.id == null) {
+            do {
+                trackIndex++;
+                if(trackIndex >= itemData.tracks.length) {
+                    trackIndex = 0;
+                }
+                track = itemData.tracks[trackIndex];
+            }
+            while(track.local);
+        }
         if(props.for === 'album') {
             track.album = {name: itemData.name}
         }
+        track.playlistID = itemData.id;
         props.onPlaybackToggle(track);
     }
     const handlePlaylistDelete = () => {
@@ -111,9 +118,9 @@ const OverviewPanel = (props) => {
                         <main id = {Styles.itemFigure_thumbnail} onClick = {handleTogglePlaylistPlayback}>
                             <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnailImage} />
                             <img
-                                src = {playingTrackID ? btn_pause : btn_play}
-                                alt = {playingTrackID ? 'Pause' : 'Play'}
-                                id = {playingTrackID ? Styles.playlist_btnPause : Styles.playlist_btnPlay}
+                                src = {playlistPlaying ? btn_play : btn_pause}
+                                alt = {playlistPlaying ? 'Play' : 'Pause'}
+                                id = {playlistPlaying ? Styles.playlist_btnPlay : Styles.playlist_btnPause}
                                 className = {Styles.playlist_btnTogglePlayback}
                             />
                         </main>

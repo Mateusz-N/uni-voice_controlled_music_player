@@ -11,11 +11,20 @@ import Styles from 'components/EmbeddedPlayer/EmbeddedPlayer.module.scss';
 
 const EmbeddedPlayer = (props) => {
     // #region Zmienne globalne
-    const playingTrack = props.playingTrack;
+    const playbackRequest = props.playbackRequest;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
-    const [embeddedPlayer_playingTrack, setEmbeddedPlayer_playingTrack] = useState({});
+    const [embeddedPlayer_playingTrack, setEmbeddedPlayer_playingTrack] = useState({
+        id: null,
+        title: null,
+        artistName: null,
+        albumName: null,
+        duration: null,
+        paused: null,
+        ended: null,
+        playlistID: null
+    });
     const [embeddedPlayerPaused, setEmbeddedPlayerPaused] = useState({state: null, ended: false});
     const [modal_lyrics_open, setModal_lyrics_open] = useState(false);
     const [currentTimestamp_ms, setCurrentTimestamp_ms] = useState(null);
@@ -50,9 +59,7 @@ const EmbeddedPlayer = (props) => {
     }
     const handleEmbedControllerPlaybackUpdate = (controllerState) => {
         const trackEnded = controllerState.data.position === controllerState.data.duration && !controllerState.data.isPaused;
-        if(controllerState.data.isPaused !== embeddedPlayerPaused.state) {
-            setEmbeddedPlayerPaused({state: controllerState.data.isPaused, ended: trackEnded});
-        }
+        setEmbeddedPlayerPaused({state: controllerState.data.isPaused, ended: trackEnded});
         setCurrentTimestamp_ms(controllerState.data.position);
     }
     const handleClickLyricsBtn = () => {
@@ -77,13 +84,14 @@ const EmbeddedPlayer = (props) => {
         };
     },[]);
     useEffect(() => {
-        if(playingTrack.id) {
-            ref_playingTrack.current = playingTrack;
+        if(playbackRequest.id == null) {
+            return;
         }
+        ref_playingTrack.current = playbackRequest;
         if(ref_IFrameAPI.current) { // API załadowane
             const element = ref_embeddedPlayer.current;
             const options = {
-                uri: `spotify:track:${playingTrack.id}`,
+                uri: `spotify:track:${playbackRequest.id}`,
                 width: '100%',
                 height: '100%'
             };
@@ -93,23 +101,28 @@ const EmbeddedPlayer = (props) => {
                 EmbedController.addListener('playback_update', handleEmbedControllerPlaybackUpdate);
             };
             try {
-                if(!ref_EmbedController.current) { // Odtwarzacz nie załadowany
+                // Odtwarzacz nie załadowany
+                if(!ref_EmbedController.current) {
                     ref_IFrameAPI.current.createController(element, options, callback);
                     return;
                 }
-                if(!playingTrack.id) { // Pauza lub przełączenie utworu
+                // Pauza
+                if(playbackRequest.paused && playbackRequest.playlistID === embeddedPlayer_playingTrack.playlistID) {
                     if(!embeddedPlayerPaused.state) {
                         ref_EmbedController.current.pause();
                     }
                     return;
                 }
-                if(playingTrack.id === embeddedPlayer_playingTrack.id) { // Wznowiono/zapauzowano aktualny utwór
+                // Wznowienie aktualnego utworu
+                if(!playbackRequest.paused && playbackRequest.id === embeddedPlayer_playingTrack.id && playbackRequest.playlistID === embeddedPlayer_playingTrack.playlistID) { 
                     ref_EmbedController.current.resume();
                     return;
                 }
-                ref_EmbedController.current.loadUri(`spotify:track:${playingTrack.id}`); /* Wywoła zdarzenie 'ready',
-                                                                                            którego funkcja nasłuchująca
-                                                                                            zajmie się rozpoczęciem odtwarzania */
+            /*  Wywoła zdarzenie 'ready',
+                którego funkcja nasłuchująca
+                zajmie się rozpoczęciem odtwarzania */
+                props.onPlaybackToggle({state: true, ended: false}, embeddedPlayer_playingTrack); // Zasygnalizuj pauzę wskutek zmiany utworu
+                ref_EmbedController.current.loadUri(`spotify:track:${playbackRequest.id}`); // Odtworzenie nowego utworu (!request.paused && request.id !== playingTrack.id)
             }
             catch(error) {
                 console.error(error);
@@ -122,8 +135,11 @@ const EmbeddedPlayer = (props) => {
             }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[playingTrack.id]);
+    },[playbackRequest]);
     useEffect(() => {
+        if(embeddedPlayerPaused.state == null) {
+            return;
+        }
         props.onPlaybackToggle(embeddedPlayerPaused, embeddedPlayer_playingTrack);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[embeddedPlayerPaused])

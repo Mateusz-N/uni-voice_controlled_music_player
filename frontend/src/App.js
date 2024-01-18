@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import HomePage from 'pages/Home';
@@ -14,46 +14,62 @@ import 'App.css';
 
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
-  const [playingTrack, setPlayingTrack] = useState({id: null, title: null, artistName: null, albumName: null, duration: null});
-  const [playingTrackEnded, setPlayingTrackEnded] = useState(false);
+  const [playingTrack, setPlayingTrack] = useState({
+    id: null,
+    title: null,
+    artistName: null,
+    albumName: null,
+    duration: null,
+    paused: null,
+    ended: null,
+    playlistID: null
+  });
+  const [playbackRequest, setPlaybackRequest] = useState({
+    id: null,
+    title: null,
+    artistName: null,
+    albumName: null,
+    duration: null,
+    paused: null,
+    ended: null,
+    playlistID: null
+  });
   // #endregion
 
   // #region Obsługa zdarzeń (Event Handlers)
-  const handleEmbedPlaybackToggle = (paused, embeddedPlayer_playingTrack) => {
+  const handleEmbedPlaybackToggle = (paused, embeddedPlayer_playingTrack) => { // Faktyczna zmiana stanu odtwarzania wewnątrz osadzonego odtwarzacza
     if(paused.ended) {
-      setPlayingTrackEnded(true);
+      setPlayingTrack({...embeddedPlayer_playingTrack, paused: false, ended: true});
       return;
     }
     if(!paused.state) {
-      setPlayingTrack(embeddedPlayer_playingTrack);
+      setPlayingTrack({...embeddedPlayer_playingTrack, paused: false, ended: false});
       return;
     }
-    if(!playingTrackEnded) {
-      setPlayingTrack({id: null, title: null, artistName: null, albumName: null, duration: null});
+    if(!playingTrack.ended) {
+      setPlayingTrack({...embeddedPlayer_playingTrack, paused: true, ended: false});
     }
   }
-  const handlePlaybackToggle = (track) => {
-    if(playingTrackEnded) {
-      setPlayingTrackEnded(false);
-      setPlayingTrack({id: track.id, title: track.title, artistName: track.artists[0].name, albumName: track.album.name, duration: track.duration_ms});
-      return;
-    }
-    if(playingTrack.id !== track.id) {
-      setPlayingTrack({id: track.id, title: track.title, artistName: track.artists[0].name, albumName: track.album.name, duration: track.duration_ms});
-      return;
-    }
-    setPlayingTrack({id: null, title: null, artistName: null, albumName: null, duration: null});
-  }
-  const handleTrackEnd = () => {
-    setPlayingTrack(playingTrack);
+  const handlePlaybackToggle = (track) => { // Żądanie odtworzenia/pauzy z poziomu komponentu TrackList
+    setPlayingTrack({...playingTrack, ended: false});
+    setPlaybackRequest({
+      id: track.id,
+      title: track.title,
+      artistName: track.artists[0].name,
+      albumName: track.album.name,
+      duration: track.duration_ms,
+      paused: (playingTrack.id !== track.id) ? false : !playingTrack.paused, // Autoodtwarzanie w przypadku wybrania nowego utworu
+      ended: false,
+      playlistID: track.playlistID
+    });
   }
   // #endregion
   
   // #region Struktura komponentu (JSX)
-  const universalProps = {playingTrack: {...playingTrack, ended: playingTrackEnded}, onPlaybackToggle: handlePlaybackToggle};
+  const universalProps = {playingTrack: playingTrack, onPlaybackToggle: handlePlaybackToggle};
   return (
     <>
-      <EmbeddedPlayer playingTrack = {{...playingTrack, ended: playingTrackEnded}} onPlaybackToggle = {handleEmbedPlaybackToggle} onTrackEnd = {handleTrackEnd} />
+      <EmbeddedPlayer playbackRequest = {playbackRequest} onPlaybackToggle = {handleEmbedPlaybackToggle} />
       <Routes>
         <Route path = '/' element = {<HomePage {...universalProps} />} />
         <Route path = 'playlist/:id' element = {<PlaylistPage {...universalProps} />} />

@@ -11,8 +11,7 @@ import Styles from 'components/TrackList/TrackList.module.scss';
 const TrackList = (props) => {
     // #region Zmienne globalne
     const playlist = props.playlist;
-    let playingTrackID = props.playingTrackID;
-    let playingTrackEnded = props.playingTrackEnded;
+    let playingTrack = props.playingTrack;
     let tracks = [];
     let thAlbum = null;
     let thYear = null;
@@ -28,6 +27,7 @@ const TrackList = (props) => {
         if(props.for === 'album') {
           track.album = playlist;
         }
+        track.playlistID = playlist.id;
         props.onPlaybackToggle(track);
     }
     // #endregion
@@ -43,8 +43,8 @@ const TrackList = (props) => {
         });
     },[]);
     useEffect(() => {
-        if(playingTrackEnded) {
-            let nextTrackIndex = tracks.indexOf(tracks.find(track => track.id === playingTrackID));
+        if(playingTrack.ended) {
+            let nextTrackIndex = tracks.indexOf(tracks.find(track => track.id === playingTrack.id));
             let nextTrack;
             do {
                 nextTrackIndex++;
@@ -57,7 +57,7 @@ const TrackList = (props) => {
             handleToggleTrackPlayback(nextTrack);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [playingTrackEnded, playingTrackID, tracks]);
+      }, [playingTrack, tracks]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined
@@ -97,7 +97,7 @@ const TrackList = (props) => {
                 </thead>
                 <tbody>
                     {tracks.map((track, index) => {
-                        const playing = playingTrackID === track.id;
+                        const playing = (playingTrack.id === track.id && !playingTrack.paused && playingTrack.playlistID === playlist.id);
                         return <TrackListItem
                             key = {index}
                             track = {track}

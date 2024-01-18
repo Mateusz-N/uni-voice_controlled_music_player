@@ -18,8 +18,7 @@ import Toast from 'components/generic/Toast';
 const Playlist = (props) => {
     // #region Zmienne globalne
     const playlistID = window.location.href.split('/').pop();
-    const playingTrackID = props.playingTrack.id;
-    const playingTrackEnded = props.playingTrack.ended;
+    const playingTrack = props.playingTrack;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -250,8 +249,7 @@ const Playlist = (props) => {
                 <TrackList
                     key = {'trackList' + playlist.id}
                     tracks = {playlist.tracks}
-                    playingTrackID = {playingTrackID}
-                    playingTrackEnded = {playingTrackEnded}
+                    playingTrack = {playingTrack}
                     for = 'playlist'
                     playlist = {playlist}
                     playlistLoading = {playlistLoading}
@@ -262,7 +260,7 @@ const Playlist = (props) => {
                     key = {'overviewPanel' + playlist.id}
                     data = {playlist}
                     for = 'playlist'
-                    playingTrackID = {playingTrackID}
+                    playingTrack = {playingTrack}
                     onPlaybackToggle = {props.onPlaybackToggle}
                 />
             </CatalogBrowser>

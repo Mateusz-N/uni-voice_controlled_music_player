@@ -97,6 +97,14 @@ const Home = () => {
     const handleModalClose_playlistGenerator = () => {
         setPlaylistGeneratorModalOpen(false);
     }
+    const handleOpenPlaylistByName = (playlistName) => {
+        const matchedPlaylist = playlists.find(playlist => playlist.name.toLowerCase().replace(/\W/g, '') === playlistName.toLowerCase().replace(/\W/g, ''));
+        navigate(`/playlist/${matchedPlaylist.id}`);
+    }
+    const handleCreatePlaylist = async () => {
+        const newPlaylistID = await createPlaylist();
+        navigate(`/playlist/${newPlaylistID}`);
+    }
     // #endregion
     
     // #region Funkcje pomocnicze
@@ -145,7 +153,14 @@ const Home = () => {
     return (
         <div id = 'page'>
             {toastNotification}
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} />
+            <NavBar
+                onLogin = {handleLogin}
+                onLogout = {handleLogout}
+                onSyncWithSpotify = {handleSyncWithSpotify}
+                onOpenPlaylist = {handleOpenPlaylistByName}
+                onCreatePlaylist = {handleCreatePlaylist}
+                onGeneratePlaylist = {handleOpenPlaylistGenerator}
+            />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
                     Your catalog&nbsp;

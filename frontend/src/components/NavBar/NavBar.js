@@ -142,6 +142,11 @@ const NavBar = (props) => {
                         onLogout = {handleLogout}
                         onSyncWithSpotify = {props.onSyncWithSpotify}
                         onReturnHome = {handleReturnHome}
+                        onSearch = {handleSearchFormSubmit}
+                        onOpenPlaylist = {(playlistName) => props.onOpenPlaylist(playlistName)}
+                        onOpenAlbum = {props.onOpenAlbum}
+                        onCreatePlaylist = {props.onCreatePlaylist}
+                        onGeneratePlaylist = {props.onGeneratePlaylist}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 
@@ -28,6 +28,10 @@ const Artist = () => {
     const btnSync = useRef(null);
     // #endregion
 
+    // #region Zmienne nawigacji (useNavigate Hooks)
+    const navigate = useNavigate();
+    // #endregion
+
     // #region Obsługa zdarzeń (Event Handlers)
     const handleLogin = () => {
         getArtist();
@@ -37,6 +41,10 @@ const Artist = () => {
     }
     const handleSyncWithSpotify = () => {
         getArtist(true);
+    }
+    const handleOpenAlbumByName = (albumName) => {
+        const matchedAlbum = albums.find(album => album.name.toLowerCase().replace(/\W/g, '') === albumName.toLowerCase().replace(/\W/g, ''));
+        navigate(`/album/${matchedAlbum.id}`);
     }
     // #endregion
 
@@ -116,7 +124,7 @@ const Artist = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} onOpenAlbum = {handleOpenAlbumByName} />
             <CatalogBrowser className = 'collectionBrowser hasOverviewPanel'>
                 <h1 id = {Styles.catalogHeader}>
                     {artist.name}&nbsp;

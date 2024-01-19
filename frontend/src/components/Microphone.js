@@ -35,7 +35,6 @@ const Microphone = (props) => {
             return;
         }
         try {
-            console.log('xd')
             ref_recognition.current.start();
             localStorage.setItem('microphoneEnabled', 'true');
         }
@@ -73,17 +72,13 @@ const Microphone = (props) => {
         ref_recognition.current.onspeechstart = () => {
             console.log('speechstart')
             if(ref_microphoneEnabled.current) {
-                ref_microphoneActive.current = true;
-                setMicrophoneActive(true);
-                localStorage.setItem('microphoneActive', 'true');
+                activateMicrophone();
             }
         }
         ref_recognition.current.onspeechend = () => {
             console.log('speechend');
             if(ref_microphoneEnabled.current) {
-                ref_microphoneActive.current = false;
-                setMicrophoneActive(false);
-                localStorage.setItem('microphoneActive', 'false');
+                deactivateMicrophone();
             }
         }
         ref_recognition.current.onend = () => {
@@ -96,9 +91,7 @@ const Microphone = (props) => {
         ref_recognition.current.onresult = (event) => {
             console.log('result')
             if(ref_microphoneEnabled.current) {
-                ref_microphoneActive.current = false;
-                setMicrophoneActive(false);
-                localStorage.setItem('microphoneActive', 'false');
+                deactivateMicrophone();
             }
             const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
             console.log(command)
@@ -110,6 +103,14 @@ const Microphone = (props) => {
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }
         ref_recognition.current.onerror = (error) => {
+            if(error.error === 'no-speech') {
+                console.warn(
+                    'No speech detected!',
+                    'If you are not speaking right now, you may safely disregard this warning.',
+                    'Otherwise, check your microphone or browser settings and make sure the microphone button is turned on.'
+                );
+                return;
+            }
             console.error(error);
         }
     }
@@ -117,39 +118,66 @@ const Microphone = (props) => {
         console.log(deps)
         console.log(command)
         try {
-            switch(command) {
-                case 'wyłącz mikrofon':
-                    ref_microphoneEnabled.current = false;
-                    setMicrophoneEnabled(false);
-                    break;
-                case 'zaloguj':
-                    props.onLogin();
-                    break;
-                case 'wyloguj':
-                    props.onLogout();
-                    break;
-                case 'odśwież katalog':
-                    props.onSyncWithSpotify();
-                    break;
-                case 'strona główna':
-                case 'pokaż katalog':
-                    props.onReturnHome();
-                    break;
-                default:
-                    setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
-                    break;
+            if(command === 'wyłącz mikrofon') {
+                ref_microphoneEnabled.current = false;
+                setMicrophoneEnabled(false);
+                return;
             }
+            if(command === 'zaloguj') {
+                props.onLogin();
+                return;
+            }
+            if(command === 'wyloguj') {
+                props.onLogout();
+                return;
+            }
+            if(command === 'synchronizuj') {
+                props.onSyncWithSpotify();
+                return;
+            }
+            if(['strona główna', 'pokaż katalog'].includes(command)) {
+                props.onReturnHome();
+                return;
+            }
+            if(command.startsWith('szukaj')) {
+                props.onSearch(command.split('szukaj').slice(1).join('szukaj'));
+            }
+            if(command.startsWith('otwórz playlistę')) {
+                props.onOpenPlaylist(command.split('otwórz playlistę').slice(1).join('otwórz playlistę'));
+            }
+            if(command.startsWith('otwórz album')) {
+                props.onOpenAlbum(command.split('otwórz album').slice(1).join('otwórz album'));
+            }
+            if(['utwórz playlistę', 'nowa playlista', 'stwórz playlistę'].includes(command)) {
+                props.onCreatePlaylist();
+            }
+            if(['generuj playlistę', 'otwórz generator'].includes(command)) {
+                props.onGeneratePlaylist();
+            }
+            setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }
         catch(error) {
             console.error(error);
             setNotification({message: 'Something went wrong. Please make sure you are issuing the command from a valid context.', type: 'error'});
         }
     }
+    const activateMicrophone = () => {
+        ref_microphoneActive.current = true;
+        setMicrophoneActive(true);
+        localStorage.setItem('microphoneActive', 'true');
+    }
+    const deactivateMicrophone = () => {
+        ref_microphoneActive.current = false;
+        setMicrophoneActive(false);
+        localStorage.setItem('microphoneActive', 'false');
+    }
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        console.log('ref_microphoneEnabled = ' + ref_microphoneEnabled.current)
+        setupSpeechRecognition();
+    },[]);
+    useEffect(() => {
         if(ref_microphoneEnabled.current === true) {
             handleEnableVoiceInput();
             return;
@@ -158,13 +186,9 @@ const Microphone = (props) => {
             handleDisableVoiceInput();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[ref_microphoneEnabled.current]);
+    },[ref_microphoneEnabled.current, ref_recognition.current]);
     useEffect(() => {
-        setupSpeechRecognition();
-    },[]);
-    useEffect(() => {
-        console.log('deps chagned')
-        console.log(deps)
+        console.log('deps chagned', deps)
         if(ref_recognition.current) {
             setRecognitionEventListeners();
         }

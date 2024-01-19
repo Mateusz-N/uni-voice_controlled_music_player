@@ -14,7 +14,7 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 import Styles from 'pages/Home.module.scss';
 
-const Artist = (props) => {
+const Artist = () => {
     // #region Zmienne globalne
     const artistID = window.location.href.split('/').pop();
     // #endregion
@@ -116,7 +116,7 @@ const Artist = (props) => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} />
             <CatalogBrowser className = 'collectionBrowser hasOverviewPanel'>
                 <h1 id = {Styles.catalogHeader}>
                     {artist.name}&nbsp;

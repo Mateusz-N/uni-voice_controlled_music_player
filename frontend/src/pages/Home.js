@@ -18,7 +18,7 @@ import Toast from 'components/generic/Toast';
 
 import Styles from 'pages/Home.module.scss';
 
-const Home = (props) => {
+const Home = () => {
     // #region Zmienne globalne
     const playlistGenerator = {
         id: '0',
@@ -145,7 +145,7 @@ const Home = (props) => {
     return (
         <div id = 'page'>
             {toastNotification}
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
                     Your catalog&nbsp;

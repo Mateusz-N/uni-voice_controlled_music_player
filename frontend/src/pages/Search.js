@@ -12,7 +12,7 @@ import CatalogBrowser from 'components/CatalogBrowser';
 
 import Styles from 'pages/Home.module.scss';
 
-const Search = (props) => {
+const Search = () => {
     // #region Zmienne lokacji (useLocation Hooks)
     const windowLocation = useLocation();
     // #endregion
@@ -66,7 +66,7 @@ const Search = (props) => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
+            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} />
             <CatalogBrowser>
                 <h1 id = {Styles.catalogHeader}>
                     Results&nbsp;

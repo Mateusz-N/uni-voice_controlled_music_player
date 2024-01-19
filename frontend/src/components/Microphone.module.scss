@@ -1,0 +1,10 @@
+#microphoneIcon {
+    height: 32px;
+    padding: 10px;
+
+    cursor: pointer;
+
+    &.microphoneIcon_disabled {
+        filter: brightness(50%);
+    }
+}

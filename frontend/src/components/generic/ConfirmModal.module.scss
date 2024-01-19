@@ -1,0 +1,12 @@
+#btnSubmit_confirmModal, #btnCancel_confirmModal {
+    padding: 7px;
+
+    border-radius: 7px;
+}
+
+#form_confirmModal {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+}

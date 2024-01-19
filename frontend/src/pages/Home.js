@@ -173,7 +173,13 @@ const Home = () => {
                             let kebabMenu = null;
                             if(!['generator', 'builder'].includes(playlist.type)) {
                                 kebabMenu =
-                                    <PlaylistKebabMenu playlistID = {playlist.id} context = 'catalogItem' styles = {Styles} onDeletePlaylist = {handleDeletePlaylist} />
+                                    <PlaylistKebabMenu
+                                        playlistID = {playlist.id}
+                                        playlistName = {playlist.name}
+                                        context = 'catalogItem'
+                                        styles = {Styles}
+                                        onDeletePlaylist = {handleDeletePlaylist}
+                                    />
                             }
                             let playlistGeneratorModal = null;
                             if(playlistGeneratorModalOpen && playlist.type === 'generator') {

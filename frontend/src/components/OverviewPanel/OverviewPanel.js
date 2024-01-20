@@ -101,7 +101,7 @@ const OverviewPanel = (props) => {
             <PlaylistKebabMenu
                 playlist = {itemData}
                 requestDelete = {deletionRequested}
-                defaultAction = {defaultFormAction}
+                defaultFormAction = {defaultFormAction}
                 context = 'itemFigure'
                 styles = {Styles}
                 onDeletePlaylist = {handlePlaylistDelete}

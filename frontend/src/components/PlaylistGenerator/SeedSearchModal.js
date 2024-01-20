@@ -11,6 +11,7 @@ import Styles from 'components/PlaylistGenerator/SeedSearchModal.module.scss';
 
 const SeedSearchModal = (props) => {
     // #region Zmienne globalne
+    const defaultAction = props.defaultAction;
     const seeds = props.seeds;
     // #endregion
 
@@ -64,6 +65,13 @@ const SeedSearchModal = (props) => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[searchSwitch]);
+    useEffect(() => {
+        if(defaultAction === 'cancel') {
+            props.onCancel();
+            return;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[defaultAction]);
     // #endregion
 
     // #region Struktura komponentu (JSX)

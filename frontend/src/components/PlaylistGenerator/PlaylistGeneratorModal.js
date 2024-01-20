@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 import { requestGetRecommendations } from 'common/serverRequests';
@@ -14,6 +14,7 @@ import Styles from 'components/PlaylistGenerator/PlaylistGeneratorModal.module.s
 
 const PlaylistGeneratorModal = (props) => {
     // #region Zmienne globalne
+    const addSeed = props.addSeed;
     const minMaxTargetFields = [{
         name: 'acousticness',
         displayName: 'Acousticness',
@@ -105,8 +106,10 @@ const PlaylistGeneratorModal = (props) => {
     const [parameters, setParameters] = useState({});
     const [seeds, setSeeds] = useState([]);
     const [seedSearchModalOpen, setSeedSearchModalOpen] = useState(false);
+    const [defaultFormAction, setDefaultFormAction] = useState(props.defaultFormAction);
     const [notification, setNotification] = useState({});
     // #endregion
+    console.log(defaultFormAction, props.defaultFormAction)
 
     // #region Zmienne referencji (useRef Hooks)
     const ref_form_playlistGenerator = useRef(null);
@@ -148,9 +151,13 @@ const PlaylistGeneratorModal = (props) => {
         setSeeds(prevState => prevState.filter(seed => seed.id !== seedID));
     }
     const handleCancelAddSeedSearch = () => {
+        setDefaultFormAction(null);
+        props.onAddSeed();
         setSeedSearchModalOpen(false);
     }
     const handleSubmitAddSeedSearch = (seedID, seedName, seedType) => {
+        setDefaultFormAction(null);
+        props.onAddSeed();
         setSeedSearchModalOpen(false);
         setSeeds(prevState => [...prevState, {id: seedID, type: seedType, text: seedType + ': ' + seedName}]);
     }
@@ -164,19 +171,30 @@ const PlaylistGeneratorModal = (props) => {
     }
     // #endregion
 
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(addSeed) {
+            handleAddSeed();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[addSeed]);
+    useEffect(() => {
+        console.log(props.defaultFormAction)
+        setDefaultFormAction(props.defaultFormAction);
+    },[props.defaultFormAction])
+    // #endregion
+
     // #region Przypisanie dynamicznych elementów komponentu
     let seedSearchModal = null;
     if(seedSearchModalOpen) {
         seedSearchModal =
             createPortal(<SeedSearchModal
                 seeds = {seeds}
+                defaultAction = {defaultFormAction}
                 onSubmit = {(seedID, seedName, seedType) => handleSubmitAddSeedSearch(seedID, seedName, seedType)}
                 onCancel = {handleCancelAddSeedSearch}
             />, document.body);
     }
-    // #endregion
-
-    // #region Przypisanie dynamicznych elementów komponentu
     let toastNotification = null;
     if(notification.message) {
         toastNotification =
@@ -227,6 +245,7 @@ const PlaylistGeneratorModal = (props) => {
                     </main>
                     <FormControlSection
                         context = 'playlistGenerator'
+                        defaultAction = {seedSearchModalOpen ? null : defaultFormAction}
                         onSubmit = {handleSubmitPlaylistGeneratorForm}
                         onCancel = {handleCancelPlaylistGeneratorForm}
                         styles = {Styles}

@@ -1,9 +1,26 @@
+import { useEffect } from 'react';
+
 import Styles from 'components/generic/FormControlSection.module.scss';
 
 const FormControlSection = (props) => {
     // #region Zmienne globalne
     const context = props.context;
+    const defaultAction = props.defaultAction;
     const ExternalStyles = props.styles;
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(defaultAction === 'submit') {
+            props.onSubmit();
+            return;
+        }
+        if(defaultAction === 'cancel') {
+            props.onCancel();
+            return;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[defaultAction]);
     // #endregion
 
     // #region Struktura komponentu (JSX)

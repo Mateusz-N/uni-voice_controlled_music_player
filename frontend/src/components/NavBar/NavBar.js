@@ -152,6 +152,7 @@ const NavBar = (props) => {
                         onSubmitFormVoiceCommand = {props.onSubmitFormVoiceCommand}
                         onCancelFormVoiceCommand = {props.onCancelFormVoiceCommand}
                         onShowAboutPageVoiceCommand = {handleSelectAbout}
+                        onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

@@ -45,6 +45,7 @@ const Home = (props) => {
     const [playlists, setPlaylists] = useState([]);
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
     const [idOfPlaylistToDelete, setIdOfPlaylistToDelete] = useState(null);
+    const [playlistGenerator_addSeed, setPlaylistGenerator_addSeed] = useState(false);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -95,11 +96,13 @@ const Home = (props) => {
         const newPlaylistID = await createPlaylist();
         requestGeneratePlaylist(newPlaylistID, tracks, (data) => {
             const notificationMessage = data.message.type === 'success' ? 'Playlist generated successfully!' : data.message.type;
+            props.onRequestDefaultFormAction(null);
             navigate(`/playlist/${newPlaylistID}`, {state: {notificationMessage: notificationMessage, notificationType: data.message.type}});
         });
     }
     const handleModalClose_playlistGenerator = () => {
         setPlaylistGeneratorModalOpen(false);
+        props.onRequestDefaultFormAction(null);
     }
     const handleShowPlaylistByName = (playlistName) => {
         const matchedPlaylist = findPlaylistByName(playlistName);
@@ -128,6 +131,13 @@ const Home = (props) => {
     }
     const handleCancelAllForms = () => {
         props.onRequestDefaultFormAction('cancel');
+    }
+    const handleRequestAddPlaylistGeneratorSeed = () => {
+        setPlaylistGenerator_addSeed(true);
+    }
+    const handleAddPlaylistGeneratorSeed = () => {
+        setPlaylistGenerator_addSeed(false);
+        props.onRequestDefaultFormAction(null);
     }
     // #endregion
     
@@ -190,6 +200,7 @@ const Home = (props) => {
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistByName}
                 onSubmitFormVoiceCommand = {handleSubmitAllForms}
                 onCancelFormVoiceCommand = {handleCancelAllForms}
+                onAddPlaylistGeneratorSeedVoiceCommand = {handleRequestAddPlaylistGeneratorSeed}
             />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
@@ -206,7 +217,7 @@ const Home = (props) => {
                                     <PlaylistKebabMenu
                                         playlist = {playlist}
                                         requestDelete = {idOfPlaylistToDelete === playlist.id}
-                                        defaultAction = {defaultFormAction}
+                                        defaultFormAction = {defaultFormAction}
                                         context = 'catalogItem'
                                         styles = {Styles}
                                         onDeletePlaylist = {handleDeletePlaylist}
@@ -217,6 +228,9 @@ const Home = (props) => {
                             if(playlistGeneratorModalOpen && playlist.type === 'generator') {
                                 playlistGeneratorModal =
                                     createPortal(<PlaylistGeneratorModal
+                                        defaultFormAction = {defaultFormAction}
+                                        addSeed = {playlistGenerator_addSeed}
+                                        onAddSeed = {handleAddPlaylistGeneratorSeed}
                                         onSubmit = {(tracks) => handleGeneratePlaylist(tracks)}
                                         onCancel = {handleModalClose_playlistGenerator}
                                     />, document.body);

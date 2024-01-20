@@ -160,7 +160,7 @@ const Microphone = (props) => {
             if(command.startsWith('usuń playlistę')) {
                 props.onDeletePlaylistVoiceCommand(command.split('usuń playlistę').slice(1).join('usuń playlistę'));
             }
-            if(['ok', 'zatwierdź', 'potwierdź', 'tak', 'wyślij'].includes(command)) {
+            if(['ok', 'okej', 'zatwierdź', 'potwierdź', 'tak', 'wyślij'].includes(command)) {
                 props.onSubmitFormVoiceCommand();
             }
             if(['anuluj', 'nie', 'zamknij'].includes(command)) {
@@ -168,6 +168,9 @@ const Microphone = (props) => {
             }
             if(['o aplikacji', 'o stronie', 'informacje o aplikacji', 'informacje o stronie'].includes(command)) {
                 props.onShowAboutPageVoiceCommand();
+            }
+            if(['dodaj ziarno', 'nowe ziarno'].includes(command)) {
+                props.onAddPlaylistGeneratorSeedVoiceCommand();
             }
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }
@@ -215,6 +218,7 @@ const Microphone = (props) => {
                 ref_recognition.current.onend = null;
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[...deps, ref_microphoneActive.current, ref_microphoneEnabled.current]);
     // #endregion
 

@@ -13,6 +13,7 @@ const PlaylistKebabMenu = (props) => {
     const playlistID = props.playlist.id;
     const playlistName = props.playlist.name;
     const playlistDeletionRequested = props.requestDelete;
+    const defaultFormAction = props.defaultFormAction;
     const context = props.context;
     const ExternalStyles = props.styles;
     // #endregion
@@ -58,7 +59,7 @@ const PlaylistKebabMenu = (props) => {
                 <ConfirmModal
                     title = {`Deleting playlist`}
                     context = {'deletePlaylist_' + playlistID}
-                    defaultAction = {props.defaultAction}
+                    defaultAction = {defaultFormAction}
                     onSubmit = {handleDeletePlaylist}
                     onCancel = {handleModalClose_confirmDeletePlaylist}
                 >

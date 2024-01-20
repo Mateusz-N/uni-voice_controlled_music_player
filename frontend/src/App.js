@@ -15,6 +15,7 @@ import 'App.css';
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
   const [defaultFormAction, setDefaultFormAction] = useState(null);
+  const [defaultSearchQuery, setDefaultSearchQuery] = useState(null);
   const [playingTrack, setPlayingTrack] = useState({
     id: null,
     title: null,
@@ -42,6 +43,9 @@ const App = () => {
     if(['submit', 'cancel', null].includes(action)) {
       setDefaultFormAction(action);
     }
+  }
+  const handleRequestDefaultSearchQuery = (query) => {
+    setDefaultSearchQuery(query);
   }
   const handleEmbedPlaybackToggle = (paused, embeddedPlayer_playingTrack) => { // Faktyczna zmiana stanu odtwarzania wewnątrz osadzonego odtwarzacza
     if(paused.ended) {
@@ -74,8 +78,10 @@ const App = () => {
   // #region Struktura komponentu (JSX)
   const universalProps = {
     defaultFormAction: defaultFormAction,
+    defaultSearchQuery: defaultSearchQuery,
     playingTrack: playingTrack,
     onRequestDefaultFormAction: (action) => handleRequestDefaultFormAction(action),
+    onRequestDefaultSearchQuery: (query) => handleRequestDefaultSearchQuery(query),
     onPlaybackToggle: handlePlaybackToggle
   }
   return (

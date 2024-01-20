@@ -21,7 +21,6 @@ const OverviewPanel = (props) => {
     const playlistPlaying = (playingTrack.paused || playingTrack.paused == null || playingTrack.playlistID !== itemData.id);
     const deletionRequested = props.requestDelete;
     const defaultFormAction = props.defaultFormAction;
-    console.log(deletionRequested)
     // #endregion
     
     // #region Zmienne stanu (useState Hooks)

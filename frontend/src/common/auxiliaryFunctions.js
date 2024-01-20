@@ -102,3 +102,35 @@ export const processUnorganizedItemDetails = (items, groupByKey, displayName, tr
         });
     }
 };
+
+export const toVoiceCommand = (string) => {
+    return string.toLowerCase().replace(/\W/g, ''); // Usuwa wszystkie znaki oprócz liter i cyfr oraz zamienia wielkie litery na małe
+}
+
+export const romanToDecimal = (numInRoman) => {
+    numInRoman = numInRoman.toUpperCase();
+    const romanNumerals = {
+        I: 1,
+        V: 5,
+        X: 10,
+        L: 50,
+        C: 100,
+        D: 500,
+        M: 1000,
+    };
+    let result = 0;
+    for(let i = 0; i < numInRoman.length; i++) {
+        if(!Object.keys(romanNumerals).includes(numInRoman[i])) {
+            return numInRoman;
+        }
+        const currentNumeral = romanNumerals[numInRoman[i]];
+        const nextNumeral = romanNumerals[numInRoman[i+1]];
+        if(nextNumeral && currentNumeral < nextNumeral) {
+            result += nextNumeral - currentNumeral;
+            i++;
+            continue;
+        }
+        result += currentNumeral;
+    }
+    return result;
+  }

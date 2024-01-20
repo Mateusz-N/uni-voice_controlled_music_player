@@ -17,6 +17,10 @@ import Toast from 'components/generic/Toast';
 import Styles from 'components/NavBar/NavBar.module.scss';
 
 const NavBar = (props) => {
+    // #region Zmienne globalne
+    const defaultSearchQuery = props.defaultSearchQuery;
+    // #endregion
+
     // #region Zmienne stanu (useState Hooks)
     const [loggedIn, setLoggedIn] = useState(false);
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
@@ -78,6 +82,7 @@ const NavBar = (props) => {
         }
     }
     const handleSearchFormSubmit = (query) => {
+        props.onSearch();
         navigate(`/search?query=${query}`);
     }
     const handleSelectAbout = () => {
@@ -108,6 +113,13 @@ const NavBar = (props) => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[profileContextMenuExpanded]);
+    useEffect(() => {
+        console.log(defaultSearchQuery)
+        if(!defaultSearchQuery) {
+            return;
+        }
+        handleSearchFormSubmit(defaultSearchQuery)
+    },[defaultSearchQuery]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -134,7 +146,7 @@ const NavBar = (props) => {
                     <Link to = '/'>
                         <img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} />
                     </Link>
-                    <SearchBar onSubmit = {(query) => handleSearchFormSubmit(query)} />
+                    <SearchBar defaultSearchQuery = {defaultSearchQuery} onSubmit = {(query) => handleSearchFormSubmit(query)} />
                 </section>
                 <div id = {Styles.microphoneContainer}>
                     <Microphone
@@ -142,7 +154,7 @@ const NavBar = (props) => {
                         onLogoutVoiceCommand = {handleLogout}
                         onSyncWithSpotifyVoiceCommand = {props.onSyncWithSpotifyVoiceCommand}
                         onReturnHomeVoiceCommand = {handleReturnHome}
-                        onSearchVoiceCommand = {handleSearchFormSubmit}
+                        onSearchVoiceCommand = {props.onSearchVoiceCommand}
                         onShowPlaylistVoiceCommand = {(playlistName) => props.onShowPlaylist(playlistName)}
                         onShowAlbumVoiceCommand = {props.onShowAlbumVoiceCommand}
                         onShowArtistVoiceCommand = {props.onShowAlbumVoiceCommand}
@@ -154,6 +166,7 @@ const NavBar = (props) => {
                         onShowAboutPageVoiceCommand = {handleSelectAbout}
                         onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
                         onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}
+                        onChangePlaylistGeneratorSeedTypeVoiceCommand = {props.onChangePlaylistGeneratorSeedTypeVoiceCommand}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

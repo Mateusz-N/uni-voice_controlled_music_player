@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
+import { toVoiceCommand } from 'common/auxiliaryFunctions';
 import { requestGetRecommendations } from 'common/serverRequests';
 
 import Modal from 'components/generic/Modal';
@@ -15,6 +16,9 @@ import Styles from 'components/PlaylistGenerator/PlaylistGeneratorModal.module.s
 const PlaylistGeneratorModal = (props) => {
     // #region Zmienne globalne
     const addSeed = props.addSeed;
+    const seedType = props.seedType;
+    const searchedSeed = props.searchedSeed;
+    const defaultSearchQuery = props.defaultSearchQuery;
     const minMaxTargetFields = [{
         name: 'acousticness',
         displayName: 'Acousticness',
@@ -109,7 +113,6 @@ const PlaylistGeneratorModal = (props) => {
     const [defaultFormAction, setDefaultFormAction] = useState(props.defaultFormAction);
     const [notification, setNotification] = useState({});
     // #endregion
-    console.log(defaultFormAction, props.defaultFormAction)
 
     // #region Zmienne referencji (useRef Hooks)
     const ref_form_playlistGenerator = useRef(null);
@@ -154,9 +157,8 @@ const PlaylistGeneratorModal = (props) => {
     }
     const handleRemoveSeedByIdentifier = (identifier) => {
         setSeeds(prevState => prevState.filter(seed => {
-            console.log(identifier, seed.text.toLowerCase().replace(/\W/g, ''))
             if(isNaN(identifier)) {
-                return seed.text.toLowerCase().replace(/\W/g, '') !== identifier;
+                return toVoiceCommand(seed.text) !== identifier;
             }
             return seed !== seeds[parseInt(identifier) - 1];
         }));
@@ -204,6 +206,8 @@ const PlaylistGeneratorModal = (props) => {
         seedSearchModal =
             createPortal(<SeedSearchModal
                 seeds = {seeds}
+                seedType = {seedType}
+                searchedSeed = {defaultSearchQuery}
                 defaultAction = {defaultFormAction}
                 onSubmit = {(seedID, seedName, seedType) => handleSubmitAddSeedSearch(seedID, seedName, seedType)}
                 onCancel = {handleCancelAddSeedSearch}

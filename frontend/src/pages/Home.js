@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 
+import { romanToDecimal, toVoiceCommand } from 'common/auxiliaryFunctions';
 import { requestGetPlaylists, requestCreatePlaylist, requestGeneratePlaylist } from 'common/serverRequests';
 
 import btn_sync from 'resources/btn_sync.svg';
@@ -44,9 +45,12 @@ const Home = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [playlists, setPlaylists] = useState([]);
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
+    const [defaultSearchQuery, setDefaultSearchQuery] = useState(props.defaultSearchQuery);
     const [idOfPlaylistToDelete, setIdOfPlaylistToDelete] = useState(null);
     const [playlistGenerator_addSeed, setPlaylistGenerator_addSeed] = useState(false);
+    const [playlistGenerator_searchedSeed, setPlaylistGenerator_searchedSeed] = useState(false);
     const [identifierOfSeedToRemove, setIdentifierOfSeedToRemove] = useState(null);
+    const [identifierOfSeedType, setIdentifierOfSeedType] = useState(null);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -139,15 +143,29 @@ const Home = (props) => {
     const handleAddPlaylistGeneratorSeed = () => {
         setPlaylistGenerator_addSeed(false);
         props.onRequestDefaultFormAction(null);
+        props.onRequestDefaultSearchQuery(null);
     }
     const handleRequestRemovePlaylistGeneratorSeed = (seedIdentifier) => {
-        setIdentifierOfSeedToRemove(seedIdentifier.toLowerCase().replace(/\W/g, '')); // seedIdentifier - liczba porządkowa lub nazwa
+        setIdentifierOfSeedToRemove(toVoiceCommand(romanToDecimal(seedIdentifier))); // seedIdentifier - liczba porządkowa lub nazwa
     }
     const handleRemovePlaylistGeneratorSeed = () => {
         setIdentifierOfSeedToRemove(null);
     }
     const handleModalCloseFail_playlistGenerator = () => {
         props.onRequestDefaultFormAction(null);
+        props.onRequestDefaultSearchQuery(null);
+    }
+    const handleRequestChangePlaylistGeneratorSeedType = (seedTypeIdentifier) => {
+        setIdentifierOfSeedType(toVoiceCommand(romanToDecimal(seedTypeIdentifier)));
+    }
+    const handleRequestSearchPlaylistGeneratorSeed = (seed) => {
+        setPlaylistGenerator_searchedSeed(toVoiceCommand(seed));
+    }
+    const handleSearch = (query) => {
+        props.onRequestDefaultSearchQuery(query);
+    }
+    const handleClearSearch = () => {
+        props.onRequestDefaultSearchQuery(null);
     }
     // #endregion
     
@@ -173,7 +191,7 @@ const Home = (props) => {
         });
     }
     const findPlaylistByName = (playlistName) => {
-        return playlists.find(playlist => playlist.name.toLowerCase().replace(/\W/g, '') === playlistName.toLowerCase().replace(/\W/g, ''));
+        return playlists.find(playlist => toVoiceCommand(playlist.name) === toVoiceCommand(playlistName));
     }
     // #endregion
     
@@ -182,6 +200,9 @@ const Home = (props) => {
         getPlaylists();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
+    useEffect(() => {
+        setDefaultSearchQuery(props.defaultSearchQuery);
+    },[props.defaultSearchQuery]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -201,9 +222,12 @@ const Home = (props) => {
         <div id = 'page'>
             {toastNotification}
             <NavBar
+                defaultSearchQuery = {playlistGeneratorModalOpen ? null : defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
+                onSearch = {handleClearSearch}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onSearchVoiceCommand = {(query) => handleSearch(query)}
                 onShowPlaylistVoiceCommand = {handleShowPlaylistByName}
                 onCreatePlaylistVoiceCommand = {handleCreatePlaylist}
                 onGeneratePlaylistVoiceCommand = {handleOpenPlaylistGenerator}
@@ -212,6 +236,7 @@ const Home = (props) => {
                 onCancelFormVoiceCommand = {handleCancelAllForms}
                 onAddPlaylistGeneratorSeedVoiceCommand = {handleRequestAddPlaylistGeneratorSeed}
                 onRemovePlaylistGeneratorSeedVoiceCommand = {handleRequestRemovePlaylistGeneratorSeed}
+                onChangePlaylistGeneratorSeedTypeVoiceCommand = {handleRequestChangePlaylistGeneratorSeedType}
             />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
@@ -240,8 +265,11 @@ const Home = (props) => {
                                 playlistGeneratorModal =
                                     createPortal(<PlaylistGeneratorModal
                                         defaultFormAction = {defaultFormAction}
+                                        defaultSearchQuery = {defaultSearchQuery}
                                         addSeed = {playlistGenerator_addSeed}
                                         removeSeed = {identifierOfSeedToRemove}
+                                        seedType = {identifierOfSeedType}
+                                        searchedSeed = {playlistGenerator_searchedSeed}
                                         onAddSeed = {handleAddPlaylistGeneratorSeed}
                                         onRemoveSeed = {handleRemovePlaylistGeneratorSeed}
                                         onSubmit = {(tracks) => handleGeneratePlaylist(tracks)}

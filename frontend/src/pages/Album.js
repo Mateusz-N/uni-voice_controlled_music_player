@@ -15,6 +15,7 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 const Album = (props) => {
     // #region Zmienne globalne
+    const defaultSearchQuery = props.defaultSearchQuery;
     const albumID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
     // #endregion
@@ -117,6 +118,7 @@ const Album = (props) => {
     return (
         <div id = 'page'>
             <NavBar
+                defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
             />

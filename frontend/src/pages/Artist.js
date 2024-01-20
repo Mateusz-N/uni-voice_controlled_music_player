@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 
+import { toVoiceCommand } from 'common/auxiliaryFunctions';
 import { requestGetArtist, requestGetArtistAlbums, requestGetArtistDetails } from 'common/serverRequests';
 import { placeholderArtist } from 'common/placeholderObjects';
 
@@ -14,8 +15,9 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 import Styles from 'pages/Home.module.scss';
 
-const Artist = () => {
+const Artist = (props) => {
     // #region Zmienne globalne
+    const defaultSearchQuery = props.defaultSearchQuery;
     const artistID = window.location.href.split('/').pop();
     // #endregion
 
@@ -43,7 +45,7 @@ const Artist = () => {
         getArtist(true);
     }
     const handleShowAlbumByName = (albumName) => {
-        const matchedAlbum = albums.find(album => album.name.toLowerCase().replace(/\W/g, '') === albumName.toLowerCase().replace(/\W/g, ''));
+        const matchedAlbum = albums.find(album => toVoiceCommand(album.name) === toVoiceCommand(albumName));
         navigate(`/album/${matchedAlbum.id}`);
     }
     // #endregion
@@ -125,6 +127,7 @@ const Artist = () => {
     return (
         <div id = 'page'>
             <NavBar
+                defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}

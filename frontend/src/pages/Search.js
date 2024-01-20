@@ -12,7 +12,11 @@ import CatalogBrowser from 'components/CatalogBrowser';
 
 import Styles from 'pages/Home.module.scss';
 
-const Search = () => {
+const Search = (props) => {
+    // #region Zmienne globlane
+    const defaultSearchQuery = props.defaultSearchQuery;
+    // #endregion
+
     // #region Zmienne lokacji (useLocation Hooks)
     const windowLocation = useLocation();
     // #endregion
@@ -67,6 +71,7 @@ const Search = () => {
     return (
         <div id = 'page'>
             <NavBar
+                defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}

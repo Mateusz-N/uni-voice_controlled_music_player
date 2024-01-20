@@ -115,8 +115,6 @@ const Microphone = (props) => {
         }
     }
     const switchSpeechCommand = (command) => {
-        console.log(deps)
-        console.log(command)
         try {
             if(command === 'wyłącz mikrofon') {
                 ref_microphoneEnabled.current = false;
@@ -175,6 +173,9 @@ const Microphone = (props) => {
             if(command.startsWith('usuń ziarno')) {
                 props.onRemovePlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'usuń ziarno'));
             }
+            if(command.startsWith('typ ziarna')) {
+                props.onChangePlaylistGeneratorSeedTypeVoiceCommand(getCommandParameter(command, 'typ ziarna'));
+            }
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }
         catch(error) {
@@ -212,7 +213,6 @@ const Microphone = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[ref_microphoneEnabled.current, ref_recognition.current]);
     useEffect(() => {
-        console.log('deps chagned', deps)
         if(ref_recognition.current) {
             setRecognitionEventListeners();
         }

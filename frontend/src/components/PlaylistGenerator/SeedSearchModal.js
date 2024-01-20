@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import { toVoiceCommand } from 'common/auxiliaryFunctions';
 import { requestGetAvailableGenres, requestSearch } from 'common/serverRequests';
 
 import Modal from 'components/generic/Modal';
@@ -13,6 +14,32 @@ const SeedSearchModal = (props) => {
     // #region Zmienne globalne
     const defaultAction = props.defaultAction;
     const seeds = props.seeds;
+    const seedTypeIdentifier = props.seedType;
+    const searchedSeed = props.searchedSeed;
+    const seedTypeOptions = [{
+        option: {
+            attributes: {
+                name: 'artist',
+                value: 'artist'
+            },
+            content: 'Artist'
+    }}, {
+        option: {
+            attributes: {
+                name: 'genre',
+                value: 'genre'
+            },
+            content: 'Genre'
+        }
+    }, {
+        option: {
+            attributes: {
+                name: 'track',
+                value: 'track'
+            },
+            content: 'Track'
+        }
+    }];
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -66,6 +93,22 @@ const SeedSearchModal = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[searchSwitch]);
     useEffect(() => {
+        let matchedSeedType = seedTypeOptions[parseInt(seedTypeIdentifier) - 1];
+        if(isNaN(seedTypeIdentifier)) {
+            matchedSeedType = seedTypeOptions.find(type => toVoiceCommand(type.option.content) === seedTypeIdentifier);
+        }
+        if(!matchedSeedType) {
+            return;
+        }
+        setSelectedSeedType(matchedSeedType.option.content);
+    },[seedTypeIdentifier]);
+    useEffect(() => {
+        if(!searchedSeed) {
+            return;
+        }
+        handleSubmitSeedSearch(searchedSeed);
+    },[searchedSeed]);
+    useEffect(() => {
         if(defaultAction === 'cancel') {
             props.onCancel();
             return;
@@ -81,33 +124,11 @@ const SeedSearchModal = (props) => {
                 <section id = {Styles.field_seedType}>
                     <span>Type:</span>
                     <Select
+                        key = {selectedSeedType}
                         id = {Styles.select_seedType}
                         name = 'seedType'
                         defaultValue = {selectedSeedType}
-                        children = {[{
-                            option: {
-                                attributes: {
-                                    name: 'artist',
-                                    value: 'artist'
-                                },
-                                content: 'Artist'
-                        }}, {
-                            option: {
-                                attributes: {
-                                    name: 'genre',
-                                    value: 'genre'
-                                },
-                                content: 'Genre'
-                            }
-                        }, {
-                            option: {
-                                attributes: {
-                                    name: 'track',
-                                    value: 'track'
-                                },
-                                content: 'Track'
-                            }
-                        }]}
+                        children = {seedTypeOptions}
                         onSelection = {(selectedValue) => handleUpdateSeedType(selectedValue)}
                     />
                 </section>

@@ -18,6 +18,7 @@ import Toast from 'components/generic/Toast';
 const Playlist = (props) => {
     // #region Zmienne globalne
     const defaultFormAction = props.defaultFormAction;
+    const defaultSearchQuery = props.defaultSearchQuery;
     const playlistID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
     // #endregion
@@ -260,6 +261,7 @@ const Playlist = (props) => {
         <div id = 'page'>
             {toastNotification}
             <NavBar
+                defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistVoiceCommand}

@@ -147,6 +147,9 @@ const NavBar = (props) => {
                         onOpenAlbum = {props.onOpenAlbum}
                         onCreatePlaylist = {props.onCreatePlaylist}
                         onGeneratePlaylist = {props.onGeneratePlaylist}
+                        onDeletePlaylist = {props.onDeletePlaylist}
+                        onSubmit = {props.onSubmit}
+                        onCancel = {props.onCancel}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

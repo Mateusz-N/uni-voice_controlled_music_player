@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 import { requestDeletePlaylist } from 'common/serverRequests';
@@ -10,8 +10,9 @@ import Styles from 'components/generic/instances/PlaylistKebabMenu.module.scss';
 
 const PlaylistKebabMenu = (props) => {
     // #region Zmienne globalne
-    const playlistID = props.playlistID;
-    const playlistName = props.playlistName;
+    const playlistID = props.playlist.id;
+    const playlistName = props.playlist.name;
+    const playlistDeletionRequested = props.requestDelete;
     const context = props.context;
     const ExternalStyles = props.styles;
     // #endregion
@@ -26,6 +27,7 @@ const PlaylistKebabMenu = (props) => {
     }
     const handleModalClose_confirmDeletePlaylist = () => {
         setModal_confirmDeletePlaylist_open(false);
+        props.onCancelDeletePlaylist();
     }
     const handleDeletePlaylist = () => {
         requestDeletePlaylist(playlistID, () => {
@@ -33,6 +35,14 @@ const PlaylistKebabMenu = (props) => {
         });
         handleModalClose_confirmDeletePlaylist();
     }
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(playlistDeletionRequested) {
+            handleSelectDeletePlaylist();
+        }
+    },[playlistDeletionRequested]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -48,6 +58,7 @@ const PlaylistKebabMenu = (props) => {
                 <ConfirmModal
                     title = {`Deleting playlist`}
                     context = {'deletePlaylist_' + playlistID}
+                    defaultAction = {props.defaultAction}
                     onSubmit = {handleDeletePlaylist}
                     onCancel = {handleModalClose_confirmDeletePlaylist}
                 >

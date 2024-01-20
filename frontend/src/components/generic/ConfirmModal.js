@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import Modal from 'components/generic/Modal';
 import FormControlSection from 'components/generic/FormControlSection';
 
@@ -8,7 +10,21 @@ const ConfirmModal = (props) => {
     const index = props.index;
     const context = props.context;
     const title = props.title || 'Confirmation required';
+    const defaultAction = props.defaultAction;
     const children = props.children;
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(defaultAction === 'submit') {
+            props.onSubmit();
+            return;
+        }
+        if(defaultAction === 'cancel') {
+            props.onCancel();
+            return;
+        }
+    },[defaultAction]);
     // #endregion
 
     // #region Struktura komponentu (JSX)

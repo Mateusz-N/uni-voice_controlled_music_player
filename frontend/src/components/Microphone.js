@@ -154,6 +154,15 @@ const Microphone = (props) => {
             if(['generuj playlistę', 'otwórz generator'].includes(command)) {
                 props.onGeneratePlaylist();
             }
+            if(command.startsWith('usuń playlistę')) {
+                props.onDeletePlaylist(command.split('usuń playlistę').slice(1).join('usuń playlistę'));
+            }
+            if(['ok', 'zatwierdź', 'potwierdź', 'tak', 'wyślij'].includes(command)) {
+                props.onSubmit();
+            }
+            if(['anuluj', 'nie'].includes(command)) {
+                props.onCancel();
+            }
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }
         catch(error) {

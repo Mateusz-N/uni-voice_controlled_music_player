@@ -43,6 +43,8 @@ const Home = () => {
     // #region Zmienne stanu (useState Hooks)
     const [playlists, setPlaylists] = useState([]);
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
+    const [idOfPlaylistToDelete, setIdOfPlaylistToDelete] = useState(null);
+    const [defaultFormAction, setDefaultFormAction] = useState(null);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -83,6 +85,8 @@ const Home = () => {
     const handleDeletePlaylist = () => {
         setNotification({message: 'Playlist deleted successfully!', type: 'success'});
         handleSyncWithSpotify();
+        setIdOfPlaylistToDelete(null);
+        setDefaultFormAction(null);
     }
     const handleOpenPlaylistGenerator = () => {
         setPlaylistGeneratorModalOpen(true);
@@ -98,12 +102,32 @@ const Home = () => {
         setPlaylistGeneratorModalOpen(false);
     }
     const handleOpenPlaylistByName = (playlistName) => {
-        const matchedPlaylist = playlists.find(playlist => playlist.name.toLowerCase().replace(/\W/g, '') === playlistName.toLowerCase().replace(/\W/g, ''));
+        const matchedPlaylist = findPlaylistByName(playlistName);
+        if(!matchedPlaylist) {
+            return;
+        }
         navigate(`/playlist/${matchedPlaylist.id}`);
     }
     const handleCreatePlaylist = async () => {
         const newPlaylistID = await createPlaylist();
         navigate(`/playlist/${newPlaylistID}`);
+    }
+    const handleDeletePlaylistByName = (playlistName) => {
+        const matchedPlaylist = findPlaylistByName(playlistName);
+        if(!matchedPlaylist) {
+            return;
+        }
+        setIdOfPlaylistToDelete(matchedPlaylist.id);
+    }
+    const handleCancelDeletePlaylist = () => {
+        setIdOfPlaylistToDelete(null);
+        setDefaultFormAction(null);
+    }
+    const handleSubmitAllForms = () => {
+        setDefaultFormAction('submit');
+    }
+    const handleCancelAllForms = () => {
+        setDefaultFormAction('cancel');
     }
     // #endregion
     
@@ -127,6 +151,9 @@ const Home = () => {
         return await requestCreatePlaylist(userID, (data) => {
             return data.playlistID;
         });
+    }
+    const findPlaylistByName = (playlistName) => {
+        return playlists.find(playlist => playlist.name.toLowerCase().replace(/\W/g, '') === playlistName.toLowerCase().replace(/\W/g, ''));
     }
     // #endregion
     
@@ -160,6 +187,9 @@ const Home = () => {
                 onOpenPlaylist = {handleOpenPlaylistByName}
                 onCreatePlaylist = {handleCreatePlaylist}
                 onGeneratePlaylist = {handleOpenPlaylistGenerator}
+                onDeletePlaylist = {handleDeletePlaylistByName}
+                onSubmit = {handleSubmitAllForms}
+                onCancel = {handleCancelAllForms}
             />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
@@ -174,11 +204,13 @@ const Home = () => {
                             if(!['generator', 'builder'].includes(playlist.type)) {
                                 kebabMenu =
                                     <PlaylistKebabMenu
-                                        playlistID = {playlist.id}
-                                        playlistName = {playlist.name}
+                                        playlist = {playlist}
+                                        requestDelete = {idOfPlaylistToDelete === playlist.id}
+                                        defaultAction = {defaultFormAction}
                                         context = 'catalogItem'
                                         styles = {Styles}
                                         onDeletePlaylist = {handleDeletePlaylist}
+                                        onCancelDeletePlaylist = {handleCancelDeletePlaylist}
                                     />
                             }
                             let playlistGeneratorModal = null;

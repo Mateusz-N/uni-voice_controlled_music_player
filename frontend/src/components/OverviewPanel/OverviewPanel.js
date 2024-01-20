@@ -94,8 +94,16 @@ const OverviewPanel = (props) => {
     // #region Przypisanie dynamicznych elementów komponentu
     let kebabMenu = null;
     if(props.for === 'playlist') {
-        kebabMenu =
-            <PlaylistKebabMenu playlistID = {itemData.id} context = 'itemFigure' styles = {Styles} onDeletePlaylist = {handlePlaylistDelete} />
+        // kebabMenu =
+        // <PlaylistKebabMenu
+        //     playlist = {playlist}
+        //     requestDelete = {idOfPlaylistToDelete === playlist.id}
+        //     context = 'catalogItem'
+        //     styles = {Styles}
+        //     onDeletePlaylist = {handleDeletePlaylist}
+        //     onCancelDeletePlaylist = {handleCancelDeletePlaylist}
+        // />
+            // <PlaylistKebabMenu playlist = {itemData} context = 'itemFigure' styles = {Styles} onDeletePlaylist = {handlePlaylistDelete} />
     }
     else if(['artist', 'album'].includes(props.for)) {
         kebabMenu =

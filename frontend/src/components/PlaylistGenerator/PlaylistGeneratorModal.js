@@ -123,6 +123,7 @@ const PlaylistGeneratorModal = (props) => {
         event.preventDefault();
         if(seeds.length === 0) {
             setNotification({message: 'You must add at least one seed!', type: 'error'});
+            props.onCloseModalFail();
             return;
         }
         const recommendationsURL = new URL(`${process.env.REACT_APP_SERVER_URL}/spotify/recommendations`);
@@ -149,6 +150,17 @@ const PlaylistGeneratorModal = (props) => {
     }
     const handleRemoveSeed = (seedID) => {
         setSeeds(prevState => prevState.filter(seed => seed.id !== seedID));
+        props.onRemoveSeed();
+    }
+    const handleRemoveSeedByIdentifier = (identifier) => {
+        setSeeds(prevState => prevState.filter(seed => {
+            console.log(identifier, seed.text.toLowerCase().replace(/\W/g, ''))
+            if(isNaN(identifier)) {
+                return seed.text.toLowerCase().replace(/\W/g, '') !== identifier;
+            }
+            return seed !== seeds[parseInt(identifier) - 1];
+        }));
+        props.onRemoveSeed();
     }
     const handleCancelAddSeedSearch = () => {
         setDefaultFormAction(null);
@@ -179,7 +191,9 @@ const PlaylistGeneratorModal = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[addSeed]);
     useEffect(() => {
-        console.log(props.defaultFormAction)
+        handleRemoveSeedByIdentifier(props.removeSeed);
+    },[props.removeSeed])
+    useEffect(() => {
         setDefaultFormAction(props.defaultFormAction);
     },[props.defaultFormAction])
     // #endregion

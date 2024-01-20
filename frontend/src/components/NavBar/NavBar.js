@@ -153,6 +153,7 @@ const NavBar = (props) => {
                         onCancelFormVoiceCommand = {props.onCancelFormVoiceCommand}
                         onShowAboutPageVoiceCommand = {handleSelectAbout}
                         onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
+                        onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

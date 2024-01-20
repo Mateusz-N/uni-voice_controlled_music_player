@@ -46,6 +46,7 @@ const Home = (props) => {
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
     const [idOfPlaylistToDelete, setIdOfPlaylistToDelete] = useState(null);
     const [playlistGenerator_addSeed, setPlaylistGenerator_addSeed] = useState(false);
+    const [identifierOfSeedToRemove, setIdentifierOfSeedToRemove] = useState(null);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -139,6 +140,15 @@ const Home = (props) => {
         setPlaylistGenerator_addSeed(false);
         props.onRequestDefaultFormAction(null);
     }
+    const handleRequestRemovePlaylistGeneratorSeed = (seedIdentifier) => {
+        setIdentifierOfSeedToRemove(seedIdentifier.toLowerCase().replace(/\W/g, '')); // seedIdentifier - liczba porządkowa lub nazwa
+    }
+    const handleRemovePlaylistGeneratorSeed = () => {
+        setIdentifierOfSeedToRemove(null);
+    }
+    const handleModalCloseFail_playlistGenerator = () => {
+        props.onRequestDefaultFormAction(null);
+    }
     // #endregion
     
     // #region Funkcje pomocnicze
@@ -201,6 +211,7 @@ const Home = (props) => {
                 onSubmitFormVoiceCommand = {handleSubmitAllForms}
                 onCancelFormVoiceCommand = {handleCancelAllForms}
                 onAddPlaylistGeneratorSeedVoiceCommand = {handleRequestAddPlaylistGeneratorSeed}
+                onRemovePlaylistGeneratorSeedVoiceCommand = {handleRequestRemovePlaylistGeneratorSeed}
             />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
@@ -230,9 +241,12 @@ const Home = (props) => {
                                     createPortal(<PlaylistGeneratorModal
                                         defaultFormAction = {defaultFormAction}
                                         addSeed = {playlistGenerator_addSeed}
+                                        removeSeed = {identifierOfSeedToRemove}
                                         onAddSeed = {handleAddPlaylistGeneratorSeed}
+                                        onRemoveSeed = {handleRemovePlaylistGeneratorSeed}
                                         onSubmit = {(tracks) => handleGeneratePlaylist(tracks)}
                                         onCancel = {handleModalClose_playlistGenerator}
+                                        onCloseModalFail = {handleModalCloseFail_playlistGenerator}
                                     />, document.body);
                             }
                             return(

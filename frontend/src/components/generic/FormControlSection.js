@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import Styles from 'components/generic/FormControlSection.module.scss';
 
@@ -9,14 +9,19 @@ const FormControlSection = (props) => {
     const ExternalStyles = props.styles;
     // #endregion
 
+    // #region Zmienne referencji (useRef Hooks)
+    const ref_btnCancel = useRef(null);
+    const ref_btnSubmit = useRef(null);
+    // #endregion
+
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         if(defaultAction === 'submit') {
-            props.onSubmit();
+            ref_btnSubmit.current.click();
             return;
         }
         if(defaultAction === 'cancel') {
-            props.onCancel();
+            ref_btnCancel.current.click();
             return;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,13 +35,15 @@ const FormControlSection = (props) => {
                 id = {ExternalStyles['btnCancel_' + context]}
                 className = {ExternalStyles.btnCancel + ' ' + Styles.btnCancel + ' btnSecondary'}
                 onClick = {props.onCancel}
-                type = 'button'>
+                type = 'button'
+                ref = {ref_btnCancel}>
                 Cancel
             </button>
             <button
                 id = {ExternalStyles['btnSubmit_' + context]}
                 className = {ExternalStyles.btnSubmit + ' ' + Styles.btnSubmit + ' btnPrimary'}
-                onClick = {props.onSubmit}>
+                onClick = {props.onSubmit}
+                ref = {ref_btnSubmit}>
                 Apply
             </button>
         </section>

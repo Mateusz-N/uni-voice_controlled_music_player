@@ -140,16 +140,16 @@ const Microphone = (props) => {
                 return;
             }
             if(command.startsWith('szukaj')) {
-                props.onSearchVoiceCommand(command.split('szukaj').slice(1).join('szukaj'));
+                props.onSearchVoiceCommand(getCommandParameter(command, 'szukaj'));
             }
             if(command.startsWith('pokaż playlistę')) {
-                props.onShowPlaylistVoiceCommand(command.split('pokaż playlistę').slice(1).join('pokaż playlistę'));
+                props.onShowPlaylistVoiceCommand(getCommandParameter(command, 'pokaż playlistę'));
             }
             if(command.startsWith('pokaż album')) {
-                props.onShowAlbumVoiceCommand(command.split('pokaż album').slice(1).join('pokaż album'));
+                props.onShowAlbumVoiceCommand(getCommandParameter(command, 'pokaż album'));
             }
             if(command.startsWith('pokaż wykonawcę')) {
-                props.onShowArtistVoiceCommand(command.split('pokaż wykonawcę').slice(1).join('pokaż wykonawcę'));
+                props.onShowArtistVoiceCommand(getCommandParameter(command, 'pokaż wykonawcę'));
             }
             if(['utwórz playlistę', 'nowa playlista', 'stwórz playlistę'].includes(command)) {
                 props.onCreatePlaylistVoiceCommand();
@@ -158,7 +158,7 @@ const Microphone = (props) => {
                 props.onGeneratePlaylistVoiceCommand();
             }
             if(command.startsWith('usuń playlistę')) {
-                props.onDeletePlaylistVoiceCommand(command.split('usuń playlistę').slice(1).join('usuń playlistę'));
+                props.onDeletePlaylistVoiceCommand(getCommandParameter(command, 'usuń playlistę'));
             }
             if(['ok', 'okej', 'zatwierdź', 'potwierdź', 'tak', 'wyślij'].includes(command)) {
                 props.onSubmitFormVoiceCommand();
@@ -171,6 +171,9 @@ const Microphone = (props) => {
             }
             if(['dodaj ziarno', 'nowe ziarno'].includes(command)) {
                 props.onAddPlaylistGeneratorSeedVoiceCommand();
+            }
+            if(command.startsWith('usuń ziarno')) {
+                props.onRemovePlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'usuń ziarno'));
             }
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }
@@ -188,6 +191,9 @@ const Microphone = (props) => {
         ref_microphoneActive.current = false;
         setMicrophoneActive(false);
         localStorage.setItem('microphoneActive', 'false');
+    }
+    const getCommandParameter = (command, delimiter) => {
+        return command.split(delimiter).slice(1).join(delimiter);
     }
     // #endregion
 

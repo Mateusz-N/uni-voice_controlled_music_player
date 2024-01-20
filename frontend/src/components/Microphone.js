@@ -176,6 +176,9 @@ const Microphone = (props) => {
             if(command.startsWith('typ ziarna')) {
                 props.onChangePlaylistGeneratorSeedTypeVoiceCommand(getCommandParameter(command, 'typ ziarna'));
             }
+            if(command.startsWith('wybierz')) {
+                props.onSelectPlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'wybierz'));
+            }
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }
         catch(error) {

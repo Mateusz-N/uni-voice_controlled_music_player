@@ -16,8 +16,8 @@ import Styles from 'components/PlaylistGenerator/PlaylistGeneratorModal.module.s
 const PlaylistGeneratorModal = (props) => {
     // #region Zmienne globalne
     const addSeed = props.addSeed;
+    const selectSeed = props.selectSeed;
     const seedType = props.seedType;
-    const searchedSeed = props.searchedSeed;
     const defaultSearchQuery = props.defaultSearchQuery;
     const minMaxTargetFields = [{
         name: 'acousticness',
@@ -208,6 +208,7 @@ const PlaylistGeneratorModal = (props) => {
                 seeds = {seeds}
                 seedType = {seedType}
                 searchedSeed = {defaultSearchQuery}
+                selectedSeed = {selectSeed}
                 defaultAction = {defaultFormAction}
                 onSubmit = {(seedID, seedName, seedType) => handleSubmitAddSeedSearch(seedID, seedName, seedType)}
                 onCancel = {handleCancelAddSeedSearch}

@@ -114,7 +114,6 @@ const NavBar = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[profileContextMenuExpanded]);
     useEffect(() => {
-        console.log(defaultSearchQuery)
         if(!defaultSearchQuery) {
             return;
         }
@@ -167,6 +166,7 @@ const NavBar = (props) => {
                         onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
                         onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}
                         onChangePlaylistGeneratorSeedTypeVoiceCommand = {props.onChangePlaylistGeneratorSeedTypeVoiceCommand}
+                        onSelectPlaylistGeneratorSeedVoiceCommand = {props.onSelectPlaylistGeneratorSeedVoiceCommand}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

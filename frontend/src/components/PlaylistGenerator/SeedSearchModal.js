@@ -16,6 +16,7 @@ const SeedSearchModal = (props) => {
     const seeds = props.seeds;
     const seedTypeIdentifier = props.seedType;
     const searchedSeed = props.searchedSeed;
+    const selectedSeedIdentifier = props.selectedSeed;
     const seedTypeOptions = [{
         option: {
             attributes: {
@@ -108,6 +109,16 @@ const SeedSearchModal = (props) => {
         }
         handleSubmitSeedSearch(searchedSeed);
     },[searchedSeed]);
+    useEffect(() => {
+        let matchedSeed = searchResults.results[parseInt(selectedSeedIdentifier) - 1];
+        if(isNaN(selectedSeedIdentifier)) {
+            matchedSeed = searchResults.results.find(result => toVoiceCommand(result.name) === selectedSeedIdentifier);
+        }
+        if(!matchedSeed) {
+            return;
+        }
+        handleSelectSeed(matchedSeed.id);
+    },[selectedSeedIdentifier]);
     useEffect(() => {
         if(defaultAction === 'cancel') {
             props.onCancel();

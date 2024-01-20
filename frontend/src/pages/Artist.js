@@ -42,7 +42,7 @@ const Artist = () => {
     const handleSyncWithSpotify = () => {
         getArtist(true);
     }
-    const handleOpenAlbumByName = (albumName) => {
+    const handleShowAlbumByName = (albumName) => {
         const matchedAlbum = albums.find(album => album.name.toLowerCase().replace(/\W/g, '') === albumName.toLowerCase().replace(/\W/g, ''));
         navigate(`/album/${matchedAlbum.id}`);
     }
@@ -124,7 +124,12 @@ const Artist = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} onOpenAlbum = {handleOpenAlbumByName} />
+            <NavBar
+                onLogin = {handleLogin}
+                onLogout = {handleLogout}
+                onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onShowAlbumVoiceCommand = {handleShowAlbumByName}
+            />
             <CatalogBrowser className = 'collectionBrowser hasOverviewPanel'>
                 <h1 id = {Styles.catalogHeader}>
                     {artist.name}&nbsp;

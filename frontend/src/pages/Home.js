@@ -18,8 +18,9 @@ import Toast from 'components/generic/Toast';
 
 import Styles from 'pages/Home.module.scss';
 
-const Home = () => {
+const Home = (props) => {
     // #region Zmienne globalne
+    const defaultFormAction = props.defaultFormAction;
     const playlistGenerator = {
         id: '0',
         type: 'generator',
@@ -44,7 +45,6 @@ const Home = () => {
     const [playlists, setPlaylists] = useState([]);
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
     const [idOfPlaylistToDelete, setIdOfPlaylistToDelete] = useState(null);
-    const [defaultFormAction, setDefaultFormAction] = useState(null);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -86,7 +86,7 @@ const Home = () => {
         setNotification({message: 'Playlist deleted successfully!', type: 'success'});
         handleSyncWithSpotify();
         setIdOfPlaylistToDelete(null);
-        setDefaultFormAction(null);
+        props.onRequestDefaultFormAction(null);
     }
     const handleOpenPlaylistGenerator = () => {
         setPlaylistGeneratorModalOpen(true);
@@ -101,7 +101,7 @@ const Home = () => {
     const handleModalClose_playlistGenerator = () => {
         setPlaylistGeneratorModalOpen(false);
     }
-    const handleOpenPlaylistByName = (playlistName) => {
+    const handleShowPlaylistByName = (playlistName) => {
         const matchedPlaylist = findPlaylistByName(playlistName);
         if(!matchedPlaylist) {
             return;
@@ -121,13 +121,13 @@ const Home = () => {
     }
     const handleCancelDeletePlaylist = () => {
         setIdOfPlaylistToDelete(null);
-        setDefaultFormAction(null);
+        props.onRequestDefaultFormAction(null);
     }
     const handleSubmitAllForms = () => {
-        setDefaultFormAction('submit');
+        props.onRequestDefaultFormAction('submit');
     }
     const handleCancelAllForms = () => {
-        setDefaultFormAction('cancel');
+        props.onRequestDefaultFormAction('cancel');
     }
     // #endregion
     
@@ -183,13 +183,13 @@ const Home = () => {
             <NavBar
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
-                onSyncWithSpotify = {handleSyncWithSpotify}
-                onOpenPlaylist = {handleOpenPlaylistByName}
-                onCreatePlaylist = {handleCreatePlaylist}
-                onGeneratePlaylist = {handleOpenPlaylistGenerator}
-                onDeletePlaylist = {handleDeletePlaylistByName}
-                onSubmit = {handleSubmitAllForms}
-                onCancel = {handleCancelAllForms}
+                onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onShowPlaylistVoiceCommand = {handleShowPlaylistByName}
+                onCreatePlaylistVoiceCommand = {handleCreatePlaylist}
+                onGeneratePlaylistVoiceCommand = {handleOpenPlaylistGenerator}
+                onDeletePlaylistVoiceCommand = {handleDeletePlaylistByName}
+                onSubmitFormVoiceCommand = {handleSubmitAllForms}
+                onCancelFormVoiceCommand = {handleCancelAllForms}
             />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>

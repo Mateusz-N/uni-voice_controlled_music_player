@@ -66,7 +66,11 @@ const Search = () => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} onSyncWithSpotify = {handleSyncWithSpotify} />
+            <NavBar
+                onLogin = {handleLogin}
+                onLogout = {handleLogout}
+                onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+            />
             <CatalogBrowser>
                 <h1 id = {Styles.catalogHeader}>
                     Results&nbsp;

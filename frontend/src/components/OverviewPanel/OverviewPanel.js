@@ -19,6 +19,9 @@ const OverviewPanel = (props) => {
     const itemData = props.data;
     const playingTrack = props.playingTrack;
     const playlistPlaying = (playingTrack.paused || playingTrack.paused == null || playingTrack.playlistID !== itemData.id);
+    const deletionRequested = props.requestDelete;
+    const defaultFormAction = props.defaultFormAction;
+    console.log(deletionRequested)
     // #endregion
     
     // #region Zmienne stanu (useState Hooks)
@@ -94,16 +97,16 @@ const OverviewPanel = (props) => {
     // #region Przypisanie dynamicznych elementów komponentu
     let kebabMenu = null;
     if(props.for === 'playlist') {
-        // kebabMenu =
-        // <PlaylistKebabMenu
-        //     playlist = {playlist}
-        //     requestDelete = {idOfPlaylistToDelete === playlist.id}
-        //     context = 'catalogItem'
-        //     styles = {Styles}
-        //     onDeletePlaylist = {handleDeletePlaylist}
-        //     onCancelDeletePlaylist = {handleCancelDeletePlaylist}
-        // />
-            // <PlaylistKebabMenu playlist = {itemData} context = 'itemFigure' styles = {Styles} onDeletePlaylist = {handlePlaylistDelete} />
+        kebabMenu =
+            <PlaylistKebabMenu
+                playlist = {itemData}
+                requestDelete = {deletionRequested}
+                defaultAction = {defaultFormAction}
+                context = 'itemFigure'
+                styles = {Styles}
+                onDeletePlaylist = {handlePlaylistDelete}
+                onCancelDeletePlaylist = {props.onCancelDeletePlaylist}
+            />
     }
     else if(['artist', 'album'].includes(props.for)) {
         kebabMenu =

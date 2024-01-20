@@ -17,6 +17,7 @@ import Toast from 'components/generic/Toast';
 
 const Playlist = (props) => {
     // #region Zmienne globalne
+    const defaultFormAction = props.defaultFormAction;
     const playlistID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
     // #endregion
@@ -24,6 +25,7 @@ const Playlist = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [playlist, setPlaylist] = useState(placeholderPlaylist);
     const [playlistLoading, setPlaylistLoading] = useState(false);
+    const [deletionRequested, setDeletionRequested] = useState(false);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -177,6 +179,19 @@ const Playlist = (props) => {
         fetchedPlaylist = await getTracksSavedStatus(fetchedPlaylist);
         setPlaylist(fetchedPlaylist);
     }
+    const handleDeletePlaylistVoiceCommand = () => {
+        setDeletionRequested(true);
+    }
+    const handleCancelDeletePlaylist = () => {
+        setDeletionRequested(false);
+        props.onRequestDefaultFormAction(null);
+    }
+    const handleSubmitAllForms = () => {
+        props.onRequestDefaultFormAction('submit');
+    }
+    const handleCancelAllForms = () => {
+        props.onRequestDefaultFormAction('cancel');
+    }
     // #endregion
 
     // #region Funkcje pomocnicze
@@ -244,7 +259,13 @@ const Playlist = (props) => {
     return (
         <div id = 'page'>
             {toastNotification}
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
+            <NavBar
+                onLogin = {handleLogin}
+                onLogout = {handleLogout}
+                onDeletePlaylistVoiceCommand = {handleDeletePlaylistVoiceCommand}
+                onSubmitFormVoiceCommand = {handleSubmitAllForms}
+                onCancelFormVoiceCommand = {handleCancelAllForms}
+            />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList
                     key = {'trackList' + playlist.id}
@@ -261,7 +282,10 @@ const Playlist = (props) => {
                     data = {playlist}
                     for = 'playlist'
                     playingTrack = {playingTrack}
+                    requestDelete = {deletionRequested}
+                    defaultFormAction = {defaultFormAction}
                     onPlaybackToggle = {props.onPlaybackToggle}
+                    onCancelDeletePlaylist = {handleCancelDeletePlaylist}
                 />
             </CatalogBrowser>
         </div>

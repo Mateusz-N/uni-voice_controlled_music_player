@@ -138,18 +138,20 @@ const NavBar = (props) => {
                 </section>
                 <div id = {Styles.microphoneContainer}>
                     <Microphone
-                        onLogin = {handleLogin}
-                        onLogout = {handleLogout}
-                        onSyncWithSpotify = {props.onSyncWithSpotify}
-                        onReturnHome = {handleReturnHome}
-                        onSearch = {handleSearchFormSubmit}
-                        onOpenPlaylist = {(playlistName) => props.onOpenPlaylist(playlistName)}
-                        onOpenAlbum = {props.onOpenAlbum}
-                        onCreatePlaylist = {props.onCreatePlaylist}
-                        onGeneratePlaylist = {props.onGeneratePlaylist}
-                        onDeletePlaylist = {props.onDeletePlaylist}
-                        onSubmit = {props.onSubmit}
-                        onCancel = {props.onCancel}
+                        onLoginVoiceCommand = {handleLogin}
+                        onLogoutVoiceCommand = {handleLogout}
+                        onSyncWithSpotifyVoiceCommand = {props.onSyncWithSpotifyVoiceCommand}
+                        onReturnHomeVoiceCommand = {handleReturnHome}
+                        onSearchVoiceCommand = {handleSearchFormSubmit}
+                        onShowPlaylistVoiceCommand = {(playlistName) => props.onShowPlaylist(playlistName)}
+                        onShowAlbumVoiceCommand = {props.onShowAlbumVoiceCommand}
+                        onShowArtistVoiceCommand = {props.onShowAlbumVoiceCommand}
+                        onCreatePlaylistVoiceCommand = {props.onCreatePlaylistVoiceCommand}
+                        onGeneratePlaylistVoiceCommand = {props.onGeneratePlaylistVoiceCommand}
+                        onDeletePlaylistVoiceCommand = {props.onDeletePlaylistVoiceCommand}
+                        onSubmitFormVoiceCommand = {props.onSubmitFormVoiceCommand}
+                        onCancelFormVoiceCommand = {props.onCancelFormVoiceCommand}
+                        onShowAboutPageVoiceCommand = {handleSelectAbout}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

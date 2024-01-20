@@ -124,44 +124,50 @@ const Microphone = (props) => {
                 return;
             }
             if(command === 'zaloguj') {
-                props.onLogin();
+                props.onLoginVoiceCommand();
                 return;
             }
             if(command === 'wyloguj') {
-                props.onLogout();
+                props.onLogoutVoiceCommand();
                 return;
             }
             if(command === 'synchronizuj') {
-                props.onSyncWithSpotify();
+                props.onSyncWithSpotifyVoiceCommand();
                 return;
             }
             if(['strona główna', 'pokaż katalog'].includes(command)) {
-                props.onReturnHome();
+                props.onReturnHomeVoiceCommand();
                 return;
             }
             if(command.startsWith('szukaj')) {
-                props.onSearch(command.split('szukaj').slice(1).join('szukaj'));
+                props.onSearchVoiceCommand(command.split('szukaj').slice(1).join('szukaj'));
             }
-            if(command.startsWith('otwórz playlistę')) {
-                props.onOpenPlaylist(command.split('otwórz playlistę').slice(1).join('otwórz playlistę'));
+            if(command.startsWith('pokaż playlistę')) {
+                props.onShowPlaylistVoiceCommand(command.split('pokaż playlistę').slice(1).join('pokaż playlistę'));
             }
-            if(command.startsWith('otwórz album')) {
-                props.onOpenAlbum(command.split('otwórz album').slice(1).join('otwórz album'));
+            if(command.startsWith('pokaż album')) {
+                props.onShowAlbumVoiceCommand(command.split('pokaż album').slice(1).join('pokaż album'));
+            }
+            if(command.startsWith('pokaż wykonawcę')) {
+                props.onShowArtistVoiceCommand(command.split('pokaż wykonawcę').slice(1).join('pokaż wykonawcę'));
             }
             if(['utwórz playlistę', 'nowa playlista', 'stwórz playlistę'].includes(command)) {
-                props.onCreatePlaylist();
+                props.onCreatePlaylistVoiceCommand();
             }
             if(['generuj playlistę', 'otwórz generator'].includes(command)) {
-                props.onGeneratePlaylist();
+                props.onGeneratePlaylistVoiceCommand();
             }
             if(command.startsWith('usuń playlistę')) {
-                props.onDeletePlaylist(command.split('usuń playlistę').slice(1).join('usuń playlistę'));
+                props.onDeletePlaylistVoiceCommand(command.split('usuń playlistę').slice(1).join('usuń playlistę'));
             }
             if(['ok', 'zatwierdź', 'potwierdź', 'tak', 'wyślij'].includes(command)) {
-                props.onSubmit();
+                props.onSubmitFormVoiceCommand();
             }
-            if(['anuluj', 'nie'].includes(command)) {
-                props.onCancel();
+            if(['anuluj', 'nie', 'zamknij'].includes(command)) {
+                props.onCancelFormVoiceCommand();
+            }
+            if(['o aplikacji', 'o stronie', 'informacje o aplikacji', 'informacje o stronie'].includes(command)) {
+                props.onShowAboutPageVoiceCommand();
             }
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }

@@ -116,7 +116,10 @@ const Album = (props) => {
     // #region Struktura komponentu (JSX)
     return (
         <div id = 'page'>
-            <NavBar onLogin = {handleLogin} onLogout = {handleLogout} />
+            <NavBar
+                onLogin = {handleLogin}
+                onLogout = {handleLogout}
+            />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList
                     key = {'trackList' + album.id}

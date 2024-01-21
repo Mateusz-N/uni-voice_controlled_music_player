@@ -157,6 +157,8 @@ const NavBar = (props) => {
                         onLogoutVoiceCommand = {handleLogout}
                         onSyncWithSpotifyVoiceCommand = {props.onSyncWithSpotifyVoiceCommand}
                         onReturnHomeVoiceCommand = {handleReturnHome}
+                        onTogglePlaylistPlaybackVoiceCommand = {props.onTogglePlaylistPlaybackVoiceCommand}
+                        onToggleTrackPlaybackVoiceCommand = {props.onToggleTrackPlaybackVoiceCommand}
                         onSearchVoiceCommand = {props.onSearchVoiceCommand}
                         onShowItemVoiceCommand = {props.onShowItemVoiceCommand}
                         onShowAlbumVoiceCommand = {props.onShowAlbumVoiceCommand}

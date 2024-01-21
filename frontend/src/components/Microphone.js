@@ -174,6 +174,12 @@ const Microphone = (props) => {
             if(['dodaj ziarno', 'nowe ziarno'].includes(command)) {
                 props.onAddPlaylistGeneratorSeedVoiceCommand();
             }
+            if(['odtwarzaj', 'odtwórz', 'wznów'].includes(command.split(' ')[0])) {
+                parsePlaybackToggleCommand(command, 'play');
+            }
+            if(['zatrzymaj', 'zapauzuj', 'pauzuj'].includes(command.split(' ')[0])) {
+                parsePlaybackToggleCommand(command, 'pause');
+            }
             if(command.startsWith('usuń ziarno')) {
                 props.onRemovePlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'usuń ziarno'));
             }
@@ -343,6 +349,17 @@ const Microphone = (props) => {
             parameter[0] = parameter[0].slice(parameter[0].indexOf(' '));
         }
         return parameter.join(delimiter).trim();
+    }
+    const parsePlaybackToggleCommand = (command, targetPlaybackState) => {
+        if(command.split(' ')[1] === 'playlistę') {
+            props.onTogglePlaylistPlaybackVoiceCommand(targetPlaybackState);
+        }
+        if(command.split(' ')[1].startsWith('utwór')) {
+            if(command.split(' ')[2].startsWith('numer')) {
+                props.onToggleTrackPlaybackVoiceCommand(targetPlaybackState, getCommandParameter(command.split(' ').slice(2).join(' '), 'utwór numer'))
+            }
+            props.onToggleTrackPlaybackVoiceCommand(targetPlaybackState, getCommandParameter(command.split(' ').slice(1).join(' '), 'utwór'));
+        }
     }
     // #endregion
 

@@ -18,6 +18,7 @@ import Toast from 'components/generic/Toast';
 
 const Playlist = (props) => {
     // #region Zmienne globalne
+    const defaultPlaybackState = props.defaultPlaybackState;
     const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     const playlistID = window.location.href.split('/').pop();
@@ -265,6 +266,9 @@ const Playlist = (props) => {
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
+                onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
+                onSearch = {() => props.onRequestDefaultSearchQuery(null)}
+                onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistVoiceCommand}
                 onSubmitFormVoiceCommand = {handleSubmitAllForms}
                 onCancelFormVoiceCommand = {handleCancelAllForms}
@@ -285,9 +289,10 @@ const Playlist = (props) => {
                     data = {playlist}
                     for = 'playlist'
                     playingTrack = {playingTrack}
+                    defaultPlaybackState = {defaultPlaybackState}
                     requestDelete = {deletionRequested}
                     defaultFormAction = {defaultFormAction}
-                    onPlaybackToggle = {props.onPlaybackToggle}
+                    onPlaybackToggle = {props.onPlaylistPlaybackToggle}
                     onCancelDeletePlaylist = {handleCancelDeletePlaylist}
                 />
             </CatalogBrowser>

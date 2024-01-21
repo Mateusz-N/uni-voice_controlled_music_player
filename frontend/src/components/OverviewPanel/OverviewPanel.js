@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,14 +18,17 @@ const OverviewPanel = (props) => {
     // #region Zmienne globalne
     const itemData = props.data;
     const playingTrack = props.playingTrack;
-    const playlistPlaying = (playingTrack.paused || playingTrack.paused == null || playingTrack.playlistID !== itemData.id);
+    const playlistPlaying = (!playingTrack.paused && playingTrack.paused != null && playingTrack.playlistID === itemData.id);
     const deletionRequested = props.requestDelete;
+    const defaultPlaybackState = props.defaultPlaybackState;
     const defaultFormAction = props.defaultFormAction;
     // #endregion
     
     // #region Zmienne stanu (useState Hooks)
     const [notification, setNotification] = useState({});
     // #endregion
+
+    const ref_itemFigure_thumbnail = useRef(null);
 
     // #region Zmienne nawigacji (useNavigate Hooks)
     const navigate = useNavigate();
@@ -92,6 +95,16 @@ const OverviewPanel = (props) => {
         });
     }
     // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(!defaultPlaybackState || (playlistPlaying && defaultPlaybackState === 'play') || (!playlistPlaying && defaultPlaybackState === 'pause')) {
+            return;
+        }
+        // handleTogglePlaylistPlayback();
+        ref_itemFigure_thumbnail.current.click();
+    },[defaultPlaybackState]);
+    // #endregion
     
     // #region Przypisanie dynamicznych elementów komponentu
     let kebabMenu = null;
@@ -125,12 +138,12 @@ const OverviewPanel = (props) => {
             <aside id = {Styles.overviewPanel}>
                 <main id = {Styles.overviewPanel_mainSection}>
                     <figure id = {Styles.itemFigure}>
-                        <main id = {Styles.itemFigure_thumbnail} onClick = {handleTogglePlaylistPlayback}>
+                        <main id = {Styles.itemFigure_thumbnail} onClick = {handleTogglePlaylistPlayback} ref = {ref_itemFigure_thumbnail}>
                             <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnailImage} />
                             <img
-                                src = {playlistPlaying ? btn_play : btn_pause}
-                                alt = {playlistPlaying ? 'Play' : 'Pause'}
-                                id = {playlistPlaying ? Styles.playlist_btnPlay : Styles.playlist_btnPause}
+                                src = {playlistPlaying ? btn_pause : btn_play}
+                                alt = {playlistPlaying ? 'Pause' : 'Play'}
+                                id = {playlistPlaying ? Styles.playlist_btnPause : Styles.playlist_btnPlay}
                                 className = {Styles.playlist_btnTogglePlayback}
                             />
                         </main>

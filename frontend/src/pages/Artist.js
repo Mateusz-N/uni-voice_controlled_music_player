@@ -131,7 +131,10 @@ const Artist = (props) => {
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
+                onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
+                onShowItemVoiceCommand = {(itemType, itemName) => props.onRequestShowItemByName(itemType, albums, itemName)}
                 onShowAlbumVoiceCommand = {handleShowAlbumByName}
             />
             <CatalogBrowser className = 'collectionBrowser hasOverviewPanel'>

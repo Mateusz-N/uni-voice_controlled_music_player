@@ -16,6 +16,7 @@ import 'App.css';
 
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
+  const [defaultPlaylistPlaybackState, setDefaultPlaylistPlaybackState] = useState(null);
   const [defaultFormAction, setDefaultFormAction] = useState(null);
   const [defaultSearchQuery, setDefaultSearchQuery] = useState(null);
   const [playingTrack, setPlayingTrack] = useState({
@@ -45,6 +46,14 @@ const App = () => {
   // #endregion
 
   // #region Obsługa zdarzeń (Event Handlers)
+  const handlePlaylistPlaybackToggle = (track) => {
+    console.log(track)
+    setDefaultPlaylistPlaybackState(null);
+    handlePlaybackToggle(track);
+  }
+  const handleRequestDefaultPlaylistPlaybackState = (targetState) => {
+    setDefaultPlaylistPlaybackState(targetState);
+  }
   const handleRequestDefaultFormAction = (action) => {
     if(['submit', 'cancel', null].includes(action)) {
       setDefaultFormAction(action);
@@ -102,13 +111,18 @@ const App = () => {
     onRequestFindItemByName: handleFindItemByName,
     onPlaybackToggle: handlePlaybackToggle
   }
+  const playlistProps = {
+    defaultPlaybackState: defaultPlaylistPlaybackState,
+    onRequestDefaultPlaylistPlaybackState: handleRequestDefaultPlaylistPlaybackState,
+    onPlaylistPlaybackToggle: handlePlaylistPlaybackToggle
+  }
   return (
     <>
       <EmbeddedPlayer playbackRequest = {playbackRequest} onPlaybackToggle = {handleEmbedPlaybackToggle} />
       <Routes>
         <Route path = '/' element = {<HomePage {...universalProps} />} />
-        <Route path = 'playlist/:id' element = {<PlaylistPage {...universalProps} />} />
-        <Route path = 'album/:id' element = {<AlbumPage {...universalProps} />} />
+        <Route path = 'playlist/:id' element = {<PlaylistPage {...universalProps} {...playlistProps} />} />
+        <Route path = 'album/:id' element = {<AlbumPage {...universalProps} {...playlistProps} />} />
         <Route path = 'artist/:id' element = {<ArtistPage {...universalProps} />} />
         <Route path = 'settings' element = {<SettingsPage {...universalProps} />} />
         <Route path = 'search' element = {<SearchPage {...universalProps} />} />

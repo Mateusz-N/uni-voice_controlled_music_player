@@ -15,6 +15,7 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 const Album = (props) => {
     // #region Zmienne globalne
+    const defaultPlaybackState = props.defaultPlaybackState;
     const defaultSearchQuery = props.defaultSearchQuery;
     const albumID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
@@ -121,6 +122,9 @@ const Album = (props) => {
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
+                onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
+                onSearch = {() => props.onRequestDefaultSearchQuery(null)}
+                onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
             />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList
@@ -132,7 +136,14 @@ const Album = (props) => {
                     playlistLoading = {albumLoading}
                     onPlaybackToggle = {props.onPlaybackToggle}
                 />
-                <OverviewPanel key = {album.id} data = {album} for = 'album' playingTrack = {playingTrack} onPlaybackToggle = {props.onPlaybackToggle} />
+                <OverviewPanel
+                    key = {album.id}
+                    data = {album}
+                    for = 'album'
+                    playingTrack = {playingTrack}
+                    defaultPlaybackState = {defaultPlaybackState}
+                    onPlaybackToggle = {props.onPlaylistPlaybackToggle}
+                />
             </CatalogBrowser>
         </div>
     );

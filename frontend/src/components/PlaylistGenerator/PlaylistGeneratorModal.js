@@ -15,6 +15,7 @@ import Styles from 'components/PlaylistGenerator/PlaylistGeneratorModal.module.s
 
 const PlaylistGeneratorModal = (props) => {
     // #region Zmienne globalne
+    const setParameter = props.setParameter;
     const addSeed = props.addSeed;
     const selectSeed = props.selectSeed;
     const seedType = props.seedType;
@@ -64,8 +65,8 @@ const PlaylistGeneratorModal = (props) => {
     },{
         name: 'loudness',
         displayName: 'Loudness',
-        min: 0,
-        max: 1,
+        min: -60,
+        max: 0,
         step: 0.01
     },{
         name: 'mode',
@@ -89,7 +90,7 @@ const PlaylistGeneratorModal = (props) => {
         name: 'tempo',
         displayName: 'Tempo',
         min: 0,
-        max: 1,
+        max: 999,
         step: 0.01
     },{
         name: 'time_signature',
@@ -238,6 +239,7 @@ const PlaylistGeneratorModal = (props) => {
                                             fieldsetName = {field.name}
                                             fieldsetLegend = {field.displayName}
                                             inputName = {field.name}
+                                            setParameter = {setParameter}
                                             min = {field.min}
                                             max = {field.max}
                                             step = {field.step}

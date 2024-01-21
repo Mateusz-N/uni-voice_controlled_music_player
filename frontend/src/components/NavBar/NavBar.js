@@ -167,6 +167,7 @@ const NavBar = (props) => {
                         onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}
                         onChangePlaylistGeneratorSeedTypeVoiceCommand = {props.onChangePlaylistGeneratorSeedTypeVoiceCommand}
                         onSelectPlaylistGeneratorSeedVoiceCommand = {props.onSelectPlaylistGeneratorSeedVoiceCommand}
+                        onSetPlaylistGeneratorParameterVoiceCommand = {props.onSetPlaylistGeneratorParameterVoiceCommand}
                         deps = {[spotifyAuthURL, loggedIn]}
                     />
                 </div>

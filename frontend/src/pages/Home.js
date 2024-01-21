@@ -47,6 +47,7 @@ const Home = (props) => {
     const [playlistGeneratorModalOpen, setPlaylistGeneratorModalOpen] = useState(false);
     const [defaultSearchQuery, setDefaultSearchQuery] = useState(props.defaultSearchQuery);
     const [idOfPlaylistToDelete, setIdOfPlaylistToDelete] = useState(null);
+    const [playlistGeneratorParameter, setPlaylistGeneratorParameter] = useState(null);
     const [playlistGenerator_addSeed, setPlaylistGenerator_addSeed] = useState(false);
     const [identifierOfSeedToRemove, setIdentifierOfSeedToRemove] = useState(null);
     const [identifierOfSeedType, setIdentifierOfSeedType] = useState(null);
@@ -170,6 +171,15 @@ const Home = (props) => {
     const handleRequestSelectPlaylistGeneratorSeed = (seedIdentifier) => {
         setIdentifierOfSeedToSelect(toVoiceCommand(romanToDecimal(seedIdentifier)));
     }
+    const handleRequestSetPlaylistGeneratorParameter = (parameterName, value) => {
+        console.log(value)
+        // if(parameterName.split('_').slice(1).join('_') === 'track_duration_ms') {
+        //     value = parseInt(value);
+        //     value *= 60000; // Spodziewana jest wartość w minutach; należy dokonać konwersji do milisekund
+        //     value = value.toString();
+        // }
+        setPlaylistGeneratorParameter({name: parameterName, value: value.replace(',', '.')}); // 0,5 => 0.5 etc.
+    }
     // #endregion
     
     // #region Funkcje pomocnicze
@@ -241,6 +251,7 @@ const Home = (props) => {
                 onRemovePlaylistGeneratorSeedVoiceCommand = {handleRequestRemovePlaylistGeneratorSeed}
                 onChangePlaylistGeneratorSeedTypeVoiceCommand = {handleRequestChangePlaylistGeneratorSeedType}
                 onSelectPlaylistGeneratorSeedVoiceCommand = {handleRequestSelectPlaylistGeneratorSeed}
+                onSetPlaylistGeneratorParameterVoiceCommand = {(parameterName, value) => handleRequestSetPlaylistGeneratorParameter(parameterName, value)}
             />
             <CatalogBrowser className = 'collectionBrowser'>
                 <h1 id = {Styles.catalogHeader}>
@@ -274,6 +285,7 @@ const Home = (props) => {
                                         removeSeed = {identifierOfSeedToRemove}
                                         seedType = {identifierOfSeedType}
                                         selectSeed = {identifierOfSeedToSelect}
+                                        setParameter = {playlistGeneratorParameter}
                                         onAddSeed = {handleAddPlaylistGeneratorSeed}
                                         onRemoveSeed = {handleRemovePlaylistGeneratorSeed}
                                         onSubmit = {(tracks) => handleGeneratePlaylist(tracks)}

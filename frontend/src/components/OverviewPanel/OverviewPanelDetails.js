@@ -10,7 +10,14 @@ const OverviewPanelDetails = (props) => {
     // #region Struktura komponentu (JSX)
     return(
         <ul id = {Styles.overviewPanelDetails}>
-            {items.map((item, index) => <OverviewPanelDetail key = {index} item = {item} for = {props.for} onDetailChange = {(detailName, detailValue) => props.onDetailChange(detailName, detailValue)} /> )}
+            {items.map((item, index) =>
+                <OverviewPanelDetail
+                    key = {index}
+                    item = {item}
+                    for = {props.for}
+                    onDetailChange = {(detailName, detailValue) => props.onDetailChange(detailName, detailValue)}
+                />
+            )}
         </ul>
     );
     // #endregion

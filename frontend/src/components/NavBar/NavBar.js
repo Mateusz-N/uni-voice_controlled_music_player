@@ -84,6 +84,9 @@ const NavBar = (props) => {
     const handleSearchFormSubmit = (query) => {
         props.onSearch();
         navigate(`/search?query=${query}`);
+        // navigate(url) aktualizuje URL w pasku wyszukiwania, lecz nie wczytuje strony, gdy nowy URL różni się od obecnego tylko parametrami
+        // Z tego powodu należy wywołać dodatkowo navigate(0), czyli odświeżenie bieżącej strony
+        navigate(0);
     }
     const handleSelectAbout = () => {
         setModal_about_open(true);
@@ -118,6 +121,7 @@ const NavBar = (props) => {
             return;
         }
         handleSearchFormSubmit(defaultSearchQuery)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultSearchQuery]);
     // #endregion
 
@@ -154,7 +158,7 @@ const NavBar = (props) => {
                         onSyncWithSpotifyVoiceCommand = {props.onSyncWithSpotifyVoiceCommand}
                         onReturnHomeVoiceCommand = {handleReturnHome}
                         onSearchVoiceCommand = {props.onSearchVoiceCommand}
-                        onShowPlaylistVoiceCommand = {(playlistName) => props.onShowPlaylist(playlistName)}
+                        onShowItemVoiceCommand = {props.onShowItemVoiceCommand}
                         onShowAlbumVoiceCommand = {props.onShowAlbumVoiceCommand}
                         onShowArtistVoiceCommand = {props.onShowAlbumVoiceCommand}
                         onCreatePlaylistVoiceCommand = {props.onCreatePlaylistVoiceCommand}

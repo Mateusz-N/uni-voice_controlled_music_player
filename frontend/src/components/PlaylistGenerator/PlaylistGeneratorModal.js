@@ -195,6 +195,7 @@ const PlaylistGeneratorModal = (props) => {
     },[addSeed]);
     useEffect(() => {
         handleRemoveSeedByIdentifier(props.removeSeed);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[props.removeSeed])
     useEffect(() => {
         setDefaultFormAction(props.defaultFormAction);

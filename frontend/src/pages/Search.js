@@ -74,7 +74,10 @@ const Search = (props) => {
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
+                onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
+                onShowItemVoiceCommand = {(itemType, itemName) => props.onRequestShowItemByName(itemType, results.filter(result => result.type === itemType), itemName)}
             />
             <CatalogBrowser>
                 <h1 id = {Styles.catalogHeader}>

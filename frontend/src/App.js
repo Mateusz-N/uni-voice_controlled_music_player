@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+
+import { toVoiceCommand } from 'common/auxiliaryFunctions';
 
 import HomePage from 'pages/Home';
 import PlaylistPage from 'pages/Playlist';
@@ -38,6 +40,10 @@ const App = () => {
   });
   // #endregion
 
+  // #region Zmienne nawigacji (useNavigate Hooks)
+    const navigate = useNavigate();
+  // #endregion
+
   // #region Obsługa zdarzeń (Event Handlers)
   const handleRequestDefaultFormAction = (action) => {
     if(['submit', 'cancel', null].includes(action)) {
@@ -46,6 +52,16 @@ const App = () => {
   }
   const handleRequestDefaultSearchQuery = (query) => {
     setDefaultSearchQuery(query);
+  }
+  const handleFindItemByName = (items, itemName) => {
+    return items.find(item => toVoiceCommand(item.name) === toVoiceCommand(itemName));
+  }
+  const handleShowItemByName = (itemType, items, itemName) => {
+    const matchedItem = handleFindItemByName(items, itemName);
+    if(!matchedItem) {
+      return;
+    }
+    navigate(`/${itemType}/${matchedItem.id}`);
   }
   const handleEmbedPlaybackToggle = (paused, embeddedPlayer_playingTrack) => { // Faktyczna zmiana stanu odtwarzania wewnątrz osadzonego odtwarzacza
     if(paused.ended) {
@@ -80,8 +96,10 @@ const App = () => {
     defaultFormAction: defaultFormAction,
     defaultSearchQuery: defaultSearchQuery,
     playingTrack: playingTrack,
-    onRequestDefaultFormAction: (action) => handleRequestDefaultFormAction(action),
-    onRequestDefaultSearchQuery: (query) => handleRequestDefaultSearchQuery(query),
+    onRequestDefaultFormAction: handleRequestDefaultFormAction,
+    onRequestDefaultSearchQuery: handleRequestDefaultSearchQuery,
+    onRequestShowItemByName: handleShowItemByName,
+    onRequestFindItemByName: handleFindItemByName,
     onPlaybackToggle: handlePlaybackToggle
   }
   return (

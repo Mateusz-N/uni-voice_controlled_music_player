@@ -99,9 +99,8 @@ const Microphone = (props) => {
                 deactivateMicrophone();
             }
             const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-            console.log(command)
             switchSpeechCommand(command);
-            console.log("You said: " + command);
+            console.log('You said: "' + command + '"');
         }
         ref_recognition.current.onnomatch = () => {
             console.log('nomatch')
@@ -146,13 +145,13 @@ const Microphone = (props) => {
                 props.onSearchVoiceCommand(getCommandParameter(command, 'szukaj'));
             }
             if(command.startsWith('pokaż playlistę')) {
-                props.onShowPlaylistVoiceCommand(getCommandParameter(command, 'pokaż playlistę'));
+                props.onShowItemVoiceCommand('playlist', getCommandParameter(command, 'pokaż playlistę'));
             }
             if(command.startsWith('pokaż album')) {
-                props.onShowAlbumVoiceCommand(getCommandParameter(command, 'pokaż album'));
+                props.onShowItemVoiceCommand('album', getCommandParameter(command, 'pokaż album'));
             }
             if(command.startsWith('pokaż wykonawcę')) {
-                props.onShowArtistVoiceCommand(getCommandParameter(command, 'pokaż wykonawcę'));
+                props.onShowItemVoiceCommand('artist', getCommandParameter(command, 'pokaż wykonawcę'));
             }
             if(['utwórz playlistę', 'nowa playlista', 'stwórz playlistę'].includes(command)) {
                 props.onCreatePlaylistVoiceCommand();
@@ -343,7 +342,6 @@ const Microphone = (props) => {
             // Pomaga w parsowaniu fraz, których Web Speech API nie potrafi zinterpretować w ich pełnej formie (np. nazwy własne)
             parameter[0] = parameter[0].slice(parameter[0].indexOf(' '));
         }
-        console.log(parameter.join(delimiter).trim())
         return parameter.join(delimiter).trim();
     }
     // #endregion

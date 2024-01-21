@@ -19,6 +19,7 @@ const Artist = (props) => {
     // #region Zmienne globalne
     const defaultSearchQuery = props.defaultSearchQuery;
     const artistID = window.location.href.split('/').pop();
+    const playingTrack = props.playingTrack;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -156,7 +157,7 @@ const Artist = (props) => {
                         })
                     }
                 </main>
-                <OverviewPanel key = {artist.id} data = {artist} for = 'artist' />
+                <OverviewPanel key = {artist.id} data = {artist} for = 'artist' playingTrack = {playingTrack} />
             </CatalogBrowser>
         </div>
     );

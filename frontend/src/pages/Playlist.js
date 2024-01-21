@@ -8,6 +8,7 @@ import { placeholderPlaylist } from 'common/placeholderObjects';
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
+import savedTracksAlbumCoverSrc from 'resources/albumCover_savedTracks.png';
 
 import NavBar from 'components/NavBar/NavBar';
 import CatalogBrowser from 'components/CatalogBrowser';
@@ -48,7 +49,7 @@ const Playlist = (props) => {
         let fetchedPlaylist = playlistID.toString() === '2' ? { // '2' === Polubione utwory
             id: playlistID,
             name: 'Saved tracks',
-            thumbnailSrc: placeholderAlbumCoverSrc,
+            thumbnailSrc: savedTracksAlbumCoverSrc,
             description: '',
             totalDuration_ms: data.items.reduce((totalDuration_ms, item) => totalDuration_ms + (item.track.duration_ms.totalMilliseconds || item.track.duration_ms), 0),
             tracks: data.items.map(item => ({
@@ -98,7 +99,7 @@ const Playlist = (props) => {
         fetchedPlaylist.detailsToDisplay = [{
             name: 'Name',
             content: fetchedPlaylist.name || '',
-            editable: true,
+            editable: playlistID.toString() !== '2',
             showSeparately: true,
             input: {
                 type: 'text',
@@ -142,12 +143,12 @@ const Playlist = (props) => {
         }, {
             name: 'Public',
             content: (fetchedPlaylist.public === true) ? 'yes' : ((fetchedPlaylist.public === false) ? 'no' : 'N/A'),
-            editable: true,
+            editable: playlistID.toString() !== '2',
             showSeparately: false,
             input: {
                 type: 'select',
                 attributes: {},
-                excludeControls: true,
+                excludeControls: playlistID.toString() !== '2',
                 children: [{
                     option: {
                         attributes: {
@@ -168,7 +169,7 @@ const Playlist = (props) => {
         }, {
             name: 'Description',
             content: fetchedPlaylist.description || '',
-            editable: true,
+            editable: playlistID.toString() !== '2',
             showSeparately: true,
             input: {
                 type: 'text',

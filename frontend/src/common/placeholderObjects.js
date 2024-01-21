@@ -18,7 +18,7 @@ export const placeholderPlaylist = {
     detailsToDisplay: [{
         name: 'Name',
         content: '',
-        editable: true,
+        editable: false,
         showSeparately: true,
         input: {
             type: 'text',
@@ -50,7 +50,7 @@ export const placeholderPlaylist = {
         }
     }, {
         name: 'Owner',
-        content: Cookies.get('userName') || 'Guest',
+        content: 'N/A',
         editable: false,
         showSeparately: false,
         input: {
@@ -61,34 +61,19 @@ export const placeholderPlaylist = {
         }
     }, {
         name: 'Public',
-        content: 'yes',
-        editable: true,
+        content: 'N/A',
+        editable: false,
         showSeparately: false,
         input: {
             type: 'select',
             attributes: {},
-            excludeControls: true,
-            children: [{
-                option: {
-                    attributes: {
-                        name: 'yes',
-                        value: 'yes'
-                    },
-                    content: 'yes'
-            }}, {
-                option: {
-                    attributes: {
-                        name: 'no',
-                        value: 'no'
-                    },
-                    content: 'no'
-                }
-            }]
+            excludeControls: false,
+            children: {}
         }
     }, {
         name: 'Description',
         content: '',
-        editable: true,
+        editable: false,
         showSeparately: true,
         input: {
             type: 'textarea',

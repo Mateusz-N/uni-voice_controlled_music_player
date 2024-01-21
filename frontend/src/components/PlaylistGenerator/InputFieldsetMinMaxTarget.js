@@ -65,6 +65,7 @@ const InputFieldsetMinMaxTarget = (props) => {
             presetParametersCopy.push(setParameter);
         }
         setPresetParameters(presetParametersCopy);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[setParameter]);
     // #endregion
 

@@ -48,7 +48,7 @@ const PlaylistKebabMenu = (props) => {
 
     // #region Przypisanie dynamicznych elementów komponentu
     let optionDeletePlaylist = null;
-    if(playlistID !== '2') {
+    if(!['2', '-1'].includes(playlistID.toString())) {
         optionDeletePlaylist =
             <li id = {ExternalStyles[context + '_contextMenu_deletePlaylist']} dangerous = 'true' onClick = {handleSelectDeletePlaylist}>Delete playlist</li>
     }

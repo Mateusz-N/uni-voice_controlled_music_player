@@ -10,6 +10,7 @@ import btn_sync from 'resources/btn_sync.svg';
 import btn_generate from 'resources/btn_generate.svg';
 import btn_build from 'resources/btn_build.svg';
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';
+import savedTracksAlbumCoverSrc from 'resources/albumCover_savedTracks.png';
 
 import NavBar from 'components/NavBar/NavBar';
 import CatalogBrowser from 'components/CatalogBrowser';
@@ -38,7 +39,7 @@ const Home = (props) => {
         id: '2',
         type: 'playlist',
         name: 'Saved tracks',
-        thumbnailSrc: placeholderAlbumCoverSrc
+        thumbnailSrc: savedTracksAlbumCoverSrc
     }
     // #endregion
 
@@ -112,19 +113,12 @@ const Home = (props) => {
         props.onRequestDefaultFormAction(null);
         setIdentifierOfSeedToSelect(null);
     }
-    const handleShowPlaylistByName = (playlistName) => {
-        const matchedPlaylist = findPlaylistByName(playlistName);
-        if(!matchedPlaylist) {
-            return;
-        }
-        navigate(`/playlist/${matchedPlaylist.id}`);
-    }
     const handleCreatePlaylist = async () => {
         const newPlaylistID = await createPlaylist();
         navigate(`/playlist/${newPlaylistID}`);
     }
     const handleDeletePlaylistByName = (playlistName) => {
-        const matchedPlaylist = findPlaylistByName(playlistName);
+        const matchedPlaylist = props.onRequestFindPlaylistByName(playlists, playlistName);
         if(!matchedPlaylist) {
             return;
         }
@@ -162,22 +156,10 @@ const Home = (props) => {
     const handleRequestChangePlaylistGeneratorSeedType = (seedTypeIdentifier) => {
         setIdentifierOfSeedType(toVoiceCommand(romanToDecimal(seedTypeIdentifier)));
     }
-    const handleSearch = (query) => {
-        props.onRequestDefaultSearchQuery(query);
-    }
-    const handleClearSearch = () => {
-        props.onRequestDefaultSearchQuery(null);
-    }
     const handleRequestSelectPlaylistGeneratorSeed = (seedIdentifier) => {
         setIdentifierOfSeedToSelect(toVoiceCommand(romanToDecimal(seedIdentifier)));
     }
     const handleRequestSetPlaylistGeneratorParameter = (parameterName, value) => {
-        console.log(value)
-        // if(parameterName.split('_').slice(1).join('_') === 'track_duration_ms') {
-        //     value = parseInt(value);
-        //     value *= 60000; // Spodziewana jest wartość w minutach; należy dokonać konwersji do milisekund
-        //     value = value.toString();
-        // }
         setPlaylistGeneratorParameter({name: parameterName, value: value.replace(',', '.')}); // 0,5 => 0.5 etc.
     }
     // #endregion
@@ -202,9 +184,6 @@ const Home = (props) => {
         return await requestCreatePlaylist(userID, (data) => {
             return data.playlistID;
         });
-    }
-    const findPlaylistByName = (playlistName) => {
-        return playlists.find(playlist => toVoiceCommand(playlist.name) === toVoiceCommand(playlistName));
     }
     // #endregion
     
@@ -238,10 +217,10 @@ const Home = (props) => {
                 defaultSearchQuery = {playlistGeneratorModalOpen ? null : defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
-                onSearch = {handleClearSearch}
+                onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
-                onSearchVoiceCommand = {(query) => handleSearch(query)}
-                onShowPlaylistVoiceCommand = {handleShowPlaylistByName}
+                onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
+                onShowItemVoiceCommand = {(itemType, itemName) => props.onRequestShowItemByName(itemType, playlists, itemName)}
                 onCreatePlaylistVoiceCommand = {handleCreatePlaylist}
                 onGeneratePlaylistVoiceCommand = {handleOpenPlaylistGenerator}
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistByName}

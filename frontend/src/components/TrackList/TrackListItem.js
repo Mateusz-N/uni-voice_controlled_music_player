@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -22,6 +22,7 @@ const TrackListItem = (props) => {
     const track = props.track;
     const index = props.index;
     const playlist = props.playlist;
+    const defaultPlaying = props.defaultPlaying;
     const playing = props.playing;
     const userPlaylists = props.userPlaylists;
     const handleToggleTrackPlayback = props.onPlaybackToggle;
@@ -34,6 +35,8 @@ const TrackListItem = (props) => {
     const [trackRowActive, setTrackRowActive] = useState(false);
     const [notification, setNotification] = useState({});
     // #endregion
+
+    const ref_btnTogglePlayback = useRef(null);
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackSaved = () => {
@@ -83,6 +86,12 @@ const TrackListItem = (props) => {
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(defaultPlaying == null || (playing === defaultPlaying)) {
+            return;
+        }
+        ref_btnTogglePlayback.current.click();
+    },[defaultPlaying]);
     useEffect(() => {
         setTrackSaved(props.track.saved);
     },[props]);
@@ -237,6 +246,7 @@ const TrackListItem = (props) => {
                             alt = {playing ? 'Pause' : 'Play'}
                             className = {Styles.trackList_item_btnTogglePlayback + ' ' + (playing ? Styles.trackList_item_btnPause : Styles.trackList_item_btnPlay)}
                             onClick = {() => track.local ? setNotification({message: 'Local tracks are not supported!', type: 'error'}) : handleToggleTrackPlayback(track)}
+                            ref = {ref_btnTogglePlayback}
                         />
                         <p
                             className = {Styles.trackList_item_titleText}

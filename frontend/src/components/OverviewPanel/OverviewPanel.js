@@ -101,7 +101,6 @@ const OverviewPanel = (props) => {
         if(!defaultPlaybackState || (playlistPlaying && defaultPlaybackState === 'play') || (!playlistPlaying && defaultPlaybackState === 'pause')) {
             return;
         }
-        // handleTogglePlaylistPlayback();
         ref_itemFigure_thumbnail.current.click();
     },[defaultPlaybackState]);
     // #endregion

@@ -351,14 +351,19 @@ const Microphone = (props) => {
         return parameter.join(delimiter).trim();
     }
     const parsePlaybackToggleCommand = (command, targetPlaybackState) => {
-        if(command.split(' ')[1] === 'playlistę') {
+        const commandSplitBySpace = command.split(' ');
+        if(commandSplitBySpace[1] === 'playlistę') {
             props.onTogglePlaylistPlaybackVoiceCommand(targetPlaybackState);
         }
-        if(command.split(' ')[1].startsWith('utwór')) {
-            if(command.split(' ')[2].startsWith('numer')) {
-                props.onToggleTrackPlaybackVoiceCommand(targetPlaybackState, getCommandParameter(command.split(' ').slice(2).join(' '), 'utwór numer'))
+        if(commandSplitBySpace[1] === 'utwór') {
+            if(commandSplitBySpace[2] === 'numer') {
+                commandSplitBySpace[2] = 'nr';
             }
-            props.onToggleTrackPlaybackVoiceCommand(targetPlaybackState, getCommandParameter(command.split(' ').slice(1).join(' '), 'utwór'));
+            let commandParameterDelimiter = 'utwór';
+            if(commandSplitBySpace.length > 2 && commandSplitBySpace[2] === 'nr') {
+                commandParameterDelimiter = 'utwór nr';
+            }
+            props.onToggleTrackPlaybackVoiceCommand(targetPlaybackState, getCommandParameter(commandSplitBySpace.slice(1).join(' '), commandParameterDelimiter));
         }
     }
     // #endregion

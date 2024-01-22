@@ -18,6 +18,7 @@ import Toast from 'components/generic/Toast';
 
 const Playlist = (props) => {
     // #region Zmienne globalne
+    const defaultPlayingTrack = props.defaultPlayingTrack;
     const defaultPlaybackState = props.defaultPlaybackState;
     const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
@@ -267,6 +268,7 @@ const Playlist = (props) => {
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
+                onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(playlist, targetState, trackIdentifier)}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistVoiceCommand}
@@ -277,6 +279,7 @@ const Playlist = (props) => {
                 <TrackList
                     key = {'trackList' + playlist.id}
                     tracks = {playlist.tracks}
+                    defaultPlayingTrack = {defaultPlayingTrack}
                     playingTrack = {playingTrack}
                     for = 'playlist'
                     playlist = {playlist}

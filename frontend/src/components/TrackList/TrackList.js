@@ -11,6 +11,7 @@ import Styles from 'components/TrackList/TrackList.module.scss';
 const TrackList = (props) => {
     // #region Zmienne globalne
     const playlist = props.playlist;
+    const defaultPlayingTrack = props.defaultPlayingTrack;
     let playingTrack = props.playingTrack;
     let tracks = [];
     let thAlbum = null;
@@ -97,6 +98,10 @@ const TrackList = (props) => {
                 </thead>
                 <tbody>
                     {tracks.map((track, index) => {
+                        let defaultPlaying = null;
+                        if(defaultPlayingTrack.id != null) {
+                            defaultPlaying = (defaultPlayingTrack.id === track.id && !defaultPlayingTrack.paused && defaultPlayingTrack.playlistID === playlist.id);
+                        }
                         const playing = (playingTrack.id === track.id && !playingTrack.paused && playingTrack.playlistID === playlist.id);
                         return <TrackListItem
                             key = {index}
@@ -104,6 +109,7 @@ const TrackList = (props) => {
                             index = {index}
                             for = {props.for}
                             playlist = {playlist}
+                            defaultPlaying = {defaultPlaying}
                             playing = {playing}
                             userPlaylists = {userPlaylists}
                             onPlaybackToggle = {handleToggleTrackPlayback}

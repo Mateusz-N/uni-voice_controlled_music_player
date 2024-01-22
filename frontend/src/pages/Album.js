@@ -15,6 +15,7 @@ import OverviewPanel from 'components/OverviewPanel/OverviewPanel';
 
 const Album = (props) => {
     // #region Zmienne globalne
+    const defaultPlayingTrack = props.defaultPlayingTrack;
     const defaultPlaybackState = props.defaultPlaybackState;
     const defaultSearchQuery = props.defaultSearchQuery;
     const albumID = window.location.href.split('/').pop();
@@ -123,6 +124,7 @@ const Album = (props) => {
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
+                onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(album, targetState, trackIdentifier)}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
             />
@@ -130,6 +132,7 @@ const Album = (props) => {
                 <TrackList
                     key = {'trackList' + album.id}
                     tracks = {album.tracks}
+                    defaultPlayingTrack = {defaultPlayingTrack}
                     playingTrack = {playingTrack}
                     for = 'album'
                     playlist = {album}

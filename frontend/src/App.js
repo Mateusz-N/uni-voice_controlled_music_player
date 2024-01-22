@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import { toVoiceCommand } from 'common/auxiliaryFunctions';
+import { romanToDecimal, toVoiceCommand } from 'common/auxiliaryFunctions';
 
 import HomePage from 'pages/Home';
 import PlaylistPage from 'pages/Playlist';
@@ -19,6 +19,16 @@ const App = () => {
   const [defaultPlaylistPlaybackState, setDefaultPlaylistPlaybackState] = useState(null);
   const [defaultFormAction, setDefaultFormAction] = useState(null);
   const [defaultSearchQuery, setDefaultSearchQuery] = useState(null);
+  const [defaultPlayingTrack, setDefaultPlayingTrack] = useState({
+    id: null,
+    title: null,
+    artistName: null,
+    albumName: null,
+    duration: null,
+    paused: null,
+    ended: null,
+    playlistID: null
+  });
   const [playingTrack, setPlayingTrack] = useState({
     id: null,
     title: null,
@@ -42,17 +52,40 @@ const App = () => {
   // #endregion
 
   // #region Zmienne nawigacji (useNavigate Hooks)
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   // #endregion
 
   // #region Obsługa zdarzeń (Event Handlers)
   const handlePlaylistPlaybackToggle = (track) => {
-    console.log(track)
     setDefaultPlaylistPlaybackState(null);
     handlePlaybackToggle(track);
   }
   const handleRequestDefaultPlaylistPlaybackState = (targetState) => {
     setDefaultPlaylistPlaybackState(targetState);
+  }
+  const handleRequestDefaultTrackPlaybackState = (playlist, targetState, trackIdentifier = '') => {
+    let matchedTrack = handleFindItemByProperty(playlist.tracks, 'id', playingTrack.id);
+    if(targetState === 'play' && trackIdentifier.length > 0) {
+      matchedTrack = playlist.tracks[parseInt(romanToDecimal(trackIdentifier)) - 1];
+      if(isNaN(trackIdentifier)) {
+        matchedTrack = handleFindItemByProperty(playlist.tracks, 'title', trackIdentifier, true);
+      }
+    }
+    if(!matchedTrack ||
+      (targetState === 'play' && playingTrack.id === matchedTrack.id && playingTrack.paused === false) ||
+      (targetState === 'pause' && playingTrack.paused === true)) {
+        return;
+    }
+    setDefaultPlayingTrack({
+      id: matchedTrack.id,
+      title: matchedTrack.title,
+      artists: matchedTrack.artists,
+      album: playlist.type === 'playlist' ? matchedTrack.album.name : playlist.name,
+      duration: matchedTrack.duration_ms,
+      paused: (targetState === 'pause'),
+      ended: false,
+      playlistID: playlist.id
+    });
   }
   const handleRequestDefaultFormAction = (action) => {
     if(['submit', 'cancel', null].includes(action)) {
@@ -62,8 +95,20 @@ const App = () => {
   const handleRequestDefaultSearchQuery = (query) => {
     setDefaultSearchQuery(query);
   }
+  const handleFindItemByProperty = (items, propertyName, propertyValue, asVoiceCommand = false) => {
+    if(asVoiceCommand) {
+      propertyValue = toVoiceCommand(propertyValue);
+    }
+    return items.find(item => {
+      let valueToMatch = item[propertyName];
+      if(asVoiceCommand) {
+        valueToMatch = toVoiceCommand(valueToMatch);
+      }
+      return valueToMatch === propertyValue;
+    });
+  }
   const handleFindItemByName = (items, itemName) => {
-    return items.find(item => toVoiceCommand(item.name) === toVoiceCommand(itemName));
+    return handleFindItemByProperty(items, 'name', itemName, true);
   }
   const handleShowItemByName = (itemType, items, itemName) => {
     const matchedItem = handleFindItemByName(items, itemName);
@@ -86,6 +131,16 @@ const App = () => {
     }
   }
   const handlePlaybackToggle = (track) => { // Żądanie odtworzenia/pauzy z poziomu komponentu TrackList
+    setDefaultPlayingTrack({
+      id: null,
+      title: null,
+      artistName: null,
+      albumName: null,
+      duration: null,
+      paused: null,
+      ended: null,
+      playlistID: null
+    });
     setPlayingTrack({...playingTrack, ended: false});
     setPlaybackRequest({
       id: track.id,
@@ -112,8 +167,10 @@ const App = () => {
     onPlaybackToggle: handlePlaybackToggle
   }
   const playlistProps = {
+    defaultPlayingTrack: defaultPlayingTrack,
     defaultPlaybackState: defaultPlaylistPlaybackState,
     onRequestDefaultPlaylistPlaybackState: handleRequestDefaultPlaylistPlaybackState,
+    onRequestDefaultTrackPlaybackState: handleRequestDefaultTrackPlaybackState,
     onPlaylistPlaybackToggle: handlePlaylistPlaybackToggle
   }
   return (

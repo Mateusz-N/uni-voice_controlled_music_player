@@ -17,7 +17,9 @@ const Album = (props) => {
     // #region Zmienne globalne
     const defaultPlayingTrack = props.defaultPlayingTrack;
     const defaultPlaybackState = props.defaultPlaybackState;
+    const defaultTrackInPlaylistAction = props.defaultTrackInPlaylistAction;
     const defaultTrackDetailsDisplay = props.defaultTrackDetailsDisplay;
+    const defaultSelectAction = props.defaultSelectAction;
     const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     const defaultArtistDetailsDisplay = props.defaultItemDetailsDisplay;
@@ -130,18 +132,22 @@ const Album = (props) => {
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
                 onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(album, targetState, trackIdentifier)}
                 onShowTrackDetailsVoiceCommand = {(trackIdentifier) => props.onRequestShowTrackDetails(album, trackIdentifier)}
+                onTrackInPlaylistVoiceCommand = {(target, action, trackIdentifier) => props.onRequestTrackInPlaylistAction(album, target, action, trackIdentifier)}
                 onShowItemDetailsVoiceCommand = {(itemType) => itemType === 'album' ? props.onRequestShowItemDetails() : null}
                 onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onFormActionVoiceCommand = {props.onRequestDefaultFormAction}
+                onToggleSelectVoiceCommand = {props.onRequestDefaultSelectAction}
             />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList
                     key = {'trackList' + album.id}
                     tracks = {album.tracks}
                     defaultPlayingTrack = {defaultPlayingTrack}
+                    defaultSelectAction = {defaultSelectAction}
                     defaultFormAction = {defaultFormAction}
+                    defaultTrackInPlaylistAction = {defaultTrackInPlaylistAction}
                     defaultTrackDetailsDisplay = {defaultTrackDetailsDisplay}
                     playingTrack = {playingTrack}
                     for = 'album'
@@ -149,6 +155,8 @@ const Album = (props) => {
                     playlistLoading = {albumLoading}
                     onPlaybackToggle = {props.onPlaybackToggle}
                     onTrackDetailsModalClose = {props.onRequestHideTrackDetails}
+                    onTrackInPlaylistAction = {props.onTrackInPlaylistAction}
+                    onSelectAction = {props.onSelectAction}
                 />
                 <OverviewPanel
                     key = {album.id}

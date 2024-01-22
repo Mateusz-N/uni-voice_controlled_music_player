@@ -11,7 +11,6 @@ const AboutModal = (props) => {
 
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
-        console.log(defaultAction)
         if(defaultAction === 'cancel') {
             props.onClose();
         }

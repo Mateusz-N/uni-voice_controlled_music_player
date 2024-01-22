@@ -193,8 +193,32 @@ const Microphone = (props) => {
                 parsePlaybackToggleCommand(command, 'pause');
                 return;
             }
+            if(command.startsWith('dodaj utwór') && command.endsWith('do playlisty')) {
+                parseTrackInPlaylistCommand(command, 'playlist', 'add');
+                return;
+            }
+            if(command.startsWith('dodaj utwór') && command.endsWith('do polubionych')) {
+                parseTrackInPlaylistCommand(command, 'saved', 'add');
+                return;
+            }
+            if(command.startsWith('usuń utwór') && command.endsWith('z polubionych')) {
+                parseTrackInPlaylistCommand(command, 'saved', 'remove');
+                return;
+            }
+            if(command.startsWith('usuń utwór') && command.endsWith('z playlisty')) {
+                parseTrackInPlaylistCommand(command, 'playlist', 'remove');
+                return;
+            }
             if(command.startsWith('pokaż szczegóły utworu')) {
                 parseShowTrackDetailsCommand(command);
+                return;
+            }
+            if(command.startsWith('zaznacz')) {
+                props.onToggleSelectVoiceCommand('select', getCommandParameter(command, 'zaznacz'));
+                return;
+            }
+            if(command.startsWith('odznacz')) {
+                props.onToggleSelectVoiceCommand('deselect', getCommandParameter(command, 'odznacz'));
                 return;
             }
             if(command === 'pokaż tekst') {
@@ -442,6 +466,17 @@ const Microphone = (props) => {
             parameter[0] = parameter[0].slice(parameter[0].indexOf(' '));
         }
         return parameter.join(delimiter).trim();
+    }
+    const parseTrackInPlaylistCommand = (command, target, action) => {
+        const commandSplitBySpace = command.split(' ');
+        if(commandSplitBySpace[2] === 'numer') {
+            commandSplitBySpace[2] = 'nr';
+        }
+        let commandParameterDelimiter = 'utwór';
+        if(commandSplitBySpace.length > 2 && commandSplitBySpace[2] === 'nr') {
+            commandParameterDelimiter = 'utwór nr';
+        }
+        props.onTrackInPlaylistVoiceCommand(target, action, getCommandParameter(commandSplitBySpace.slice(1).slice(0, -2).join(' '), commandParameterDelimiter));
     }
     const parseShowTrackDetailsCommand = (command) => {
         const commandSplitBySpace = command.split(' ');

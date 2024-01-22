@@ -12,7 +12,9 @@ const TrackList = (props) => {
     // #region Zmienne globalne
     const playlist = props.playlist;
     const defaultPlayingTrack = props.defaultPlayingTrack;
+    const defaultSelectAction = props.defaultSelectAction;
     const defaultFormAction = props.defaultFormAction;
+    const defaultTrackInPlaylistAction = props.defaultTrackInPlaylistAction;
     const defaultTrackDetailsDisplay = props.defaultTrackDetailsDisplay;
     let playingTrack = props.playingTrack;
     let tracks = [];
@@ -108,6 +110,10 @@ const TrackList = (props) => {
                         if(defaultTrackDetailsDisplay.trackID != null) {
                             defaultDisplayDetails = (defaultTrackDetailsDisplay.trackID === track.id);
                         }
+                        let defaultPlaylistAction = null;
+                        if(defaultTrackInPlaylistAction.trackID === track.id) {
+                            defaultPlaylistAction = defaultTrackInPlaylistAction;
+                        }
                         const playing = (playingTrack.id === track.id && !playingTrack.paused && playingTrack.playlistID === playlist.id);
                         return <TrackListItem
                             key = {index}
@@ -116,13 +122,17 @@ const TrackList = (props) => {
                             for = {props.for}
                             playlist = {playlist}
                             defaultPlaying = {defaultPlaying}
+                            defaultSelectAction = {defaultSelectAction}
                             defaultFormAction = {defaultFormAction}
+                            defaultPlaylistAction = {defaultPlaylistAction}
                             defaultDisplayDetails = {defaultDisplayDetails}
                             playing = {playing}
                             userPlaylists = {userPlaylists}
                             onPlaybackToggle = {handleToggleTrackPlayback}
                             onPlaylistUpdate = {props.onPlaylistUpdate}
+                            onSelectAction = {props.onSelectAction}
                             onTrackDetailsModalClose = {props.onTrackDetailsModalClose}
+                            onTrackInPlaylistAction = {(props.onTrackInPlaylistAction)}
                         />
                     })}
                 </tbody>

@@ -23,7 +23,9 @@ const TrackListItem = (props) => {
     const index = props.index;
     const playlist = props.playlist;
     const defaultPlaying = props.defaultPlaying;
+    const defaultSelectAction = props.defaultSelectAction;
     const defaultFormAction = props.defaultFormAction;
+    const defaultPlaylistAction = props.defaultPlaylistAction;
     const defaultDisplayDetails = props.defaultDisplayDetails;
     const playing = props.playing;
     const userPlaylists = props.userPlaylists;
@@ -44,6 +46,7 @@ const TrackListItem = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleToggleTrackSaved = () => {
+        props.onTrackInPlaylistAction();
         const initiallySaved = trackSaved;
         setTrackSaved(prevState => !prevState);
         toggleTrackSaved(initiallySaved);
@@ -60,9 +63,11 @@ const TrackListItem = (props) => {
         setModal_addToPlaylist_open(true);
     }
     const handleSelectRemoveFromPlaylist = () => {
+        props.onTrackInPlaylistAction();
         removeTrackFromPlaylist(playlist.id);
     }
     const handleModalClose_addToPlaylist = () => {
+        props.onTrackInPlaylistAction();
         setModal_addToPlaylist_open(false);
         setTrackRowActive(false);
     }
@@ -105,6 +110,28 @@ const TrackListItem = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultDisplayDetails]);
     useEffect(() => {
+        if(defaultPlaylistAction == null) {
+            return;
+        }
+        if(defaultPlaylistAction.target === 'saved') {
+            if((defaultPlaylistAction.action === 'add' && !trackSaved) || (defaultPlaylistAction.action === 'remove' && trackSaved)) {
+                handleToggleTrackSaved();
+            }
+            return;
+        }
+        if(defaultPlaylistAction.target === 'playlist') {
+            if(defaultPlaylistAction.action === 'add') {
+                handleSelectAddToPlaylist();
+                return;
+            }
+            if(defaultPlaylistAction.action === 'remove') {
+                handleSelectRemoveFromPlaylist();
+                return;
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[defaultPlaylistAction]);
+    useEffect(() => {
         setTrackSaved(props.track.saved);
     },[props]);
     // #endregion
@@ -144,9 +171,13 @@ const TrackListItem = (props) => {
             createPortal(<AddTrackToPlaylistsModal
                 index = {index}
                 track = {track}
+                context = {props.for}
+                defaultSelectAction = {defaultSelectAction}
+                defaultAction = {defaultFormAction}
                 userPlaylists = {userPlaylists.filter(playlist => playlist.owner.id === Cookies.get('userID'))}
                 onClose = {handleModalClose_addToPlaylist}
                 onPlaylistUpdate = {props.onPlaylistUpdate}
+                onPlaylistSelection = {props.onSelectAction}
             />, document.body);
     }
     let modal_trackDetails = null;

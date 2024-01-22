@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 import { requestAddTrackToPlaylist } from 'common/serverRequests';
@@ -12,9 +12,12 @@ import Styles from 'components/TrackList/AddTrackToPlaylistsModal.module.scss';
 
 const AddTrackToPlaylistModal = (props) => {
     // #region Zmienne globalne
+    const defaultSelectAction = props.defaultSelectAction;
+    const defaultAction = props.defaultAction;
     const index = props.index;
     const track = props.track;
     const userPlaylists = props.userPlaylists;
+    const context = props.context;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -24,13 +27,18 @@ const AddTrackToPlaylistModal = (props) => {
 
     // #region Obsługa zdarzeń
     const handleSelectPlaylists = (playlistIDs) => {
+        props.onPlaylistSelection();
         setSelectedPlaylists(playlistIDs)
     }
     const handleSubmitAddToPlaylistForm = (event) => {
-        event.preventDefault();
+        if(event) {
+            event.preventDefault();
+        }
         selectedPlaylists.forEach(playlist => addTrackToPlaylist(playlist));
         props.onClose();
-        props.onPlaylistUpdate();
+        if(context === 'playlist') {
+            props.onPlaylistUpdate();
+        }
     }
     const handleCancelAddToPlaylistForm = () => {
         props.onClose();
@@ -43,6 +51,20 @@ const AddTrackToPlaylistModal = (props) => {
             setNotification(data.message);
         });
     }
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(defaultAction === 'submit') {
+            handleSubmitAddToPlaylistForm();
+            return;
+        }
+        if(defaultAction === 'cancel') {
+            props.onClose();
+            return;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[defaultAction]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -62,6 +84,7 @@ const AddTrackToPlaylistModal = (props) => {
                     <ListBox
                         options = {userPlaylists}
                         multiple = {true}
+                        defaultSelectAction = {defaultSelectAction}
                         onSelection = {(selectedPlaylistIDs) => handleSelectPlaylists(selectedPlaylistIDs)}
                     />
                     <FormControlSection

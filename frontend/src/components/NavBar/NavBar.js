@@ -163,6 +163,7 @@ const NavBar = (props) => {
                         onTogglePlaylistPlaybackVoiceCommand = {props.onTogglePlaylistPlaybackVoiceCommand}
                         onToggleTrackPlaybackVoiceCommand = {props.onToggleTrackPlaybackVoiceCommand}
                         onShowTrackDetailsVoiceCommand = {props.onShowTrackDetailsVoiceCommand}
+                        onTrackInPlaylistVoiceCommand = {props.onTrackInPlaylistVoiceCommand}
                         onShowItemDetailsVoiceCommand = {props.onShowItemDetailsVoiceCommand}
                         onShowLyricsVoiceCommand = {props.onShowLyricsVoiceCommand}
                         onSearchVoiceCommand = {props.onSearchVoiceCommand}
@@ -174,6 +175,7 @@ const NavBar = (props) => {
                         onGeneratePlaylistVoiceCommand = {props.onGeneratePlaylistVoiceCommand}
                         onDeletePlaylistVoiceCommand = {props.onDeletePlaylistVoiceCommand}
                         onFormActionVoiceCommand = {props.onFormActionVoiceCommand}
+                        onToggleSelectVoiceCommand = {props.onToggleSelectVoiceCommand}
                         onShowAboutPageVoiceCommand = {handleSelectAbout}
                         onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
                         onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}

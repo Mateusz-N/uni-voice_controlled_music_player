@@ -17,9 +17,11 @@ import 'App.css';
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
   const [defaultPlaylistPlaybackState, setDefaultPlaylistPlaybackState] = useState(null);
+  const [defaultTrackInPlaylistAction, setDefaultTrackInPlaylistAction] = useState({target: null, action: null, trackID: null});
   const [defaultTrackDetailsDisplay, setDefaultTrackDetailsDisplay] = useState({trackID: null});
   const [defaultItemDetailsDisplay, setDefaultItemDetailsDisplay] = useState(false);
   const [defaultLyricsDisplay, setDefaultLyricsDisplay] = useState(false);
+  const [defaultSelectAction, setDefaultSelectAction] = useState({action: null, itemIdentifier: null});
   const [defaultFormAction, setDefaultFormAction] = useState(null);
   const [defaultSearchQuery, setDefaultSearchQuery] = useState(null);
   const [defaultPlayingTrack, setDefaultPlayingTrack] = useState({
@@ -91,21 +93,38 @@ const App = () => {
       playlistID: playlist.id
     });
   }
+  const handleRequestDefaultSelectAction = (action, itemIdentifier) => {
+    setDefaultSelectAction({action: action, itemIdentifier: toVoiceCommand(romanToDecimal(itemIdentifier))});
+  }
   const handleRequestDefaultTrackDetailsDisplay = (playlist, trackIdentifier) => {
     const matchedTrack = findMatchingTrackByIdentifier(playlist.tracks, trackIdentifier);
     if(!matchedTrack) {
-        return;
+      return;
     }
     setDefaultTrackDetailsDisplay({trackID: matchedTrack.id});
   }
   const handleRequestDefaultItemDetailsDisplay = () => {
     setDefaultItemDetailsDisplay(true);
   }
+  const handleSelectAction = () => {
+    console.log('resetting select')
+    setDefaultSelectAction({action: null, itemIdentifier: null});
+  }
   const handleItemDetailsModalClose = () => {
     setDefaultItemDetailsDisplay(false);
     setDefaultFormAction(null);
   }
-  
+  const handleRequestDefaultTrackInPlaylistAction = (playlist, target, action, trackIdentifier) => {
+    const matchedTrack = findMatchingTrackByIdentifier(playlist.tracks, trackIdentifier);
+    if(!matchedTrack) {
+      return;
+    }
+    setDefaultTrackInPlaylistAction({target: target, action: action, trackID: matchedTrack.id});
+  }
+  const handleTrackInPlaylistAction = () => {
+    setDefaultTrackInPlaylistAction({target: null, action: null, trackID: null});
+    setDefaultFormAction(null);
+  }
   const handleTrackDetailsModalClose = () => {
     setDefaultTrackDetailsDisplay({id: null});
     setDefaultFormAction(null);
@@ -200,6 +219,7 @@ const App = () => {
   
   // #region Struktura komponentu (JSX)
   const universalProps = {
+    defaultSelectAction: defaultSelectAction,
     defaultFormAction: defaultFormAction,
     defaultSearchQuery: defaultSearchQuery,
     defaultTrackDetailsDisplay: defaultTrackDetailsDisplay,
@@ -213,15 +233,20 @@ const App = () => {
     onRequestHideTrackDetails: handleTrackDetailsModalClose,
     onRequestShowItemDetails: handleRequestDefaultItemDetailsDisplay,
     onRequestHideItemDetails: handleItemDetailsModalClose,
+    onRequestDefaultSelectAction: handleRequestDefaultSelectAction,
+    onRequestTrackInPlaylistAction: handleRequestDefaultTrackInPlaylistAction,
     onRequestShowLyrics: handleRequestDefaultLyricsDisplay,
     onPlaybackToggle: handlePlaybackToggle,
   }
   const playlistProps = {
     defaultPlayingTrack: defaultPlayingTrack,
     defaultPlaybackState: defaultPlaylistPlaybackState,
+    defaultTrackInPlaylistAction: defaultTrackInPlaylistAction,
     onRequestDefaultPlaylistPlaybackState: handleRequestDefaultPlaylistPlaybackState,
     onRequestDefaultTrackPlaybackState: handleRequestDefaultTrackPlaybackState,
-    onPlaylistPlaybackToggle: handlePlaylistPlaybackToggle
+    onPlaylistPlaybackToggle: handlePlaylistPlaybackToggle,
+    onTrackInPlaylistAction: handleTrackInPlaylistAction,
+    onSelectAction: handleSelectAction
   }
   return (
     <>

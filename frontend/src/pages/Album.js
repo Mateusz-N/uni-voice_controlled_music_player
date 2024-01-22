@@ -19,6 +19,7 @@ const Album = (props) => {
     const defaultPlaybackState = props.defaultPlaybackState;
     const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
+    const defaultArtistDetailsDisplay = props.defaultItemDetailsDisplay;
     const albumID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
     // #endregion
@@ -127,6 +128,7 @@ const Album = (props) => {
                 onLogout = {handleLogout}
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
                 onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(album, targetState, trackIdentifier)}
+                onShowItemDetailsVoiceCommand = {(itemType) => itemType === 'album' ? props.onRequestShowItemDetails() : null}
                 onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
@@ -149,7 +151,10 @@ const Album = (props) => {
                     for = 'album'
                     playingTrack = {playingTrack}
                     defaultPlaybackState = {defaultPlaybackState}
+                    defaultFormAction = {defaultFormAction}
+                    defaultItemDetailsDisplay = {defaultArtistDetailsDisplay}
                     onPlaybackToggle = {props.onPlaylistPlaybackToggle}
+                    onItemDetailsModalClose = {props.onRequestHideItemDetails}
                 />
             </CatalogBrowser>
         </div>

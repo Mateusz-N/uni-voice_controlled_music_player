@@ -17,6 +17,7 @@ import 'App.css';
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
   const [defaultPlaylistPlaybackState, setDefaultPlaylistPlaybackState] = useState(null);
+  const [defaultItemDetailsDisplay, setDefaultItemDetailsDisplay] = useState(false);
   const [defaultLyricsDisplay, setDefaultLyricsDisplay] = useState(false);
   const [defaultFormAction, setDefaultFormAction] = useState(null);
   const [defaultSearchQuery, setDefaultSearchQuery] = useState(null);
@@ -87,6 +88,13 @@ const App = () => {
       ended: false,
       playlistID: playlist.id
     });
+  }
+  const handleRequestDefaultDetailsDisplay = () => {
+    setDefaultItemDetailsDisplay(true);
+  }
+  const handleItemDetailsModalClose = () => {
+    setDefaultItemDetailsDisplay(false);
+    setDefaultFormAction(null);
   }
   const handleRequestDefaultLyricsDisplay = () => {
     if(playingTrack.id == null) {
@@ -170,11 +178,14 @@ const App = () => {
   const universalProps = {
     defaultFormAction: defaultFormAction,
     defaultSearchQuery: defaultSearchQuery,
+    defaultItemDetailsDisplay: defaultItemDetailsDisplay,
     playingTrack: playingTrack,
     onRequestDefaultFormAction: handleRequestDefaultFormAction,
     onRequestDefaultSearchQuery: handleRequestDefaultSearchQuery,
     onRequestShowItemByName: handleShowItemByName,
     onRequestFindItemByName: handleFindItemByName,
+    onRequestShowItemDetails: handleRequestDefaultDetailsDisplay,
+    onRequestHideItemDetails: handleItemDetailsModalClose,
     onRequestShowLyrics: handleRequestDefaultLyricsDisplay,
     onPlaybackToggle: handlePlaybackToggle,
   }

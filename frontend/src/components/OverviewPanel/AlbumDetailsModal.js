@@ -4,6 +4,7 @@ import ItemDetailsModal from 'components/generic/ItemDetailsModal';
 
 const AlbumDetailsModal = (props) => {
     // #region Zmienne globalne
+    const defaultAction = props.defaultAction;
     const index = props.index;
     const album = props.album;
     const albumDetails = [{
@@ -42,7 +43,7 @@ const AlbumDetailsModal = (props) => {
 
     // #region Struktura komponentu (JSX)
     return(
-        <ItemDetailsModal index = {index} itemType = 'album' details = {albumDetails} onClose = {props.onClose} />
+        <ItemDetailsModal index = {index} itemType = 'album' details = {albumDetails} defaultAction = {defaultAction} onClose = {props.onClose} />
     );
     // #endregion
 }

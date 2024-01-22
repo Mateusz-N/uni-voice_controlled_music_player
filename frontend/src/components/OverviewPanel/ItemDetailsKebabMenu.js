@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 import { capitalizeFirstLetter } from 'common/auxiliaryFunctions';
@@ -13,6 +13,8 @@ const ItemDetailsKebabMenu = (props) => {
     // #region Zmienne globalne
     const item = props.item;
     const itemType = props.itemType;
+    const defaultDisplay = props.defaultDisplay;
+    const defaultFormAction = props.defaultFormAction;
     const context = props.context;
     const ExternalStyles = props.styles;
     // #endregion
@@ -27,7 +29,17 @@ const ItemDetailsKebabMenu = (props) => {
     }
     const handleModalClose_itemDetails = () => {
         setModal_itemDetails_open(false);
+        props.onItemDetailsModalClose();
     }
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(!defaultDisplay) {
+            return;
+        }
+        setModal_itemDetails_open(true);
+    },[defaultDisplay]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -38,6 +50,7 @@ const ItemDetailsKebabMenu = (props) => {
                 <ArtistDetailsModal
                     index = {item.id}
                     artist = {item}
+                    defaultAction = {defaultFormAction}
                     onClose = {handleModalClose_itemDetails}
                 />;
         }
@@ -46,6 +59,7 @@ const ItemDetailsKebabMenu = (props) => {
                 <AlbumDetailsModal
                     index = {item.id}
                     album = {item}
+                    defaultAction = {defaultFormAction}
                     onClose = {handleModalClose_itemDetails}
                 />;
         }

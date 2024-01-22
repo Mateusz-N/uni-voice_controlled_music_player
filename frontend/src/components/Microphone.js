@@ -143,189 +143,259 @@ const Microphone = (props) => {
             }
             if(command.startsWith('szukaj')) {
                 props.onSearchVoiceCommand(getCommandParameter(command, 'szukaj'));
+                return;
             }
             if(command.startsWith('pokaż playlistę')) {
                 props.onShowItemVoiceCommand('playlist', getCommandParameter(command, 'pokaż playlistę'));
+                return;
             }
             if(command.startsWith('pokaż album')) {
                 props.onShowItemVoiceCommand('album', getCommandParameter(command, 'pokaż album'));
+                return;
             }
             if(command.startsWith('pokaż wykonawcę')) {
                 props.onShowItemVoiceCommand('artist', getCommandParameter(command, 'pokaż wykonawcę'));
+                return;
             }
             if(['utwórz playlistę', 'nowa playlista', 'stwórz playlistę'].includes(command)) {
                 props.onCreatePlaylistVoiceCommand();
+                return;
             }
             if(['generuj playlistę', 'otwórz generator'].includes(command)) {
                 props.onGeneratePlaylistVoiceCommand();
+                return;
             }
             if(command.startsWith('usuń playlistę')) {
                 props.onDeletePlaylistVoiceCommand(getCommandParameter(command, 'usuń playlistę'));
+                return;
             }
             if(['ok', 'okej', 'zatwierdź', 'potwierdź', 'tak', 'wyślij'].includes(command)) {
                 props.onFormActionVoiceCommand('submit');
+                return;
             }
             if(['anuluj', 'nie', 'zamknij'].includes(command)) {
                 props.onFormActionVoiceCommand('cancel');
+                return;
             }
             if(['o aplikacji', 'o stronie', 'informacje o aplikacji', 'informacje o stronie'].includes(command)) {
                 props.onShowAboutPageVoiceCommand();
+                return;
             }
             if(['dodaj ziarno', 'nowe ziarno'].includes(command)) {
                 props.onAddPlaylistGeneratorSeedVoiceCommand();
+                return;
             }
             if(['odtwarzaj', 'odtwórz', 'wznów'].includes(command.split(' ')[0])) {
                 parsePlaybackToggleCommand(command, 'play');
+                return;
             }
             if(['zatrzymaj', 'zapauzuj', 'pauzuj'].includes(command.split(' ')[0])) {
                 parsePlaybackToggleCommand(command, 'pause');
+                return;
             }
             if(command === 'pokaż tekst') {
                 props.onShowLyricsVoiceCommand();
+                return;
+            }
+            if(command === 'pokaż szczegóły albumu') {
+                props.onShowItemDetailsVoiceCommand('album');
+                return;
+            }
+            if(command === 'pokaż szczegóły wykonawcy') {
+                props.onShowItemDetailsVoiceCommand('artist');
+                return;
             }
             if(command.startsWith('usuń ziarno')) {
                 props.onRemovePlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'usuń ziarno'));
+                return;
             }
             if(command.startsWith('typ ziarna')) {
                 props.onChangePlaylistGeneratorSeedTypeVoiceCommand(getCommandParameter(command, 'typ ziarna'));
+                return;
             }
             if(command.startsWith('wybierz')) {
                 props.onSelectPlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'wybierz'));
+                return;
             }
             if(command.startsWith('minimalna akustyczn')) { // Web Speech API nie radzi sobie z słowami jak 'akustyczność'...
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_acousticness', getCommandParameter(command, 'minimalna akustyczn', true));
+                return;
             }
             if(command.startsWith('docelowa akustyczn')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_acousticness', getCommandParameter(command, 'docelowa akustyczn', true));
+                return;
             }
             if(command.startsWith('maksymalna akustyczn')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_acousticness', getCommandParameter(command, 'maksymalna akustyczn', true));
+                return;
             }
             if(command.startsWith('minimalna taneczn')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_danceability', getCommandParameter(command, 'minimalna taneczn', true));
+                return;
             }
             if(command.startsWith('docelowa taneczn')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_danceability', getCommandParameter(command, 'docelowa taneczn', true));
+                return;
             }
             if(command.startsWith('maksymalna taneczn')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_danceability', getCommandParameter(command, 'maksymalna taneczn', true));
+                return;
             }
             if(command.startsWith('minimalna długość')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_track_duration_ms', getCommandParameter(command, 'minimalna długość'));
+                return;
             }
             if(command.startsWith('docelowa długość')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_track_duration_ms', getCommandParameter(command, 'docelowa długość'));
+                return;
             }
             if(command.startsWith('maksymalna długość')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_track_duration_ms', getCommandParameter(command, 'maksymalna długość'));
+                return;
             }
             if(command.startsWith('minimalna energia')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_energy', getCommandParameter(command, 'minimalna energia'));
+                return;
             }
             if(command.startsWith('docelowa energia')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_energy', getCommandParameter(command, 'docelowa energia'));
+                return;
             }
             if(command.startsWith('maksymalna energia')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_energy', getCommandParameter(command, 'maksymalna energia'));
+                return;
             }
             if(command.startsWith('minimalna instrumentaln')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_instrumentalness', getCommandParameter(command, 'minimalna instrumentaln', true));
+                return;
             }
             if(command.startsWith('docelowa instrumentaln')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_instrumentalness', getCommandParameter(command, 'docelowa instrumentaln', true));
+                return;
             }
             if(command.startsWith('maksymalna instrumentaln')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_instrumentalness', getCommandParameter(command, 'maksymalna instrumentaln', true));
+                return;
             }
             if(command.startsWith('minimalna tonacja')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_key', getCommandParameter(command, 'minimalna tonacja'));
+                return;
             }
             if(command.startsWith('docelowa tonacja')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_key', getCommandParameter(command, 'docelowa tonacja'));
+                return;
             }
             if(command.startsWith('maksymalna tonacja')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_key', getCommandParameter(command, 'maksymalna tonacja'));
+                return;
             }
             if(command.startsWith('minimalna żywość')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_liveness', getCommandParameter(command, 'minimalna żywość'));
+                return;
             }
             if(command.startsWith('docelowa żywość')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_liveness', getCommandParameter(command, 'docelowa żywość'));
+                return;
             }
             if(command.startsWith('maksymalna żywość')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_liveness', getCommandParameter(command, 'maksymalna żywość'));
+                return;
             }
             if(command.startsWith('minimalna żywność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_liveness', getCommandParameter(command, 'minimalna żywność'));
+                return;
             }
             if(command.startsWith('docelowa żywność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_liveness', getCommandParameter(command, 'docelowa żywność'));
+                return;
             }
             if(command.startsWith('maksymalna żywność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_liveness', getCommandParameter(command, 'maksymalna żywność'));
+                return;
             }
             if(command.startsWith('minimalna głośność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_loudness', getCommandParameter(command, 'minimalna głośność'));
+                return;
             }
             if(command.startsWith('docelowa głośność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_loudness', getCommandParameter(command, 'docelowa głośność'));
+                return;
             }
             if(command.startsWith('maksymalna głośność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_loudness', getCommandParameter(command, 'maksymalna głośność'));
+                return;
             }
             if(command.startsWith('minimalna skala')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_mode', getCommandParameter(command, 'minimalna skala'));
+                return;
             }
             if(command.startsWith('docelowa skala')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_mode', getCommandParameter(command, 'docelowa skala'));
+                return;
             }
             if(command.startsWith('maksymalna skala')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_mode', getCommandParameter(command, 'maksymalna skala'));
+                return;
             }
             if(command.startsWith('minimalna popularność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_popularity', getCommandParameter(command, 'minimalna popularność'));
+                return;
             }
             if(command.startsWith('docelowa popularność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_popularity', getCommandParameter(command, 'docelowa popularność'));
+                return;
             }
             if(command.startsWith('maksymalna popularność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_popularity', getCommandParameter(command, 'maksymalna popularność'));
+                return;
             }
             if(command.startsWith('minimalna mowa')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_speechiness', getCommandParameter(command, 'minimalna mowa'));
+                return;
             }
             if(command.startsWith('docelowa mowa')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_speechiness', getCommandParameter(command, 'docelowa mowa'));
+                return;
             }
             if(command.startsWith('maksymalna mowa')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_speechiness', getCommandParameter(command, 'maksymalna mowa'));
+                return;
             }
             if(command.startsWith('minimalne tempo')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_tempo', getCommandParameter(command, 'minimalne tempo'));
+                return;
             }
             if(command.startsWith('docelowe tempo')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_tempo', getCommandParameter(command, 'docelowe tempo'));
+                return;
             }
             if(command.startsWith('maksymalne tempo')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_tempo', getCommandParameter(command, 'maksymalne tempo'));
+                return;
             }
             if(command.startsWith('minimalne metrum')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_time_signature', getCommandParameter(command, 'minimalne metrum'));
+                return;
             }
             if(command.startsWith('docelowe metrum')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_time_signature', getCommandParameter(command, 'docelowe metrum'));
+                return;
             }
             if(command.startsWith('maksymalne metrum')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_time_signature', getCommandParameter(command, 'maksymalne metrum'));
+                return;
             }
             if(command.startsWith('minimalna pozytywność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('min_valence', getCommandParameter(command, 'minimalna pozytywność'));
+                return;
             }
             if(command.startsWith('docelowa pozytywność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('target_valence', getCommandParameter(command, 'docelowa pozytywność'));
+                return;
             }
             if(command.startsWith('maksymalna pozytywność')) {
                 props.onSetPlaylistGeneratorParameterVoiceCommand('max_valence', getCommandParameter(command, 'maksymalna pozytywność'));
+                return;
             }
             setNotification({message: 'Unrecognized voice command. Please try again.', type: 'error'});
         }

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { capitalizeFirstLetter } from 'common/auxiliaryFunctions';
@@ -8,9 +9,18 @@ import Styles from 'components/generic/ItemDetailsModal.module.scss';
 
 const ItemDetailsModal = (props) => {
     // #region Zmienne globalne
+    const defaultAction = props.defaultAction;
     const index = props.index;
     const itemType = props.itemType;
     const details = props.details;
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(defaultAction === 'cancel') {
+            props.onClose();
+        }
+    },[defaultAction]);
     // #endregion
 
     // #region Struktura komponentu (JSX)

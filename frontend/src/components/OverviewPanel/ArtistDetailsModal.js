@@ -2,6 +2,7 @@ import ItemDetailsModal from 'components/generic/ItemDetailsModal';
 
 const ArtistDetailsModal = (props) => {
     // #region Zmienne globalne
+    const defaultAction = props.defaultAction;
     const index = props.index;
     const artist = props.artist;
     const artistDetails = [{
@@ -33,7 +34,7 @@ const ArtistDetailsModal = (props) => {
 
     // #region Struktura komponentu (JSX)
     return(
-        <ItemDetailsModal index = {index} itemType = 'artist' details = {artistDetails} onClose = {props.onClose} />
+        <ItemDetailsModal index = {index} itemType = 'artist' details = {artistDetails} defaultAction = {defaultAction} onClose = {props.onClose} />
     );
     // #endregion
 }

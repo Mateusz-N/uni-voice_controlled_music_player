@@ -19,6 +19,7 @@ const Artist = (props) => {
     // #region Zmienne globalne
     const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
+    const defaultArtistDetailsDisplay = props.defaultItemDetailsDisplay;
     const artistID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
     // #endregion
@@ -135,6 +136,7 @@ const Artist = (props) => {
                 onLogout = {handleLogout}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onShowItemDetailsVoiceCommand = {(itemType) => itemType === 'artist' ? props.onRequestShowItemDetails() : null}
                 onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onShowItemVoiceCommand = {(itemType, itemName) => props.onRequestShowItemByName(itemType, albums, itemName)}
@@ -164,7 +166,15 @@ const Artist = (props) => {
                         })
                     }
                 </main>
-                <OverviewPanel key = {artist.id} data = {artist} for = 'artist' playingTrack = {playingTrack} />
+                <OverviewPanel
+                    key = {artist.id}
+                    data = {artist}
+                    for = 'artist'
+                    playingTrack = {playingTrack}
+                    defaultFormAction = {defaultFormAction}
+                    defaultItemDetailsDisplay = {defaultArtistDetailsDisplay}
+                    onItemDetailsModalClose = {props.onRequestHideItemDetails}
+                />
             </CatalogBrowser>
         </div>
     );

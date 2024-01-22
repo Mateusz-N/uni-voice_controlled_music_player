@@ -162,6 +162,7 @@ const NavBar = (props) => {
                         onReturnHomeVoiceCommand = {handleReturnHome}
                         onTogglePlaylistPlaybackVoiceCommand = {props.onTogglePlaylistPlaybackVoiceCommand}
                         onToggleTrackPlaybackVoiceCommand = {props.onToggleTrackPlaybackVoiceCommand}
+                        onShowItemDetailsVoiceCommand = {props.onShowItemDetailsVoiceCommand}
                         onShowLyricsVoiceCommand = {props.onShowLyricsVoiceCommand}
                         onSearchVoiceCommand = {props.onSearchVoiceCommand}
                         onShowItemVoiceCommand = {props.onShowItemVoiceCommand}

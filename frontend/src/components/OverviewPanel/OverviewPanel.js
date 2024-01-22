@@ -22,6 +22,7 @@ const OverviewPanel = (props) => {
     const deletionRequested = props.requestDelete;
     const defaultPlaybackState = props.defaultPlaybackState;
     const defaultFormAction = props.defaultFormAction;
+    const defaultItemDetailsDisplay = props.defaultItemDetailsDisplay;
     // #endregion
     
     // #region Zmienne stanu (useState Hooks)
@@ -121,7 +122,15 @@ const OverviewPanel = (props) => {
     }
     else if(['artist', 'album'].includes(props.for)) {
         kebabMenu =
-            <ItemDetailsKebabMenu item = {itemData} itemType = {props.for} context = 'itemFigure' styles = {Styles} />
+            <ItemDetailsKebabMenu
+                item = {itemData}
+                itemType = {props.for}
+                defaultDisplay = {defaultItemDetailsDisplay}
+                defaultFormAction = {defaultFormAction}
+                context = 'itemFigure'
+                styles = {Styles}
+                onItemDetailsModalClose = {props.onItemDetailsModalClose}
+            />
     }
     let toastNotification = null;
     if(notification.message) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Select from 'components/generic/Select';
 import FormControlSection from 'components/generic/FormControlSection';
@@ -25,6 +25,12 @@ const DetailEditForm = (props) => {
             props.onSubmit(null, newValue);
         }
     }
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        setDetailValue(defaultValue);
+    },[defaultValue]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -78,7 +84,12 @@ const DetailEditForm = (props) => {
 
     // #region Struktura komponentu (JSX)
     return(
-        <form id = {ExternalStyles['form_item' + detailName]} className = {ExternalStyles['form_item']} onSubmit = {event => props.onSubmit(event, detailValue)} style = {formStyle}>
+        <form
+            id = {ExternalStyles['form_item' + detailName]}
+            className = {ExternalStyles['form_item']}
+            onSubmit = {event => props.onSubmit(event, detailValue)}
+            style = {formStyle}
+        >
             {input}
             {formControlSection}
         </form>

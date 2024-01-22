@@ -205,6 +205,22 @@ const Microphone = (props) => {
                 props.onShowItemDetailsVoiceCommand('artist');
                 return;
             }
+            if(command.startsWith('zmień nazwę playlisty na')) {
+                props.onModifyPlaylistVoiceCommand('Name', getCommandParameter(command, 'zmień nazwę playlisty na'));
+                return;
+            }
+            if(command === 'zmień playlistę na publiczną') {
+                props.onModifyPlaylistVoiceCommand('Public', 'yes');
+                return;
+            }
+            if(command === 'zmień playlistę na prywatną') {
+                props.onModifyPlaylistVoiceCommand('Public', 'no');
+                return;
+            }
+            if(command.startsWith('zmień opis playlisty na')) {
+                props.onModifyPlaylistVoiceCommand('Description', getCommandParameter(command, 'zmień opis playlisty na'));
+                return;
+            }
             if(command.startsWith('usuń ziarno')) {
                 props.onRemovePlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'usuń ziarno'));
                 return;

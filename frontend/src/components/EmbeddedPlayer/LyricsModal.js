@@ -72,6 +72,7 @@ const LyricsModal = (props) => {
         if(defaultAction === 'cancel') {
             props.onClose();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultAction]);
     // #endregion
 

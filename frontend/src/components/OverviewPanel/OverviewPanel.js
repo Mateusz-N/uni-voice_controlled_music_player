@@ -20,12 +20,14 @@ const OverviewPanel = (props) => {
     const playingTrack = props.playingTrack;
     const playlistPlaying = (!playingTrack.paused && playingTrack.paused != null && playingTrack.playlistID === itemData.id);
     const deletionRequested = props.requestDelete;
+    const setProperty = props.setProperty;
     const defaultPlaybackState = props.defaultPlaybackState;
     const defaultFormAction = props.defaultFormAction;
     const defaultItemDetailsDisplay = props.defaultItemDetailsDisplay;
     // #endregion
     
     // #region Zmienne stanu (useState Hooks)
+    // const [presetProperties, setPresetProperties] = useState([]);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -68,6 +70,7 @@ const OverviewPanel = (props) => {
     /*  UWAGA: punktu końcowy 'Get Playlist' będzie przez pewien czas zwracać nieaktualne dane.
         Jest to prawdopodobnie defekt w owym punkcie końcowym.
         Ponadto, właściwość 'public' zdaje się w ogóle nie być aktualizowana przez Spotify... */
+        props.onDetailChange();
         detailName = detailName.toLowerCase();
         if(['public', 'collaborative'].includes(detailName)) {
             if(detailValue === 'yes') {
@@ -103,7 +106,33 @@ const OverviewPanel = (props) => {
             return;
         }
         ref_itemFigure_thumbnail.current.click();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultPlaybackState]);
+    useEffect(() => {
+        if(setProperty == null) {
+            return;
+        }
+        handleDetailChange(setProperty.name, setProperty.value);
+        itemData.detailsToDisplay[itemData.detailsToDisplay.indexOf(itemData.detailsToDisplay.find(detail => (detail.name === setProperty.name)))].content = setProperty.value;
+        // const editableDetails = itemData.detailsToDisplay.filter(detail => detail.editable);
+        // if(editableDetails.length === 0) {
+        //     return;
+        // }
+        // const editableDetailNames = editableDetails.map(detail => detail.name);
+        // if(!editableDetailNames.includes(setProperty.name)) {
+        //     return;
+        // }
+        // const presetPropertiesCopy = [...presetProperties];
+        // const matchedPropertyIndex = presetProperties.indexOf(presetProperties.find(property => (property.name === setProperty.name)));
+        // if(matchedPropertyIndex != null && matchedPropertyIndex >= 0) {
+        //     presetPropertiesCopy[matchedPropertyIndex] = setProperty;
+        // }
+        // else {
+        //     presetPropertiesCopy.push(setProperty);
+        // }
+        // setPresetProperties(presetPropertiesCopy);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[setProperty]);
     // #endregion
     
     // #region Przypisanie dynamicznych elementów komponentu

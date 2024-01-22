@@ -6,12 +6,13 @@ import Styles from 'components/generic/Select.module.scss';
 
 const Select = (props) => {
     // #region Zmienne globalne
+    const defaultValue = props.defaultValue;
     const children = props.children;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
     const [expanded, setExpanded] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(props.defaultValue);
+    const [selectedOption, setSelectedOption] = useState(defaultValue);
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -37,7 +38,11 @@ const Select = (props) => {
         return () => {
             document.body.removeEventListener('click', handleClickOutsideSelect);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[expanded]);
+    useEffect(() => {
+        setSelectedOption(defaultValue);
+    },[defaultValue]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu

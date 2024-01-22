@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { setPropertyByString } from 'common/auxiliaryFunctions';
@@ -10,11 +10,12 @@ import Styles from 'components/OverviewPanel/OverviewPanelDetail.module.scss';
 
 const OverviewPanelDetail = (props) => {
     // #region Zmienne globalne
+    const item = props.item;
     const ExternalStyles = props.styles;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
-    const [itemData, setItemData] = useState(props.item);
+    const [itemData, setItemData] = useState(item);
     const [editModeActive, setEditModeActive] = useState(props.for === 'playlist' ? itemData.input.excludeControls : false);
     // #endregion
 
@@ -48,6 +49,12 @@ const OverviewPanelDetail = (props) => {
         }
         return <li className = {Styles.overviewPanelDetails_detail + ' ' + (editModeActive ? Styles.overviewPanelDetails_detail_editModeActive : '')}>{children}</li>
     }
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        setItemData(item);
+    },[item]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu

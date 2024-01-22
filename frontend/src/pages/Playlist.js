@@ -29,6 +29,7 @@ const Playlist = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [playlist, setPlaylist] = useState(placeholderPlaylist);
     const [playlistLoading, setPlaylistLoading] = useState(false);
+    const [defaultPlaylistProperty, setDefaultPlaylistProperty] = useState(null);
     const [deletionRequested, setDeletionRequested] = useState(false);
     const [notification, setNotification] = useState({});
     // #endregion
@@ -183,6 +184,12 @@ const Playlist = (props) => {
         fetchedPlaylist = await getTracksSavedStatus(fetchedPlaylist);
         setPlaylist(fetchedPlaylist);
     }
+    const handleModifyPlaylistVoiceCommand = (propertyName, propertyValue) => {
+        setDefaultPlaylistProperty({name: propertyName, value: propertyValue});
+    }
+    const handleDetailChange = () => {
+        setDefaultPlaylistProperty(null);
+    }
     const handleDeletePlaylistVoiceCommand = () => {
         setDeletionRequested(true);
     }
@@ -267,6 +274,7 @@ const Playlist = (props) => {
                 onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
+                onModifyPlaylistVoiceCommand = {handleModifyPlaylistVoiceCommand}
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistVoiceCommand}
                 onFormActionVoiceCommand = {props.onRequestDefaultFormAction}
             />
@@ -287,9 +295,11 @@ const Playlist = (props) => {
                     data = {playlist}
                     for = 'playlist'
                     playingTrack = {playingTrack}
+                    setProperty = {defaultPlaylistProperty}
                     defaultPlaybackState = {defaultPlaybackState}
-                    requestDelete = {deletionRequested}
                     defaultFormAction = {defaultFormAction}
+                    requestDelete = {deletionRequested}
+                    onDetailChange = {handleDetailChange}
                     onPlaybackToggle = {props.onPlaylistPlaybackToggle}
                     onCancelDeletePlaylist = {handleCancelDeletePlaylist}
                 />

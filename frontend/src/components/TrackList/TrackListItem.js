@@ -93,6 +93,7 @@ const TrackListItem = (props) => {
             return;
         }
         ref_btnTogglePlayback.current.click();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultPlaying]);
     useEffect(() => {
         setTrackSaved(props.track.saved);

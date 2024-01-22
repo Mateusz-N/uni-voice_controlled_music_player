@@ -17,6 +17,7 @@ const Album = (props) => {
     // #region Zmienne globalne
     const defaultPlayingTrack = props.defaultPlayingTrack;
     const defaultPlaybackState = props.defaultPlaybackState;
+    const defaultTrackDetailsDisplay = props.defaultTrackDetailsDisplay;
     const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     const defaultArtistDetailsDisplay = props.defaultItemDetailsDisplay;
@@ -128,6 +129,7 @@ const Album = (props) => {
                 onLogout = {handleLogout}
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
                 onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(album, targetState, trackIdentifier)}
+                onShowTrackDetailsVoiceCommand = {(trackIdentifier) => props.onRequestShowTrackDetails(album, trackIdentifier)}
                 onShowItemDetailsVoiceCommand = {(itemType) => itemType === 'album' ? props.onRequestShowItemDetails() : null}
                 onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
@@ -139,11 +141,14 @@ const Album = (props) => {
                     key = {'trackList' + album.id}
                     tracks = {album.tracks}
                     defaultPlayingTrack = {defaultPlayingTrack}
+                    defaultFormAction = {defaultFormAction}
+                    defaultTrackDetailsDisplay = {defaultTrackDetailsDisplay}
                     playingTrack = {playingTrack}
                     for = 'album'
                     playlist = {album}
                     playlistLoading = {albumLoading}
                     onPlaybackToggle = {props.onPlaybackToggle}
+                    onTrackDetailsModalClose = {props.onRequestHideTrackDetails}
                 />
                 <OverviewPanel
                     key = {album.id}

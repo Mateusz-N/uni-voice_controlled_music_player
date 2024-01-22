@@ -12,6 +12,8 @@ const TrackList = (props) => {
     // #region Zmienne globalne
     const playlist = props.playlist;
     const defaultPlayingTrack = props.defaultPlayingTrack;
+    const defaultFormAction = props.defaultFormAction;
+    const defaultTrackDetailsDisplay = props.defaultTrackDetailsDisplay;
     let playingTrack = props.playingTrack;
     let tracks = [];
     let thAlbum = null;
@@ -102,6 +104,10 @@ const TrackList = (props) => {
                         if(defaultPlayingTrack.id != null) {
                             defaultPlaying = (defaultPlayingTrack.id === track.id && !defaultPlayingTrack.paused && defaultPlayingTrack.playlistID === playlist.id);
                         }
+                        let defaultDisplayDetails = null;
+                        if(defaultTrackDetailsDisplay.trackID != null) {
+                            defaultDisplayDetails = (defaultTrackDetailsDisplay.trackID === track.id);
+                        }
                         const playing = (playingTrack.id === track.id && !playingTrack.paused && playingTrack.playlistID === playlist.id);
                         return <TrackListItem
                             key = {index}
@@ -110,10 +116,13 @@ const TrackList = (props) => {
                             for = {props.for}
                             playlist = {playlist}
                             defaultPlaying = {defaultPlaying}
+                            defaultFormAction = {defaultFormAction}
+                            defaultDisplayDetails = {defaultDisplayDetails}
                             playing = {playing}
                             userPlaylists = {userPlaylists}
                             onPlaybackToggle = {handleToggleTrackPlayback}
                             onPlaylistUpdate = {props.onPlaylistUpdate}
+                            onTrackDetailsModalClose = {props.onTrackDetailsModalClose}
                         />
                     })}
                 </tbody>

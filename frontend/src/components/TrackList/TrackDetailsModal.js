@@ -11,6 +11,7 @@ const TrackDetailsModal = (props) => {
     // #endregion
 
     // #region Zmienne globalne
+    const defaultAction = props.defaultAction;
     const index = props.index;
     const track = props.track;
     const album = props.album ? props.album : track.album;
@@ -60,7 +61,7 @@ const TrackDetailsModal = (props) => {
 
     // #region Struktura komponentu (JSX)
     return(
-        <ItemDetailsModal index = {index} itemType = 'track' details = {trackDetails} onClose = {props.onClose} />
+        <ItemDetailsModal index = {index} itemType = 'track' details = {trackDetails} defaultAction = {defaultAction} onClose = {props.onClose} />
     );
     // #endregion
 }

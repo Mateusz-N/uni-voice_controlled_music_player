@@ -20,6 +20,7 @@ const Playlist = (props) => {
     // #region Zmienne globalne
     const defaultPlayingTrack = props.defaultPlayingTrack;
     const defaultPlaybackState = props.defaultPlaybackState;
+    const defaultTrackDetailsDisplay = props.defaultTrackDetailsDisplay;
     const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     const playlistID = window.location.href.split('/').pop();
@@ -271,6 +272,7 @@ const Playlist = (props) => {
                 onLogout = {handleLogout}
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
                 onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(playlist, targetState, trackIdentifier)}
+                onShowTrackDetailsVoiceCommand = {(trackIdentifier) => props.onRequestShowTrackDetails(playlist, trackIdentifier)}
                 onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
@@ -283,12 +285,15 @@ const Playlist = (props) => {
                     key = {'trackList' + playlist.id}
                     tracks = {playlist.tracks}
                     defaultPlayingTrack = {defaultPlayingTrack}
+                    defaultFormAction = {defaultFormAction}
+                    defaultTrackDetailsDisplay = {defaultTrackDetailsDisplay}
                     playingTrack = {playingTrack}
                     for = 'playlist'
                     playlist = {playlist}
                     playlistLoading = {playlistLoading}
                     onPlaybackToggle = {props.onPlaybackToggle}
                     onPlaylistUpdate = {handlePlaylistUpdate}
+                    onTrackDetailsModalClose = {props.onRequestHideTrackDetails}
                 />
                 <OverviewPanel
                     key = {'overviewPanel' + playlist.id}

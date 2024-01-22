@@ -193,6 +193,10 @@ const Microphone = (props) => {
                 parsePlaybackToggleCommand(command, 'pause');
                 return;
             }
+            if(command.startsWith('pokaż szczegóły utworu')) {
+                parseShowTrackDetailsCommand(command);
+                return;
+            }
             if(command === 'pokaż tekst') {
                 props.onShowLyricsVoiceCommand();
                 return;
@@ -439,10 +443,22 @@ const Microphone = (props) => {
         }
         return parameter.join(delimiter).trim();
     }
+    const parseShowTrackDetailsCommand = (command) => {
+        const commandSplitBySpace = command.split(' ');
+        if(commandSplitBySpace[3] === 'numer') {
+            commandSplitBySpace[3] = 'nr';
+        }
+        let commandParameterDelimiter = 'utworu';
+        if(commandSplitBySpace.length > 3 && commandSplitBySpace[3] === 'nr') {
+            commandParameterDelimiter = 'utworu nr';
+        }
+        props.onShowTrackDetailsVoiceCommand(getCommandParameter(commandSplitBySpace.slice(2).join(' '), commandParameterDelimiter));
+    }
     const parsePlaybackToggleCommand = (command, targetPlaybackState) => {
         const commandSplitBySpace = command.split(' ');
         if(commandSplitBySpace[1] === 'playlistę') {
             props.onTogglePlaylistPlaybackVoiceCommand(targetPlaybackState);
+            return;
         }
         if(commandSplitBySpace[1] === 'utwór') {
             if(commandSplitBySpace[2] === 'numer') {

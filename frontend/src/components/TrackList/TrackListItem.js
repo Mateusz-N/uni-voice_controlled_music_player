@@ -23,6 +23,8 @@ const TrackListItem = (props) => {
     const index = props.index;
     const playlist = props.playlist;
     const defaultPlaying = props.defaultPlaying;
+    const defaultFormAction = props.defaultFormAction;
+    const defaultDisplayDetails = props.defaultDisplayDetails;
     const playing = props.playing;
     const userPlaylists = props.userPlaylists;
     const handleToggleTrackPlayback = props.onPlaybackToggle;
@@ -68,6 +70,7 @@ const TrackListItem = (props) => {
         setModal_trackDetails_open(true);
     }
     const handleModalClose_trackDetails = () => {
+        props.onTrackDetailsModalClose();
         setModal_trackDetails_open(false);
         setTrackRowActive(false);
     }
@@ -95,6 +98,12 @@ const TrackListItem = (props) => {
         ref_btnTogglePlayback.current.click();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultPlaying]);
+    useEffect(() => {
+        if(defaultDisplayDetails) {
+            setModal_trackDetails_open(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[defaultDisplayDetails]);
     useEffect(() => {
         setTrackSaved(props.track.saved);
     },[props]);
@@ -150,6 +159,7 @@ const TrackListItem = (props) => {
             createPortal(<TrackDetailsModal
                 index = {index}
                 track = {track}
+                defaultAction = {defaultFormAction}
                 onClose = {handleModalClose_trackDetails}
                 {...albumAttribute}
             />, document.body);

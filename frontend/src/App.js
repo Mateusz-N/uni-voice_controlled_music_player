@@ -17,6 +17,7 @@ import 'App.css';
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
   const [defaultPlaylistPlaybackState, setDefaultPlaylistPlaybackState] = useState(null);
+  const [defaultTrackDetailsDisplay, setDefaultTrackDetailsDisplay] = useState({trackID: null});
   const [defaultItemDetailsDisplay, setDefaultItemDetailsDisplay] = useState(false);
   const [defaultLyricsDisplay, setDefaultLyricsDisplay] = useState(false);
   const [defaultFormAction, setDefaultFormAction] = useState(null);
@@ -68,10 +69,11 @@ const App = () => {
   const handleRequestDefaultTrackPlaybackState = (playlist, targetState, trackIdentifier = '') => {
     let matchedTrack = handleFindItemByProperty(playlist.tracks, 'id', playingTrack.id);
     if(targetState === 'play' && trackIdentifier.length > 0) {
-      matchedTrack = playlist.tracks[parseInt(romanToDecimal(trackIdentifier)) - 1];
-      if(isNaN(trackIdentifier)) {
-        matchedTrack = handleFindItemByProperty(playlist.tracks, 'title', trackIdentifier, true);
-      }
+      matchedTrack = findMatchingTrackByIdentifier(playlist.tracks, trackIdentifier);
+      // matchedTrack = playlist.tracks[parseInt(romanToDecimal(trackIdentifier)) - 1];
+      // if(isNaN(trackIdentifier)) {
+      //   matchedTrack = handleFindItemByProperty(playlist.tracks, 'title', trackIdentifier, true);
+      // }
     }
     if(!matchedTrack ||
       (targetState === 'play' && playingTrack.id === matchedTrack.id && playingTrack.paused === false) ||
@@ -89,11 +91,23 @@ const App = () => {
       playlistID: playlist.id
     });
   }
-  const handleRequestDefaultDetailsDisplay = () => {
+  const handleRequestDefaultTrackDetailsDisplay = (playlist, trackIdentifier) => {
+    const matchedTrack = findMatchingTrackByIdentifier(playlist.tracks, trackIdentifier);
+    if(!matchedTrack) {
+        return;
+    }
+    setDefaultTrackDetailsDisplay({trackID: matchedTrack.id});
+  }
+  const handleRequestDefaultItemDetailsDisplay = () => {
     setDefaultItemDetailsDisplay(true);
   }
   const handleItemDetailsModalClose = () => {
     setDefaultItemDetailsDisplay(false);
+    setDefaultFormAction(null);
+  }
+  
+  const handleTrackDetailsModalClose = () => {
+    setDefaultTrackDetailsDisplay({id: null});
     setDefaultFormAction(null);
   }
   const handleRequestDefaultLyricsDisplay = () => {
@@ -173,18 +187,31 @@ const App = () => {
     });
   }
   // #endregion
+
+  // #region Funkcje pomocnicze
+  const findMatchingTrackByIdentifier = (tracks, identifier) => {
+    let matchedTrack = tracks[parseInt(romanToDecimal(identifier)) - 1];
+    if(isNaN(identifier)) {
+      matchedTrack = handleFindItemByProperty(tracks, 'title', identifier, true);
+    }
+    return matchedTrack;
+  }
+  // #endregion
   
   // #region Struktura komponentu (JSX)
   const universalProps = {
     defaultFormAction: defaultFormAction,
     defaultSearchQuery: defaultSearchQuery,
+    defaultTrackDetailsDisplay: defaultTrackDetailsDisplay,
     defaultItemDetailsDisplay: defaultItemDetailsDisplay,
     playingTrack: playingTrack,
     onRequestDefaultFormAction: handleRequestDefaultFormAction,
     onRequestDefaultSearchQuery: handleRequestDefaultSearchQuery,
     onRequestShowItemByName: handleShowItemByName,
     onRequestFindItemByName: handleFindItemByName,
-    onRequestShowItemDetails: handleRequestDefaultDetailsDisplay,
+    onRequestShowTrackDetails: handleRequestDefaultTrackDetailsDisplay,
+    onRequestHideTrackDetails: handleTrackDetailsModalClose,
+    onRequestShowItemDetails: handleRequestDefaultItemDetailsDisplay,
     onRequestHideItemDetails: handleItemDetailsModalClose,
     onRequestShowLyrics: handleRequestDefaultLyricsDisplay,
     onPlaybackToggle: handlePlaybackToggle,

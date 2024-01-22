@@ -17,6 +17,7 @@ import 'App.css';
 const App = () => {
   // #region Zmienne stanu (useState Hooks)
   const [defaultPlaylistPlaybackState, setDefaultPlaylistPlaybackState] = useState(null);
+  const [defaultLyricsDisplay, setDefaultLyricsDisplay] = useState(false);
   const [defaultFormAction, setDefaultFormAction] = useState(null);
   const [defaultSearchQuery, setDefaultSearchQuery] = useState(null);
   const [defaultPlayingTrack, setDefaultPlayingTrack] = useState({
@@ -86,6 +87,16 @@ const App = () => {
       ended: false,
       playlistID: playlist.id
     });
+  }
+  const handleRequestDefaultLyricsDisplay = () => {
+    if(playingTrack.id == null) {
+      return;
+    }
+    setDefaultLyricsDisplay(true);
+  }
+  const handleLyricsModalClose = () => {
+    setDefaultLyricsDisplay(false);
+    setDefaultFormAction(null);
   }
   const handleRequestDefaultFormAction = (action) => {
     if(['submit', 'cancel', null].includes(action)) {
@@ -164,7 +175,8 @@ const App = () => {
     onRequestDefaultSearchQuery: handleRequestDefaultSearchQuery,
     onRequestShowItemByName: handleShowItemByName,
     onRequestFindItemByName: handleFindItemByName,
-    onPlaybackToggle: handlePlaybackToggle
+    onRequestShowLyrics: handleRequestDefaultLyricsDisplay,
+    onPlaybackToggle: handlePlaybackToggle,
   }
   const playlistProps = {
     defaultPlayingTrack: defaultPlayingTrack,
@@ -175,7 +187,13 @@ const App = () => {
   }
   return (
     <>
-      <EmbeddedPlayer playbackRequest = {playbackRequest} onPlaybackToggle = {handleEmbedPlaybackToggle} />
+      <EmbeddedPlayer
+        playbackRequest = {playbackRequest}
+        defaultFormAction = {defaultFormAction}
+        defaultLyricsDisplay = {defaultLyricsDisplay}
+        onPlaybackToggle = {handleEmbedPlaybackToggle}
+        onLyricsModalClose = {handleLyricsModalClose}
+      />
       <Routes>
         <Route path = '/' element = {<HomePage {...universalProps} />} />
         <Route path = 'playlist/:id' element = {<PlaylistPage {...universalProps} {...playlistProps} />} />

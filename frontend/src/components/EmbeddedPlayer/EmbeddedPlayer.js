@@ -12,6 +12,8 @@ import Styles from 'components/EmbeddedPlayer/EmbeddedPlayer.module.scss';
 const EmbeddedPlayer = (props) => {
     // #region Zmienne globalne
     const playbackRequest = props.playbackRequest;
+    const defaultFormAction = props.defaultFormAction;
+    const defaultLyricsDisplay = props.defaultLyricsDisplay;
     // #endregion
 
     // #region Zmienne stanu (useState Hooks)
@@ -47,15 +49,7 @@ const EmbeddedPlayer = (props) => {
             console.error(error);
         }
         setEmbeddedPlayer_playingTrack(ref_playingTrack.current);
-        requestGetSynchronousLyrics(
-            ref_playingTrack.current.title,
-            ref_playingTrack.current.artistName,
-            ref_playingTrack.current.albumName,
-            Math.floor(ref_playingTrack.current.duration / 1000),
-            (lyrics) => {
-                setLyrics(lyrics);
-            }
-        );
+        getSynchronousLyrics();
     }
     const handleEmbedControllerPlaybackUpdate = (controllerState) => {
         const trackEnded = controllerState.data.position === controllerState.data.duration && !controllerState.data.isPaused;
@@ -67,6 +61,21 @@ const EmbeddedPlayer = (props) => {
     }
     const handleModalClose_lyrics = () => {
         setModal_lyrics_open(false);
+        props.onLyricsModalClose();
+    }
+    // #endregion
+
+    // #region Funkcje pomocnicze
+    const getSynchronousLyrics = () => {
+        requestGetSynchronousLyrics(
+            ref_playingTrack.current.title,
+            ref_playingTrack.current.artistName,
+            ref_playingTrack.current.albumName,
+            Math.floor(ref_playingTrack.current.duration / 1000),
+            (lyrics) => {
+                setLyrics(lyrics);
+            }
+        );
     }
     // #endregion
 
@@ -143,6 +152,12 @@ const EmbeddedPlayer = (props) => {
         props.onPlaybackToggle(embeddedPlayerPaused, embeddedPlayer_playingTrack);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[embeddedPlayerPaused])
+    useEffect(() => {
+        if(!defaultLyricsDisplay) {
+            return;
+        }
+        setModal_lyrics_open(true);
+    },[defaultLyricsDisplay]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu
@@ -152,6 +167,7 @@ const EmbeddedPlayer = (props) => {
             createPortal(<LyricsModal
                 lyrics = {lyrics}
                 currentTimestamp = {currentTimestamp_ms}
+                defaultAction = {defaultFormAction}
                 onClose = {handleModalClose_lyrics}
             />, document.body);
     }

@@ -1,8 +1,23 @@
+import { useEffect } from 'react';
+
 import Modal from 'components/generic/Modal';
 
 import Styles from 'components/NavBar/AboutModal.module.scss';
 
 const AboutModal = (props) => {
+    // #region Zmienne globalne
+    const defaultAction = props.defaultAction;
+    // #endregion
+
+    // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        console.log(defaultAction)
+        if(defaultAction === 'cancel') {
+            props.onClose();
+        }
+    },[defaultAction]);
+    // #endregion
+
     // #region Struktura komponentu (JSX)
     return(
         <Modal title = 'About' id = {'about'} onClose = {props.onClose} styles = {Styles}>

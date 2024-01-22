@@ -17,6 +17,7 @@ const Album = (props) => {
     // #region Zmienne globalne
     const defaultPlayingTrack = props.defaultPlayingTrack;
     const defaultPlaybackState = props.defaultPlaybackState;
+    const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     const albumID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
@@ -120,13 +121,16 @@ const Album = (props) => {
     return (
         <div id = 'page'>
             <NavBar
+                defaultFormAction = {defaultFormAction}
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
                 onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(album, targetState, trackIdentifier)}
+                onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
+                onFormActionVoiceCommand = {props.onRequestDefaultFormAction}
             />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList

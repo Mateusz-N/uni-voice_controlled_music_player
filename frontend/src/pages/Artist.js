@@ -17,6 +17,7 @@ import Styles from 'pages/Home.module.scss';
 
 const Artist = (props) => {
     // #region Zmienne globalne
+    const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     const artistID = window.location.href.split('/').pop();
     const playingTrack = props.playingTrack;
@@ -128,14 +129,17 @@ const Artist = (props) => {
     return (
         <div id = 'page'>
             <NavBar
+                defaultFormAction = {defaultFormAction}
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onShowItemVoiceCommand = {(itemType, itemName) => props.onRequestShowItemByName(itemType, albums, itemName)}
                 onShowAlbumVoiceCommand = {handleShowAlbumByName}
+                onFormActionVoiceCommand = {props.onRequestDefaultFormAction}
             />
             <CatalogBrowser className = 'collectionBrowser hasOverviewPanel'>
                 <h1 id = {Styles.catalogHeader}>

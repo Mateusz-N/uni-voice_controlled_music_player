@@ -190,12 +190,6 @@ const Playlist = (props) => {
         setDeletionRequested(false);
         props.onRequestDefaultFormAction(null);
     }
-    const handleSubmitAllForms = () => {
-        props.onRequestDefaultFormAction('submit');
-    }
-    const handleCancelAllForms = () => {
-        props.onRequestDefaultFormAction('cancel');
-    }
     // #endregion
 
     // #region Funkcje pomocnicze
@@ -264,16 +258,17 @@ const Playlist = (props) => {
         <div id = 'page'>
             {toastNotification}
             <NavBar
+                defaultFormAction = {defaultFormAction}
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onTogglePlaylistPlaybackVoiceCommand = {props.onRequestDefaultPlaylistPlaybackState}
                 onToggleTrackPlaybackVoiceCommand = {(targetState, trackIdentifier) => props.onRequestDefaultTrackPlaybackState(playlist, targetState, trackIdentifier)}
+                onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistVoiceCommand}
-                onSubmitFormVoiceCommand = {handleSubmitAllForms}
-                onCancelFormVoiceCommand = {handleCancelAllForms}
+                onFormActionVoiceCommand = {props.onRequestDefaultFormAction}
             />
             <CatalogBrowser className = 'playlistBrowser hasOverviewPanel'>
                 <TrackList

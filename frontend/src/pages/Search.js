@@ -14,6 +14,7 @@ import Styles from 'pages/Home.module.scss';
 
 const Search = (props) => {
     // #region Zmienne globlane
+    const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     // #endregion
 
@@ -71,13 +72,16 @@ const Search = (props) => {
     return (
         <div id = 'page'>
             <NavBar
+                defaultFormAction = {defaultFormAction}
                 defaultSearchQuery = {defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onShowItemVoiceCommand = {(itemType, itemName) => props.onRequestShowItemByName(itemType, results.filter(result => result.type === itemType), itemName)}
+                onFormActionVoiceCommand = {props.onRequestDefaultFormAction}
             />
             <CatalogBrowser>
                 <h1 id = {Styles.catalogHeader}>

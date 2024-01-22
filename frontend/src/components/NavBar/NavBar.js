@@ -18,6 +18,7 @@ import Styles from 'components/NavBar/NavBar.module.scss';
 
 const NavBar = (props) => {
     // #region Zmienne globalne
+    const defaultFormAction = props.defaultFormAction;
     const defaultSearchQuery = props.defaultSearchQuery;
     // #endregion
 
@@ -93,6 +94,7 @@ const NavBar = (props) => {
     }
     const handleModalClose_about = () => {
         setModal_about_open(false);
+        props.onFormActionVoiceCommand(null);
     }
     const handleReturnHome = () => {
         navigate('/');
@@ -130,6 +132,7 @@ const NavBar = (props) => {
     if(modal_about_open) {
         modal_about =
             createPortal(<AboutModal
+                defaultAction = {defaultFormAction}
                 onClose = {handleModalClose_about}
             />, document.body);
     }
@@ -159,6 +162,7 @@ const NavBar = (props) => {
                         onReturnHomeVoiceCommand = {handleReturnHome}
                         onTogglePlaylistPlaybackVoiceCommand = {props.onTogglePlaylistPlaybackVoiceCommand}
                         onToggleTrackPlaybackVoiceCommand = {props.onToggleTrackPlaybackVoiceCommand}
+                        onShowLyricsVoiceCommand = {props.onShowLyricsVoiceCommand}
                         onSearchVoiceCommand = {props.onSearchVoiceCommand}
                         onShowItemVoiceCommand = {props.onShowItemVoiceCommand}
                         onShowAlbumVoiceCommand = {props.onShowAlbumVoiceCommand}
@@ -166,8 +170,7 @@ const NavBar = (props) => {
                         onCreatePlaylistVoiceCommand = {props.onCreatePlaylistVoiceCommand}
                         onGeneratePlaylistVoiceCommand = {props.onGeneratePlaylistVoiceCommand}
                         onDeletePlaylistVoiceCommand = {props.onDeletePlaylistVoiceCommand}
-                        onSubmitFormVoiceCommand = {props.onSubmitFormVoiceCommand}
-                        onCancelFormVoiceCommand = {props.onCancelFormVoiceCommand}
+                        onFormActionVoiceCommand = {props.onFormActionVoiceCommand}
                         onShowAboutPageVoiceCommand = {handleSelectAbout}
                         onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
                         onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}

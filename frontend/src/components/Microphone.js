@@ -163,10 +163,10 @@ const Microphone = (props) => {
                 props.onDeletePlaylistVoiceCommand(getCommandParameter(command, 'usuń playlistę'));
             }
             if(['ok', 'okej', 'zatwierdź', 'potwierdź', 'tak', 'wyślij'].includes(command)) {
-                props.onSubmitFormVoiceCommand();
+                props.onFormActionVoiceCommand('submit');
             }
             if(['anuluj', 'nie', 'zamknij'].includes(command)) {
-                props.onCancelFormVoiceCommand();
+                props.onFormActionVoiceCommand('cancel');
             }
             if(['o aplikacji', 'o stronie', 'informacje o aplikacji', 'informacje o stronie'].includes(command)) {
                 props.onShowAboutPageVoiceCommand();
@@ -179,6 +179,9 @@ const Microphone = (props) => {
             }
             if(['zatrzymaj', 'zapauzuj', 'pauzuj'].includes(command.split(' ')[0])) {
                 parsePlaybackToggleCommand(command, 'pause');
+            }
+            if(command === 'pokaż tekst') {
+                props.onShowLyricsVoiceCommand();
             }
             if(command.startsWith('usuń ziarno')) {
                 props.onRemovePlaylistGeneratorSeedVoiceCommand(getCommandParameter(command, 'usuń ziarno'));

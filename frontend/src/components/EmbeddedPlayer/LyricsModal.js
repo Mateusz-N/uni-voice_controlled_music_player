@@ -39,6 +39,7 @@ const LyricsModal = (props) => {
     const lyrics = props.lyrics;
     const blankLineIndexes = [];
     const index = props.index;
+    const defaultAction = props.defaultAction;
 
     let lyricLines = lyrics.plainLyrics.split(/(\n)/);
     let syncedLyricLines;
@@ -66,7 +67,12 @@ const LyricsModal = (props) => {
             setNotification({message: 'Couldn\'t find synchronous lyrics. Displaying static lyrics instead.', type: 'information'});
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    },[]);
+    useEffect(() => {
+        if(defaultAction === 'cancel') {
+            props.onClose();
+        }
+    },[defaultAction]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu

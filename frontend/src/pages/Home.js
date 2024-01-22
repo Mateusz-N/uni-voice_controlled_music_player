@@ -128,12 +128,6 @@ const Home = (props) => {
         setIdOfPlaylistToDelete(null);
         props.onRequestDefaultFormAction(null);
     }
-    const handleSubmitAllForms = () => {
-        props.onRequestDefaultFormAction('submit');
-    }
-    const handleCancelAllForms = () => {
-        props.onRequestDefaultFormAction('cancel');
-    }
     const handleRequestAddPlaylistGeneratorSeed = () => {
         setPlaylistGenerator_addSeed(true);
     }
@@ -214,18 +208,19 @@ const Home = (props) => {
         <div id = 'page'>
             {toastNotification}
             <NavBar
+                defaultFormAction = {defaultFormAction}
                 defaultSearchQuery = {playlistGeneratorModalOpen ? null : defaultSearchQuery}
                 onLogin = {handleLogin}
                 onLogout = {handleLogout}
                 onSearch = {() => props.onRequestDefaultSearchQuery(null)}
                 onSyncWithSpotifyVoiceCommand = {handleSyncWithSpotify}
+                onShowLyricsVoiceCommand = {props.onRequestShowLyrics}
                 onSearchVoiceCommand = {(query) => props.onRequestDefaultSearchQuery(query)}
                 onShowItemVoiceCommand = {(itemType, itemName) => props.onRequestShowItemByName(itemType, playlists, itemName)}
                 onCreatePlaylistVoiceCommand = {handleCreatePlaylist}
                 onGeneratePlaylistVoiceCommand = {handleOpenPlaylistGenerator}
                 onDeletePlaylistVoiceCommand = {handleDeletePlaylistByName}
-                onSubmitFormVoiceCommand = {handleSubmitAllForms}
-                onCancelFormVoiceCommand = {handleCancelAllForms}
+                onFormActionVoiceCommand = {props.onRequestDefaultFormAction}
                 onAddPlaylistGeneratorSeedVoiceCommand = {handleRequestAddPlaylistGeneratorSeed}
                 onRemovePlaylistGeneratorSeedVoiceCommand = {handleRequestRemovePlaylistGeneratorSeed}
                 onChangePlaylistGeneratorSeedTypeVoiceCommand = {handleRequestChangePlaylistGeneratorSeedType}

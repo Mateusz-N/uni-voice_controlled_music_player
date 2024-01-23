@@ -72,10 +72,6 @@ const App = () => {
     let matchedTrack = handleFindItemByProperty(playlist.tracks, 'id', playingTrack.id);
     if(targetState === 'play' && trackIdentifier.length > 0) {
       matchedTrack = findMatchingTrackByIdentifier(playlist.tracks, trackIdentifier);
-      // matchedTrack = playlist.tracks[parseInt(romanToDecimal(trackIdentifier)) - 1];
-      // if(isNaN(trackIdentifier)) {
-      //   matchedTrack = handleFindItemByProperty(playlist.tracks, 'title', trackIdentifier, true);
-      // }
     }
     if(!matchedTrack ||
       (targetState === 'play' && playingTrack.id === matchedTrack.id && playingTrack.paused === false) ||

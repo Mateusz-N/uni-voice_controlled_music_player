@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie';
-
 import { millisecondsToFormattedTime } from 'common/auxiliaryFunctions';
 
 import placeholderAlbumCoverSrc from 'resources/albumCover_placeholder.png';

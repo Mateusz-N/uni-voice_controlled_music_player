@@ -3,6 +3,8 @@ const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const socketIO = require('socket.io');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -31,21 +33,23 @@ const ssl = {
   key: privateKey,
   cert: certificate
 }
+const corsRules = {
+  origin: [CLIENT_URL_HTTP, CLIENT_URL_HTTPS],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}
 const limiter = rateLimit({
 	windowMs: 60 * 1000,
 	limit: 100,
 	standardHeaders: 'draft-7',
 	legacyHeaders: false,
-})
+});
 
-app.use(cors({
-  origin: [CLIENT_URL_HTTP, CLIENT_URL_HTTPS],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+app.use(cors(corsRules));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(limiter)
 app.use('/spotify', spotifyRouter);
@@ -54,6 +58,17 @@ app.use('/lrclib', lrclibRouter);
 
 const serverHTTP = http.createServer(app);
 const serverHTTPS = https.createServer(ssl, app);
+const io = socketIO(serverHTTPS, {
+  cors: corsRules
+});
+
+/* Punkt końcowy obsługujący komendy głosowe z aplikacji mobilnej i emitujący je dalej do klienta aplikacji przeglądarkowej */
+app.post('/remote-voice-command', (req, res) => {
+  const { command } = req.body;
+  io.emit('voice-command', command);
+  res.json({ success: true });
+  console.log(command);
+});
 
 serverHTTP.listen(SERVER_PORT_HTTP, () => {
   console.log(`Serwer HTTP nasłuchuje na porcie ${SERVER_PORT_HTTP}`);

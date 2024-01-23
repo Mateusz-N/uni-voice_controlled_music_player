@@ -24,6 +24,7 @@ const ConfirmModal = (props) => {
             props.onCancel();
             return;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultAction]);
     // #endregion
 

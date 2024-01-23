@@ -102,6 +102,7 @@ const SeedSearchModal = (props) => {
             return;
         }
         setSelectedSeedType(matchedSeedType.option.content);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[seedTypeIdentifier]);
     useEffect(() => {
         if(!searchedSeed) {
@@ -118,6 +119,7 @@ const SeedSearchModal = (props) => {
             return;
         }
         handleSelectSeed(matchedSeed.id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[selectedSeedIdentifier]);
     useEffect(() => {
         if(defaultAction === 'cancel') {

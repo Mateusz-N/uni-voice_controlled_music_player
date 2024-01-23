@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef} from 'react';
 import { createPortal } from 'react-dom';
 
+import io from 'socket.io-client';
+
 import microphone_idle from 'resources/microphone_idle.svg';
 import microphone_active from 'resources/microphone_active.svg';
 
@@ -17,6 +19,7 @@ const Microphone = (props) => {
     const [microphoneEnabled, setMicrophoneEnabled] = useState(localStorage.getItem('microphoneEnabled') === 'true');
     const [microphoneActive, setMicrophoneActive] = useState(localStorage.getItem('microphoneActive') === 'true');
     const [notification, setNotification] = useState({});
+    const [remoteCommand, setRemoteCommand] = useState('');
 
     // #region Zmienne referencji (useRef Hooks)
     const ref_recognition = useRef(null);
@@ -516,6 +519,13 @@ const Microphone = (props) => {
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         setupSpeechRecognition();
+        const socket = io('https://localhost:3060');
+        socket.on('voice-command', (cmd) => {
+          // Handle the received voice command
+          console.log('Received voice command:', cmd);
+          setRemoteCommand(cmd);
+        });
+        return () => socket.disconnect();
     },[]);
     useEffect(() => {
         if(ref_microphoneEnabled.current === true) {

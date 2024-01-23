@@ -132,8 +132,8 @@ const TrackListItem = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultPlaylistAction]);
     useEffect(() => {
-        setTrackSaved(props.track.saved);
-    },[props]);
+        setTrackSaved(track.saved);
+    },[track.saved]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu, obsługa wartości null/undefined

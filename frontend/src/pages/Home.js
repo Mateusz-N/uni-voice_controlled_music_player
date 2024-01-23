@@ -118,7 +118,7 @@ const Home = (props) => {
         navigate(`/playlist/${newPlaylistID}`);
     }
     const handleDeletePlaylistByName = (playlistName) => {
-        const matchedPlaylist = props.onRequestFindPlaylistByName(playlists, playlistName);
+        const matchedPlaylist = props.onRequestFindItemByName(playlists, playlistName);
         if(!matchedPlaylist) {
             return;
         }

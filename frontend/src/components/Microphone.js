@@ -47,6 +47,7 @@ const Microphone = (props) => {
             return;
         }
         localStorage.setItem('microphoneEnabled', 'false');
+        localStorage.setItem('microphoneActive', 'false');
         ref_recognition.current.onend = null;
         ref_recognition.current.stop();
     }
@@ -60,7 +61,11 @@ const Microphone = (props) => {
             'wyłącz mikrofon', 'zaloguj', 'wyloguj', 'synchronizuj', 'strona główna', 'pokaż katalog', 'szukaj', 'pokaż playlistę', 'pokaż album', 'pokaż wykonawcę',
             'utwórz playlistę', 'nowa playlista', 'stwórz playlistę', 'generuj playlistę', 'otwórz generator', 'usuń playlistę', 'ok', 'okej', 'zatwierdź', 'potwierdź', 'tak',
             'wyślij', 'anuluj', 'nie', 'zamknij', 'o aplikacji', 'o stronie', 'informacje o aplikacji', 'informacje o stronie', 'dodaj ziarno', 'nowe ziarno', 'usuń ziarno',
-            'typ ziarna', 'wybierz', 'minimalna akustyczność', 'docelowa akustyczność', 'maksymalna akustyczność'
+            'typ ziarna', 'wybierz', 'odtwarzaj', 'odtwórz', 'wznów', 'zatrzymaj', 'zapauzuj', 'pauzuj', 'dodaj utwór', 'usuń utwór', 'do playlisty', 'z playlisty',
+            'do polubionych', 'z polubionych', 'pokaż szczegóły utworu', 'zaznacz', 'odznacz', 'pokaż tekst', 'pokaż szczegóły albumu', 'pokaż szczegóły wykonawcy',
+            'zmień nazwę playlisty na', 'zmień playlistę na publiczną', 'zmień playlistę na prywatną', 'zmień opis playlisty na', 'minimalna', 'docelowa', 'maksymalna',
+            'akustyczność', 'tanczeność', 'długość', 'energia', 'instrumentalność', 'tonacja', 'żywość', 'głośność', 'skala', 'popularność', 'mowa', 'tempo', 'metrum',
+            'pozytywność'
         ];
         const grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands.join(' | ') + ';';
         const recognition = new SpeechRecognition();

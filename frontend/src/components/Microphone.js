@@ -520,8 +520,6 @@ const Microphone = (props) => {
         setupSpeechRecognition();
         const socket = io(process.env.REACT_APP_SERVER_URL);
         socket.on('voice-command', (command) => {
-            console.log('Received voice command:', command);
-        //   setRemoteCommand(cmd);
             switchSpeechCommand(command);
         });
         return () => socket.disconnect();

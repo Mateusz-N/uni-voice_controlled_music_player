@@ -103,7 +103,6 @@ const App = () => {
     setDefaultItemDetailsDisplay(true);
   }
   const handleSelectAction = () => {
-    console.log('resetting select')
     setDefaultSelectAction({action: null, itemIdentifier: null});
   }
   const handleItemDetailsModalClose = () => {

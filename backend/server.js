@@ -67,7 +67,6 @@ app.post('/remote-voice-command', (req, res) => {
   const { command } = req.body;
   io.emit('voice-command', command);
   res.json({ success: true });
-  console.log(command);
 });
 
 serverHTTP.listen(SERVER_PORT_HTTP, () => {

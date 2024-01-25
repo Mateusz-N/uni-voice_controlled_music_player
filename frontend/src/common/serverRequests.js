@@ -475,3 +475,45 @@ export const requestGetLyrics = async (trackName, artistName, callback) => {
         })
         .catch(console.error);
 }
+
+export const requestGetPreferences = async(userID, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/preferences/${userID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
+}
+
+export const requestUpdatePreference = async(userID, preferenceName, newValue, callback) => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/spotify/preferences/${userID}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            preferenceName: preferenceName,
+            newValue: newValue
+        }),
+        credentials: 'include'
+    })
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            callback(data);
+        })
+        .catch(console.error);
+}

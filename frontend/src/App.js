@@ -7,7 +7,6 @@ import HomePage from 'pages/Home';
 import PlaylistPage from 'pages/Playlist';
 import AlbumPage from 'pages/Album';
 import ArtistPage from 'pages/Artist';
-import SettingsPage from "pages/Settings";
 import SearchPage from "pages/Search";
 
 import EmbeddedPlayer from 'components/EmbeddedPlayer/EmbeddedPlayer';
@@ -257,7 +256,6 @@ const App = () => {
         <Route path = 'playlist/:id' element = {<PlaylistPage {...universalProps} {...playlistProps} />} />
         <Route path = 'album/:id' element = {<AlbumPage {...universalProps} {...playlistProps} />} />
         <Route path = 'artist/:id' element = {<ArtistPage {...universalProps} />} />
-        <Route path = 'settings' element = {<SettingsPage {...universalProps} />} />
         <Route path = 'search' element = {<SearchPage {...universalProps} />} />
       </Routes>
     </> 

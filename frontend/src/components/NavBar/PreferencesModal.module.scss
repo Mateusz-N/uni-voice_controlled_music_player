@@ -1,0 +1,27 @@
+.modalWindow {
+    width: 400px;
+}
+
+.preferences_main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    text-align: justify;
+}
+
+.preferenceList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+
+    list-style-type: none;
+}
+
+.preference {
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+}

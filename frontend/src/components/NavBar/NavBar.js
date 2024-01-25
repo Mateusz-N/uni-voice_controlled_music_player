@@ -12,6 +12,7 @@ import Microphone from 'components/Microphone';
 import SearchBar from 'components/generic/SearchBar';
 import ContextMenu from 'components/generic/ContextMenu';
 import AboutModal from 'components/NavBar/AboutModal';
+import PreferencesModal from 'components/NavBar/PreferencesModal';
 import Toast from 'components/generic/Toast';
 
 import Styles from 'components/NavBar/NavBar.module.scss';
@@ -27,6 +28,7 @@ const NavBar = (props) => {
     const [profileContextMenuExpanded, setProfileContextMenuExpanded] = useState(false);
     const [spotifyAuthURL, setSpotifyAuthURL] = useState(null);
     const [modal_about_open, setModal_about_open] = useState(false);
+    const [modal_preferences_open, setModal_preferences_open] = useState(false);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -52,6 +54,7 @@ const NavBar = (props) => {
                     Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
                     Cookies.set('userName', data.userName, {secure: true, sameSite: 'strict'});
                     Cookies.set('profilePicURL', data.profilePicURL, {secure: true, sameSite: 'strict'});
+                    Cookies.set('preferences', JSON.stringify(data.preferences), {secure: true, sameSite: 'strict'});
                     setLoggedIn(true);
                     props.onLogin();
                     setNotification(data.message);
@@ -92,8 +95,15 @@ const NavBar = (props) => {
     const handleSelectAbout = () => {
         setModal_about_open(true);
     }
+    const handleSelectPreferences = () => {
+        setModal_preferences_open(true);
+    }
     const handleModalClose_about = () => {
         setModal_about_open(false);
+        props.onFormActionVoiceCommand(null);
+    }
+    const handleModalClose_preferences = () => {
+        setModal_preferences_open(false);
         props.onFormActionVoiceCommand(null);
     }
     const handleReturnHome = () => {
@@ -136,6 +146,14 @@ const NavBar = (props) => {
                 onClose = {handleModalClose_about}
             />, document.body);
     }
+    let modal_preferences = null;
+    if(modal_preferences_open) {
+        modal_preferences =
+            createPortal(<PreferencesModal
+                defaultAction = {defaultFormAction}
+                onClose = {handleModalClose_preferences}
+            />, document.body);
+    }
     let toastNotification = null;
     if(notification.message) {
         toastNotification =
@@ -176,7 +194,8 @@ const NavBar = (props) => {
                         onDeletePlaylistVoiceCommand = {props.onDeletePlaylistVoiceCommand}
                         onFormActionVoiceCommand = {props.onFormActionVoiceCommand}
                         onToggleSelectVoiceCommand = {props.onToggleSelectVoiceCommand}
-                        onShowAboutPageVoiceCommand = {handleSelectAbout}
+                        onShowAboutModalVoiceCommand = {handleSelectAbout}
+                        onShowPreferencesModalVoiceCommand = {handleSelectPreferences}
                         onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
                         onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}
                         onChangePlaylistGeneratorSeedTypeVoiceCommand = {props.onChangePlaylistGeneratorSeedTypeVoiceCommand}
@@ -204,9 +223,10 @@ const NavBar = (props) => {
                         <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
                     }
                     {modal_about}
+                    {modal_preferences}
                     <ContextMenu expanded = {profileContextMenuExpanded} context = 'profile' styles = {Styles}>
                         <li id = {Styles.profileContextMenu_about} onClick = {handleSelectAbout}>About</li>
-                        <li id = {Styles.profileContextMenu_settings}><Link to = '/settings'>Settings</Link></li>
+                        <li id = {Styles.profileContextMenu_settings} onClick = {handleSelectPreferences}>Preferences</li>
                         <li id = {Styles.profileContextMenu_disconnect} onClick = {handleLogout} dangerous = 'true'>Disconnect</li>
                     </ContextMenu>
                 </section>

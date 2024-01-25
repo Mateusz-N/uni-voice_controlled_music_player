@@ -185,7 +185,11 @@ const Microphone = (props) => {
                 return;
             }
             if(['o aplikacji', 'o stronie', 'informacje o aplikacji', 'informacje o stronie'].includes(command)) {
-                props.onShowAboutPageVoiceCommand();
+                props.onShowAboutModalVoiceCommand();
+                return;
+            }
+            if(command === 'preferencje') {
+                props.onShowPreferencesModalVoiceCommand();
                 return;
             }
             if(['dodaj ziarno', 'nowe ziarno'].includes(command)) {

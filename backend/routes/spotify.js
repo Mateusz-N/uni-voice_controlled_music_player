@@ -228,10 +228,23 @@ router.get('/user', async (req, res) => {
           type: 'success'
         }
       }
-      SpotifyModel.addUserProfile(accessToken, profile.userID, profile.userName, profile.profilePicURL);
-      res.cookie('userID', profile.userID);
-      res.cookie('userName', profile.userName);
-      res.status(200).send(profile);
+      SpotifyModel.addUserProfile(accessToken, profile.userID, profile.userName, profile.profilePicURL, () => {
+        SpotifyModel.getUserPreferences(profile.userID, (preferences) => {
+          if(preferences.length > 0) {
+            profile.preferences = preferences[0];
+            res.cookie('userID', profile.userID);
+            res.cookie('userName', profile.userName);
+            res.status(200).send(profile);
+            return;
+          }
+          res.status(500).send({
+            message: {
+              message: 'Something went wrong!',
+              type: 'error'
+            }
+          });
+        })
+      });
     }
     else {
       res.status(res_profile.status).send({
@@ -243,7 +256,11 @@ router.get('/user', async (req, res) => {
     SpotifyModel.getUserProfile(accessToken, (results) => {
       // Jeśli w bazie znaleziono profil, należy go zwrócić...
       if(results.length > 0) {
-        res.status(200).send(results);
+        const profile = results[0];
+        SpotifyModel.getUserPreferences(profile.id, (results) => {
+          profile.preferences = results[0];
+          res.status(200).send(results);
+        });
         return;
       }
       // ...W przyciwnym razie, należy pobrać go z API
@@ -253,6 +270,31 @@ router.get('/user', async (req, res) => {
   else if(requestDestination === 'api') {
     SpotifyService.getUserProfile(accessToken, handleResponse);
   }
+});
+
+/* Pobranie preferencji użytkownika */
+router.get('/preferences/:userID', async (req, res) => {
+    const userID = req.params.userID;
+    SpotifyModel.getUserPreferences(userID, (results) => {
+        if(results.length > 0) {
+          res.status(200).send(results[0]);
+          return;
+        }
+    });
+});
+
+/* Aktualizacja preferencji użytkownika */
+router.put('/preferences/:userID', async (req, res) => {
+    const userID = req.params.userID;
+    const preferenceName = req.body.preferenceName;
+    const newValue = req.body.newValue;
+    SpotifyModel.updateUserPreference(userID, preferenceName, newValue);
+    res.status(200).send({
+      message: {
+        message: 'Preference updated successfully!',
+        type: 'success'
+      }
+    });
 });
 
 /* Pobranie list odtwarzania w serwisie Spotify zalogowanego użytkownika */

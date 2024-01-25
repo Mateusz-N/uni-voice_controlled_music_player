@@ -68,6 +68,7 @@ app.post('/remote-voice-command', (req, res) => {
   io.emit('voice-command', command);
   res.json({ success: true });
 });
+app.get
 
 serverHTTP.listen(SERVER_PORT_HTTP, () => {
   console.log(`Serwer HTTP nasłuchuje na porcie ${SERVER_PORT_HTTP}`);

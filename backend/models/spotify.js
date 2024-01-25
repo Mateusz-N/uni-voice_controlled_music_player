@@ -15,7 +15,7 @@ module.exports = {
             console.log('DB: Connection unregistered!');
         });
     },
-    addUserProfile: (accessToken, userID, userName, profilePicURL) => {
+    addUserProfile: (accessToken, userID, userName, profilePicURL, callback) => {
         const query = `INSERT IGNORE INTO user(id, username, profile_picture) VALUES('${userID}', '${userName}', '${profilePicURL}')`;
         dbConnection.query(query, (err) => {
             if(err) throw err;
@@ -25,6 +25,12 @@ module.exports = {
             dbConnection.query(query, (err) => {
                 if(err) throw err;
                 console.log('DB: Access token attached to user!');
+                const query = `INSERT IGNORE INTO user_preferences(user_id, auto_spotify_sync, default_voice_input_enabled) VALUES('${userID}', false, false)`;
+                dbConnection.query(query, (err) => {
+                    if(err) throw err;
+                    console.log('DB: User preferences set!');
+                    callback();
+                })
             })
         });
     },
@@ -33,6 +39,20 @@ module.exports = {
         dbConnection.query(query, (err, rows) => {
             if(err) throw err;
             callback(rows);
+        });
+    },
+    getUserPreferences: (userID, callback) => {
+        const query = `SELECT * FROM user_preferences WHERE user_id = '${userID}'`;
+        dbConnection.query(query, (err, rows) => {
+            if(err) throw err;
+            callback(rows);
+        });
+    },
+    updateUserPreference: (userID, preferenceName, newValue) => {
+        const query = `UPDATE user_preferences SET ${preferenceName} = ${newValue} WHERE user_id = '${userID}'`;
+        dbConnection.query(query, (err) => {
+            if(err) throw err;
+            console.log('DB: Preference updated!');
         });
     },
     getUserPlaylists: (userID, callback) => {

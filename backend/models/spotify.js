@@ -25,7 +25,7 @@ module.exports = {
             dbConnection.query(query, (err) => {
                 if(err) throw err;
                 console.log('DB: Access token attached to user!');
-                const query = `INSERT IGNORE INTO user_preferences(user_id, auto_spotify_sync, default_voice_input_enabled) VALUES('${userID}', false, false)`;
+                const query = `INSERT IGNORE INTO user_preferences(user_id, auto_spotify_sync, single_command_mode) VALUES('${userID}', false, false)`;
                 dbConnection.query(query, (err) => {
                     if(err) throw err;
                     console.log('DB: User preferences set!');

@@ -29,6 +29,7 @@ const NavBar = (props) => {
     const [spotifyAuthURL, setSpotifyAuthURL] = useState(null);
     const [modal_about_open, setModal_about_open] = useState(false);
     const [modal_preferences_open, setModal_preferences_open] = useState(false);
+    const [defaultPreference, setDefaultPreference] = useState(null);
     const [notification, setNotification] = useState({});
     // #endregion
 
@@ -106,6 +107,12 @@ const NavBar = (props) => {
         setModal_preferences_open(false);
         props.onFormActionVoiceCommand(null);
     }
+    const handleTogglePreferenceVoiceCommand = (preferenceName, newValue) => {
+        setDefaultPreference({name: preferenceName, value: newValue});
+    }
+    const handlePreferenceChange = () => {
+        setDefaultPreference(null);
+    }
     const handleReturnHome = () => {
         navigate('/');
     }
@@ -150,8 +157,10 @@ const NavBar = (props) => {
     if(modal_preferences_open) {
         modal_preferences =
             createPortal(<PreferencesModal
+                defaultPreference = {defaultPreference}
                 defaultAction = {defaultFormAction}
                 onClose = {handleModalClose_preferences}
+                onPreferenceChange = {handlePreferenceChange}
             />, document.body);
     }
     let toastNotification = null;
@@ -196,6 +205,7 @@ const NavBar = (props) => {
                         onToggleSelectVoiceCommand = {props.onToggleSelectVoiceCommand}
                         onShowAboutModalVoiceCommand = {handleSelectAbout}
                         onShowPreferencesModalVoiceCommand = {handleSelectPreferences}
+                        onTogglePreference = {handleTogglePreferenceVoiceCommand}
                         onAddPlaylistGeneratorSeedVoiceCommand = {props.onAddPlaylistGeneratorSeedVoiceCommand}
                         onRemovePlaylistGeneratorSeedVoiceCommand = {props.onRemovePlaylistGeneratorSeedVoiceCommand}
                         onChangePlaylistGeneratorSeedTypeVoiceCommand = {props.onChangePlaylistGeneratorSeedTypeVoiceCommand}

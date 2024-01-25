@@ -12,6 +12,7 @@ import Styles from 'components/NavBar/PreferencesModal.module.scss';
 
 const PreferencesModal = (props) => {
     // #region Zmienne globalne
+    const defaultPreference = props.defaultPreference;
     const defaultAction = props.defaultAction;
     // #endregion
 
@@ -21,6 +22,8 @@ const PreferencesModal = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleUpdatePreference = (preferenceName, newValue) => {
+        console.log(preferenceName, newValue)
+        props.onPreferenceChange();
         requestUpdatePreference(Cookies.get('userID'), preferenceName, newValue, (data) => {
             setNotification(data.message);
             if(data.message.type === 'success') {
@@ -39,6 +42,11 @@ const PreferencesModal = (props) => {
     // #endregion
 
     // #region Wywołania zwrotne (useEffect Hooks)
+    useEffect(() => {
+        if(defaultPreference) {
+            handleUpdatePreference(defaultPreference.name, defaultPreference.value);
+        }
+    },[defaultPreference]);
     useEffect(() => {
         if(defaultAction === 'cancel') {
             props.onClose();
@@ -88,28 +96,28 @@ const PreferencesModal = (props) => {
                             />
                         </li>
                         <li className = {Styles.preference}>
-                            <span className = {Styles.preferences_preferenceName}>Default voice input state: </span>
+                            <span className = {Styles.preferences_preferenceName}>Single-command mode: </span>
                             <Select
-                                id = {Styles['preference_defaultVoiceInputState']}
-                                name = 'defaultVoiceInputState'
-                                defaultValue = {getPreferenceValueFromCookies('default_voice_input_enabled') === 1 ? 'yes' : 'no'}
+                                id = {Styles['preference_singleCommandMode']}
+                                name = 'singleCommandMode'
+                                defaultValue = {getPreferenceValueFromCookies('single_command_mode') === 1 ? 'on' : 'off'}
                                 children = {[{
                                     option: {
                                         attributes: {
-                                            name: 'enabled',
-                                            value: 'enabled'
+                                            name: 'on',
+                                            value: 'on'
                                         },
-                                        content: 'enabled'
+                                        content: 'on'
                                 }}, {
                                     option: {
                                         attributes: {
-                                            name: 'disabled',
-                                            value: 'disabled'
+                                            name: 'off',
+                                            value: 'off'
                                         },
-                                        content: 'disabled'
+                                        content: 'off'
                                     }
                                 }]}
-                                onSelection = {(selectedValue) => handleUpdatePreference('default_voice_input_enabled', selectedValue === 'yes' ? 1 : 0)}
+                                onSelection = {(selectedValue) => handleUpdatePreference('single_command_mode', selectedValue === 'on' ? 1 : 0)}
                             />
                         </li>
                     </ul>

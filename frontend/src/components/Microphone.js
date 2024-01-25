@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef} from 'react';
 import { createPortal } from 'react-dom';
+import Cookies from 'js-cookie';
 
 import io from 'socket.io-client';
 
@@ -52,6 +53,8 @@ const Microphone = (props) => {
         localStorage.setItem('microphoneActive', 'false');
         ref_recognition.current.onend = null;
         ref_recognition.current.stop();
+        ref_microphoneEnabled.current = false;
+        setMicrophoneEnabled(false);
     }
     // #endregion
 
@@ -67,7 +70,7 @@ const Microphone = (props) => {
             'do polubionych', 'z polubionych', 'pokaż szczegóły utworu', 'zaznacz', 'odznacz', 'pokaż tekst', 'pokaż szczegóły albumu', 'pokaż szczegóły wykonawcy',
             'zmień nazwę playlisty na', 'zmień playlistę na publiczną', 'zmień playlistę na prywatną', 'zmień opis playlisty na', 'minimalna', 'docelowa', 'maksymalna',
             'akustyczność', 'tanczeność', 'długość', 'energia', 'instrumentalność', 'tonacja', 'żywość', 'głośność', 'skala', 'popularność', 'mowa', 'tempo', 'metrum',
-            'pozytywność'
+            'pozytywność', 'włącz automatyczną synchronizację', 'wyłącz automatyczną synchronizację', 'włącz tryb pojedynczych poleceń', 'wyłącz tryb pojedynczych poleceń'
         ];
         const grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands.join(' | ') + ';';
         const recognition = new SpeechRecognition();
@@ -95,10 +98,14 @@ const Microphone = (props) => {
         }
         ref_recognition.current.onend = () => {
             console.log('end')
+            const userPreferences = Cookies.get('preferences');
+            const singleCommandMode = userPreferences ? JSON.parse(userPreferences).single_command_mode : false;
             // Włącz ponownie w przypadku automatycznego wyłączenia po chwili nieaktywności
-            if(ref_microphoneEnabled.current) {
+            if(ref_microphoneEnabled.current && !singleCommandMode) {
                 handleEnableVoiceInput();
+                return;
             }
+            handleDisableVoiceInput();
         }
         ref_recognition.current.onresult = (event) => {
             console.log('result')
@@ -190,6 +197,22 @@ const Microphone = (props) => {
             }
             if(command === 'preferencje') {
                 props.onShowPreferencesModalVoiceCommand();
+                return;
+            }
+            if(command === 'włącz automatyczną synchronizację') {
+                props.onTogglePreference('auto_spotify_sync', 1);
+                return;
+            }
+            if(command === 'wyłącz automatyczną synchronizację') {
+                props.onTogglePreference('auto_spotify_sync', 0);
+                return;
+            }
+            if(command === 'włącz tryb pojedynczych poleceń') {
+                props.onTogglePreference('single_command_mode', 1);
+                return;
+            }
+            if(command === 'wyłącz tryb pojedynczych poleceń') {
+                props.onTogglePreference('single_command_mode', 0);
                 return;
             }
             if(['dodaj ziarno', 'nowe ziarno'].includes(command)) {

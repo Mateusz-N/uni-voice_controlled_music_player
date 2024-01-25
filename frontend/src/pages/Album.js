@@ -103,7 +103,7 @@ const Album = (props) => {
     // #endregion
 
     // #region Funkcje pomocnicze
-    const getAlbum = (fromAPI = false) => {
+    const getAlbum = (fromAPI = Cookies.get('preferences') ? JSON.parse(Cookies.get('preferences')).auto_spotify_sync : false) => {
         const loggedIn = !!Cookies.get('userID');
         if(!loggedIn) {
             setAlbum(placeholderAlbum);

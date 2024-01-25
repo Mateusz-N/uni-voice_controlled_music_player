@@ -159,7 +159,7 @@ const Home = (props) => {
     // #endregion
     
     // #region Funkcje pomocnicze
-    const getPlaylists = (fromAPI = false) => {
+    const getPlaylists = (fromAPI = Cookies.get('preferences') ? JSON.parse(Cookies.get('preferences')).auto_spotify_sync : false) => {
         const loggedIn = !!Cookies.get('userID');
         if(!loggedIn) {
             return;

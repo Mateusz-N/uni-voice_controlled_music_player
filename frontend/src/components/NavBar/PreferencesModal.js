@@ -22,7 +22,6 @@ const PreferencesModal = (props) => {
 
     // #region Obsługa zdarzeń (Event Handlers)
     const handleUpdatePreference = (preferenceName, newValue) => {
-        console.log(preferenceName, newValue)
         props.onPreferenceChange();
         requestUpdatePreference(Cookies.get('userID'), preferenceName, newValue, (data) => {
             setNotification(data.message);
@@ -46,6 +45,7 @@ const PreferencesModal = (props) => {
         if(defaultPreference) {
             handleUpdatePreference(defaultPreference.name, defaultPreference.value);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[defaultPreference]);
     useEffect(() => {
         if(defaultAction === 'cancel') {

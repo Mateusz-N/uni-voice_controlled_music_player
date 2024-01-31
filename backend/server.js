@@ -45,16 +45,17 @@ const limiter = rateLimit({
 	legacyHeaders: false,
 });
 
+// #region Warstwy pośredniczące (middleware)
 app.use(cors(corsRules));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 app.use(limiter)
 app.use('/spotify', spotifyRouter);
 app.use('/discogs', discogsRouter);
 app.use('/lrclib', lrclibRouter);
+// #endergion
 
 const serverHTTP = http.createServer(app);
 const serverHTTPS = https.createServer(ssl, app);
@@ -68,12 +69,13 @@ app.post('/remote-voice-command', (req, res) => {
   io.emit('voice-command', command);
   res.json({ success: true });
 });
-app.get
 
 serverHTTP.listen(SERVER_PORT_HTTP, () => {
   console.log(`Serwer HTTP nasłuchuje na porcie ${SERVER_PORT_HTTP}`);
-})
+});
 serverHTTPS.listen(SERVER_PORT_HTTPS, () => {
   console.log(`Serwer HTTPS nasłuchuje na porcie ${SERVER_PORT_HTTPS}`);
-})
+});
 // #endregion
+
+module.exports = app;

@@ -4,8 +4,6 @@ const router = express.Router();
 const LrclibService = require('../services/lrclib');
 // #endregion
 
-// const API_KEY = process.env.MUSIXMATCH_API_KEY;
-
 // #region Punkty końcowe
 /* Pobranie synchronicznego tekstu piosenki */
 router.get('/lyrics/synchronous', async (req, res) => {
@@ -26,23 +24,6 @@ router.get('/lyrics/synchronous', async (req, res) => {
     }
     LrclibService.getSynchronousLyrics(trackTitle, artistName, albumName, trackDuration, handleGetSynchronousLyricsApiResponse);
 });
-/* Pobranie statycznego tekstu piosenki (opcja awaryjna) */
-// router.get('/lyrics/', async (req, res) => {
-//     const trackTitle = req.query.track;
-//     const artistName = req.query.artist;
-//     const handleGetLyricsApiResponse = (res_lyrics) => {
-//       if(res_lyrics.data.message.header.status_code === 200) {
-//         const lyrics = res_lyrics.data.message.body.lyrics;
-//         res.status(200).send(lyrics);
-//       }
-//       else {
-//         res.status(res_lyrics.data.message.header.status_code).send({
-//           error: 'Something went wrong!'
-//         });
-//       }
-//     }
-//     LrclibService.getLyrics(API_KEY, trackTitle, artistName, handleGetLyricsApiResponse);
-// });
 // #endregion
 
 module.exports = router;

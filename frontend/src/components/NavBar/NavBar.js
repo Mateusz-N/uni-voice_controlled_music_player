@@ -49,7 +49,7 @@ const NavBar = (props) => {
         }
         const popup = window.open(spotifyAuthURL, '_blank');
         const checkPopup = setInterval(() => {
-            if(popup.closed) {
+            if(popup && popup.closed) {
                 clearInterval(checkPopup);
                 requestGetUserProfile((data) => {
                     Cookies.set('userID', data.userID, {secure: true, sameSite: 'strict'});
@@ -177,7 +177,7 @@ const NavBar = (props) => {
             <nav id = {Styles.navBar}>
                 <section id = {Styles.navBar_leftSection} className = {Styles.navBar_section}>
                     <Link to = '/'>
-                        <img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} />
+                        <img src = {homeIcon} alt = 'Home' id = {Styles.homeIcon} data-cy = 'btnHome' />
                     </Link>
                     <SearchBar defaultSearchQuery = {defaultSearchQuery} onSubmit = {(query) => handleSearchFormSubmit(query)} />
                 </section>
@@ -230,7 +230,7 @@ const NavBar = (props) => {
                             ref = {ref_profilePic}
                         />
                         :
-                        <button id = {Styles.btnLogin} className = 'btnPrimary' onClick = {handleLogin}>Connect with Spotify</button>
+                        <button id = {Styles.btnLogin} className = 'btnPrimary' data-cy = 'btnLogin' onClick = {handleLogin}>Connect with Spotify</button>
                     }
                     {modal_about}
                     {modal_preferences}

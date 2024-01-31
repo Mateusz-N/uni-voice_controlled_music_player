@@ -114,23 +114,6 @@ const OverviewPanel = (props) => {
         }
         handleDetailChange(setProperty.name, setProperty.value);
         itemData.detailsToDisplay[itemData.detailsToDisplay.indexOf(itemData.detailsToDisplay.find(detail => (detail.name === setProperty.name)))].content = setProperty.value;
-        // const editableDetails = itemData.detailsToDisplay.filter(detail => detail.editable);
-        // if(editableDetails.length === 0) {
-        //     return;
-        // }
-        // const editableDetailNames = editableDetails.map(detail => detail.name);
-        // if(!editableDetailNames.includes(setProperty.name)) {
-        //     return;
-        // }
-        // const presetPropertiesCopy = [...presetProperties];
-        // const matchedPropertyIndex = presetProperties.indexOf(presetProperties.find(property => (property.name === setProperty.name)));
-        // if(matchedPropertyIndex != null && matchedPropertyIndex >= 0) {
-        //     presetPropertiesCopy[matchedPropertyIndex] = setProperty;
-        // }
-        // else {
-        //     presetPropertiesCopy.push(setProperty);
-        // }
-        // setPresetProperties(presetPropertiesCopy);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[setProperty]);
     // #endregion

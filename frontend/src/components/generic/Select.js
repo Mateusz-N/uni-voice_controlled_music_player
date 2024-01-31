@@ -54,8 +54,8 @@ const Select = (props) => {
 
     // #region Struktura komponentu (JSX)
     return(
-        <div className = {Styles.select}>
-            <div className = {Styles.option_default + ' ' + Styles.option} onClick = {handleToggleExpanded}>
+        <div className = {Styles.select} data-testid = 'select'>
+            <div className = {Styles.option_default + ' ' + Styles.option} data-testid = 'select-default-option' onClick = {handleToggleExpanded}>
                 {selectedOption}&#x25BE;
             </div>
             <ContextMenu expanded = {expanded} context = 'select' styles = {Styles}>

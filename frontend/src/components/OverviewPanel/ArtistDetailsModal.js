@@ -9,7 +9,8 @@ const ArtistDetailsModal = (props) => {
         name: 'General information',
         items: [{
             displayName: 'Artist name',
-            value: artist.name
+            value: artist.name,
+            testID: 'artistName'
         }, {
             displayName: 'Alternate names',
             value: (artist.extraDetails && artist.extraDetails.namevariations) ? artist.extraDetails.namevariations.join(', ') || 'N/A' : 'N/A'

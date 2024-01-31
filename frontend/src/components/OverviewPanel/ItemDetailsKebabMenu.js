@@ -72,7 +72,7 @@ const ItemDetailsKebabMenu = (props) => {
         <>
             {modal_itemDetails}
             <KebabMenu context = {context} styles = {ExternalStyles} kebabBtnID = {context + '_btnKebab_' + item.id}>
-                <li id = {Styles.overviewPanel_contextMenu_itemDetails} onClick = {handleSelectItemDetails}>
+                <li id = {Styles.overviewPanel_contextMenu_itemDetails} data-cy = 'itemDetails' onClick = {handleSelectItemDetails}>
                     {capitalizeFirstLetter(itemType)} details
                 </li>
             </KebabMenu>

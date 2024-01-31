@@ -54,7 +54,14 @@ const KebabMenu = (props) => {
     // #region Struktura komponentu (JSX)
     return(
         <Fragment>
-            <img src = {btn_kebab} alt = 'Menu' id = {btnID} className = {Styles.btnKebab + ' ' + ExternalStyles[context + '_btnKebab']} onClick = {handleToggleItemContextMenu} />
+            <img
+                src = {btn_kebab}
+                alt = 'Menu'
+                id = {btnID}
+                className = {Styles.btnKebab + ' ' + ExternalStyles[context + '_btnKebab']}
+                data-cy = 'btnKebab'
+                onClick = {handleToggleItemContextMenu}
+            />
             <ContextMenu expanded = {itemContextMenuExpanded} context = {context} styles = {ExternalStyles}>
                 {children}
             </ContextMenu>

@@ -30,8 +30,8 @@ const Modal = (props) => {
 
     // #region Struktura komponentu (JSX)
     return(
-        <div className = {Styles.modalBackdrop + ' ' + ExternalStyles.modalBackdrop} id = {ExternalStyles['modalBackdrop_' + modalID]} ref = {ref_modalBackdrop}>
-            <div className = {Styles.modalWindow + ' ' + ExternalStyles.modalWindow} id = {ExternalStyles['modalWindow_' + modalID]} ref = {ref_modalWindow}>
+        <div className = {Styles.modalBackdrop + ' ' + ExternalStyles.modalBackdrop} id = {ExternalStyles['modalBackdrop_' + modalID]} ref = {ref_modalBackdrop} data-testid = 'modal-backdrop'>
+            <div className = {Styles.modalWindow + ' ' + ExternalStyles.modalWindow} id = {ExternalStyles['modalWindow_' + modalID]} ref = {ref_modalWindow} data-testid = 'modal-window'>
                 <h2 className = {Styles.modalTitle} id = {ExternalStyles['modalTitle_' + modalID]}>{modalTitle}</h2>
                 <img src = {btn_close} alt = 'Close' className = {Styles.btn_closeModal} id = {ExternalStyles['btn_closeModal_' + modalID]} onClick = {props.onClose} />
                 {children}

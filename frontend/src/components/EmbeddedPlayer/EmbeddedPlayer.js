@@ -122,16 +122,18 @@ const EmbeddedPlayer = (props) => {
                     }
                     return;
                 }
-                // Wznowienie aktualnego utworu
-                if(!playbackRequest.paused && playbackRequest.id === embeddedPlayer_playingTrack.id && playbackRequest.playlistID === embeddedPlayer_playingTrack.playlistID) { 
-                    ref_EmbedController.current.resume();
-                    return;
+                if(!playbackRequest.paused) {
+                    // Wznowienie aktualnego utworu
+                    if(playbackRequest.id === embeddedPlayer_playingTrack.id && playbackRequest.playlistID === embeddedPlayer_playingTrack.playlistID) { 
+                        ref_EmbedController.current.resume();
+                        return;
+                    }
+                    /*  Wywoła zdarzenie 'ready',
+                        którego funkcja nasłuchująca
+                        zajmie się rozpoczęciem odtwarzania */
+                        props.onPlaybackToggle({state: true, ended: false}, embeddedPlayer_playingTrack); // Zasygnalizuj pauzę wskutek zmiany utworu
+                        ref_EmbedController.current.loadUri(`spotify:track:${playbackRequest.id}`); // Odtworzenie nowego utworu (!request.paused && request.id !== playingTrack.id)
                 }
-            /*  Wywoła zdarzenie 'ready',
-                którego funkcja nasłuchująca
-                zajmie się rozpoczęciem odtwarzania */
-                props.onPlaybackToggle({state: true, ended: false}, embeddedPlayer_playingTrack); // Zasygnalizuj pauzę wskutek zmiany utworu
-                ref_EmbedController.current.loadUri(`spotify:track:${playbackRequest.id}`); // Odtworzenie nowego utworu (!request.paused && request.id !== playingTrack.id)
             }
             catch(error) {
                 console.error(error);

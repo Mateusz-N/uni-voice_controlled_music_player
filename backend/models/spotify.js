@@ -1,17 +1,19 @@
 const dbConnection = require('../db/db');
 
 module.exports = {
-    registerUserConnection: (accessToken, refreshToken) => {
+    registerUserConnection: (accessToken, refreshToken, callback = () => {}) => {
         const query = `INSERT INTO connection(access_token, refresh_token) VALUES('${accessToken}', '${refreshToken}')`;
         dbConnection.query(query, (err) => {
             if(err) throw err;
+            callback();
             console.log('DB: Connection registered!');
         });
     },
-    unregisterUserConnection: (accessToken) => {
+    unregisterUserConnection: (accessToken, callback) => {
         const query = `DELETE FROM connection WHERE access_token = '${accessToken}'`;
         dbConnection.query(query, (err) => {
             if(err) throw err;
+            callback();
             console.log('DB: Connection unregistered!');
         });
     },

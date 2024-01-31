@@ -41,7 +41,7 @@ const ItemDetailsModal = (props) => {
                         <span className = {Styles.itemDetails_detailItem_name}>
                             {item.displayName}:
                         </span>
-                        <span className = {Styles.itemDetails_detailItem_value}>
+                        <span className = {Styles.itemDetails_detailItem_value} data-cy = {item.testID || ''}>
                             {item.value}
                         </span>
                     </li>

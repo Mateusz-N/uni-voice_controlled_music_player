@@ -3,21 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/preset-env": "^7.23.8",
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "babel-jest": "^29.7.0",
+    "cypress": "^13.6.4",
     "js-cookie": "^3.0.5",
+    "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.19.0",
     "react-scripts": "5.0.1",
+    "react-test-renderer": "^18.2.0",
     "socket.io-client": "^4.7.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -39,8 +45,12 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.23.7",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-react": "^7.23.3",
+    "@testing-library/react": "^14.1.2",
     "dotenv": "^16.3.1",
+    "jest": "^27.5.1",
     "sass": "^1.69.4"
   }
 }

@@ -1,4 +1,4 @@
-describe('Connect with Spotify', () => {
+describe('Functions not requiring authorization', () => {
 
   it('should open the Spotify authorization page upon clicking the "Connect with Spotify" button', () => {
     cy.visit(Cypress.env('REACT_APP_CLIENT_URL'));

@@ -123,6 +123,7 @@ const PlaylistGeneratorModal = (props) => {
     const handleSubmitPlaylistGeneratorForm = (event) => {
         if(!ref_form_playlistGenerator.current.checkValidity()) {
             ref_form_playlistGenerator.current.reportValidity();
+            return;
         }
         event.preventDefault();
         if(seeds.length === 0) {

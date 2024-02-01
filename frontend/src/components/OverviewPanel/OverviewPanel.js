@@ -119,6 +119,16 @@ const OverviewPanel = (props) => {
     // #endregion
     
     // #region Przypisanie dynamicznych elementów komponentu
+    let btnTogglePlayback = null;
+    if(['playlist', 'album'].includes(props.for)) {
+        btnTogglePlayback =
+            <img
+                src = {playlistPlaying ? btn_pause : btn_play}
+                alt = {playlistPlaying ? 'Pause' : 'Play'}
+                id = {playlistPlaying ? Styles.playlist_btnPause : Styles.playlist_btnPlay}
+                className = {Styles.playlist_btnTogglePlayback}
+            />
+    }
     let kebabMenu = null;
     if(props.for === 'playlist') {
         kebabMenu =
@@ -158,14 +168,13 @@ const OverviewPanel = (props) => {
             <aside id = {Styles.overviewPanel}>
                 <main id = {Styles.overviewPanel_mainSection}>
                     <figure id = {Styles.itemFigure}>
-                        <main id = {Styles.itemFigure_thumbnail} onClick = {handleTogglePlaylistPlayback} ref = {ref_itemFigure_thumbnail}>
+                        <main
+                            id = {Styles.itemFigure_thumbnail}
+                            onClick = {['playlist', 'album'].includes() ? handleTogglePlaylistPlayback : null}
+                            ref = {ref_itemFigure_thumbnail}
+                        >
                             <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnailImage} />
-                            <img
-                                src = {playlistPlaying ? btn_pause : btn_play}
-                                alt = {playlistPlaying ? 'Pause' : 'Play'}
-                                id = {playlistPlaying ? Styles.playlist_btnPause : Styles.playlist_btnPlay}
-                                className = {Styles.playlist_btnTogglePlayback}
-                            />
+                            {btnTogglePlayback}
                         </main>
                         {kebabMenu}
                         <figcaption id = {Styles.itemFigcaption}>

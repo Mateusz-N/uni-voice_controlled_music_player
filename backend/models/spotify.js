@@ -9,11 +9,10 @@ module.exports = {
             console.log('DB: Connection registered!');
         });
     },
-    unregisterUserConnection: (accessToken, callback) => {
+    unregisterUserConnection: (accessToken) => {
         const query = `DELETE FROM connection WHERE access_token = '${accessToken}'`;
         dbConnection.query(query, (err) => {
             if(err) throw err;
-            callback();
             console.log('DB: Connection unregistered!');
         });
     },

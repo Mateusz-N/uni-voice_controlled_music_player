@@ -3,7 +3,9 @@ const SpotifyModel = require('../models/spotify');
 
 afterAll((done) => {
     try {
-      dbConnection.end(() => done());
+        dbConnection.rollback(() => {
+            dbConnection.end(() => done());
+        });
     }
     catch (error) {
         console.error('Error closing MySQL database connection:', error);

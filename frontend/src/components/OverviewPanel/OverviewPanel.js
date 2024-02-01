@@ -170,7 +170,7 @@ const OverviewPanel = (props) => {
                     <figure id = {Styles.itemFigure}>
                         <main
                             id = {Styles.itemFigure_thumbnail}
-                            onClick = {['playlist', 'album'].includes() ? handleTogglePlaylistPlayback : null}
+                            onClick = {['playlist', 'album'].includes(props.for) ? handleTogglePlaylistPlayback : null}
                             ref = {ref_itemFigure_thumbnail}
                         >
                             <img src = {itemData.thumbnailSrc} alt = {itemData.name} id = {Styles.itemFigure_thumbnailImage} />

@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/static/css/main.3df1d148.css",
+    "main.js": "/static/js/main.189215f2.js",
+    "static/js/787.a07a3f37.chunk.js": "/static/js/787.a07a3f37.chunk.js",
+    "static/media/Spotify_Logo_RGB_Green.png": "/static/media/Spotify_Logo_RGB_Green.0c4ae91bae23217d39c9.png",
+    "static/media/albumCover_savedTracks.png": "/static/media/albumCover_savedTracks.219868a67a97298f0b07.png",
+    "static/media/btn_generate.svg": "/static/media/btn_generate.4238ccaf781fb100c3a3e4a678f50c48.svg",
+    "static/media/btn_build.svg": "/static/media/btn_build.ced02eca919e4ded4618b369261826ec.svg",
+    "static/media/microphone_active.svg": "/static/media/microphone_active.f75a23881922bb329aabf5aff94c71cb.svg",
+    "static/media/btn_lyrics.svg": "/static/media/btn_lyrics.30063f3d22d60f301ffbe5c2eb1c48b5.svg",
+    "static/media/microphone_idle.svg": "/static/media/microphone_idle.bc0eb19c011b9724846ac3ff3807ef61.svg",
+    "static/media/icon_search.svg": "/static/media/icon_search.f6587665782959783540d37b8ede29e8.svg",
+    "static/media/btn_sync.svg": "/static/media/btn_sync.e55063fda56fa77521190f7ac1db9fa9.svg",
+    "static/media/btn_chipAdd.svg": "/static/media/btn_chipAdd.233d49c142621bfc60f724293b7264e1.svg",
+    "static/media/btn_edit.svg": "/static/media/btn_edit.5d6c04c958afa685503544180c78f7d0.svg",
+    "static/media/home.svg": "/static/media/home.7628450a60e01b3bcca7be8e4981e38c.svg",
+    "index.html": "/index.html",
+    "static/media/btn_chipRemove.svg": "/static/media/btn_chipRemove.618735aba47ea54df7834f0f9ef9e8ed.svg",
+    "static/media/btn_pause.svg": "/static/media/btn_pause.496b40060ee84f43b6dbfff72f9ce91f.svg",
+    "static/media/btn_play.svg": "/static/media/btn_play.de19ac760a69fe5b70d7b36f6a44b905.svg",
+    "static/media/btn_close.svg": "/static/media/btn_close.99acfb29ff1b69c135050db688208e87.svg",
+    "static/media/btn_kebab.svg": "/static/media/btn_kebab.39d9d43769abdb6576e3929bcd6a57a0.svg",
+    "main.3df1d148.css.map": "/static/css/main.3df1d148.css.map",
+    "main.189215f2.js.map": "/static/js/main.189215f2.js.map",
+    "787.a07a3f37.chunk.js.map": "/static/js/787.a07a3f37.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3df1d148.css",
+    "static/js/main.189215f2.js"
+  ]
+}

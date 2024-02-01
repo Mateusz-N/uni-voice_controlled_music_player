@@ -5,6 +5,9 @@ import axios from 'axios';
 
 import microphone_idle from './assets/microphone_idle.png';
 import microphone_active from './assets/microphone_active.png';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const App = () => {
   // #region Zmienne globalne

@@ -19,6 +19,7 @@ const Microphone = (props) => {
     // #region Zmienne stanu (useState Hooks)
     const [microphoneEnabled, setMicrophoneEnabled] = useState(localStorage.getItem('microphoneEnabled') === 'true');
     const [microphoneActive, setMicrophoneActive] = useState(localStorage.getItem('microphoneActive') === 'true');
+    const [remoteCommand, setRemoteCommand] = useState(null);
     const [notification, setNotification] = useState({});
 
     // #region Zmienne referencji (useRef Hooks)
@@ -545,13 +546,21 @@ const Microphone = (props) => {
     // #region Wywołania zwrotne (useEffect Hooks)
     useEffect(() => {
         setupSpeechRecognition();
-        const socket = io(process.env.REACT_APP_SERVER_URL);
-        socket.on('voice-command', (command) => {
-            switchSpeechCommand(command);
-        });
-        return () => socket.disconnect();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
+    useEffect(() => {
+        const socket = io(process.env.REACT_APP_SERVER_URL);
+        socket.on('voice-command', (command) => {
+            setRemoteCommand(command);
+        });
+        return () => socket.disconnect();
+    },[]);
+    useEffect(() => {
+        if(!remoteCommand) {
+            return;
+        }
+        switchSpeechCommand(remoteCommand);
+    },[remoteCommand]);
     useEffect(() => {
         if(ref_microphoneEnabled.current === true) {
             handleEnableVoiceInput();

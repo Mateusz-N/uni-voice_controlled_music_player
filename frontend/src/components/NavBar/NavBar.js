@@ -195,8 +195,6 @@ const NavBar = (props) => {
                         onShowLyricsVoiceCommand = {props.onShowLyricsVoiceCommand}
                         onSearchVoiceCommand = {props.onSearchVoiceCommand}
                         onShowItemVoiceCommand = {props.onShowItemVoiceCommand}
-                        onShowAlbumVoiceCommand = {props.onShowAlbumVoiceCommand}
-                        onShowArtistVoiceCommand = {props.onShowAlbumVoiceCommand}
                         onCreatePlaylistVoiceCommand = {props.onCreatePlaylistVoiceCommand}
                         onModifyPlaylistVoiceCommand = {props.onModifyPlaylistVoiceCommand}
                         onGeneratePlaylistVoiceCommand = {props.onGeneratePlaylistVoiceCommand}

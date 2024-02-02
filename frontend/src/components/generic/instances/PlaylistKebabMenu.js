@@ -31,8 +31,8 @@ const PlaylistKebabMenu = (props) => {
         props.onCancelDeletePlaylist();
     }
     const handleDeletePlaylist = () => {
-        requestDeletePlaylist(playlistID, () => {
-            props.onDeletePlaylist();
+        requestDeletePlaylist(playlistID, (data) => {
+            props.onDeletePlaylist(data);
         });
         handleModalClose_confirmDeletePlaylist();
     }

@@ -63,8 +63,9 @@ const OverviewPanel = (props) => {
         track.playlistID = itemData.id;
         props.onPlaybackToggle(track);
     }
-    const handlePlaylistDelete = () => {
-        navigate('/');
+    const handlePlaylistDelete = (data) => {
+        const notificationMessage = data.message.type === 'success' ? 'Playlist deleted successfully!' : data.message.type;
+        navigate('/', {state: {notificationMessage: notificationMessage, notificationType: data.message.type}});
     }
     const handleDetailChange = (detailName, detailValue) => {
     /*  UWAGA: punktu końcowy 'Get Playlist' będzie przez pewien czas zwracać nieaktualne dane.

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
@@ -54,6 +54,10 @@ const Home = (props) => {
     const [identifierOfSeedType, setIdentifierOfSeedType] = useState(null);
     const [identifierOfSeedToSelect, setIdentifierOfSeedToSelect] = useState(null);
     const [notification, setNotification] = useState({});
+    // #endregion
+
+    // #region Zmienne lokalizacji (useLocation Hooks)
+    const location = useLocation();
     // #endregion
 
     // #region Zmienne referencji (useRef Hooks)
@@ -189,6 +193,14 @@ const Home = (props) => {
     useEffect(() => {
         setDefaultSearchQuery(props.defaultSearchQuery);
     },[props.defaultSearchQuery]);
+
+    useEffect(() => {
+        if(location.state && location.state.notificationMessage) {
+            setNotification({message: location.state.notificationMessage, type: location.state.notificationType});
+            window.history.replaceState({}, document.title);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
     // #endregion
 
     // #region Przypisanie dynamicznych elementów komponentu

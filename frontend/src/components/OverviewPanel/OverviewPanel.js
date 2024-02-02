@@ -64,7 +64,7 @@ const OverviewPanel = (props) => {
         props.onPlaybackToggle(track);
     }
     const handlePlaylistDelete = (data) => {
-        const notificationMessage = data.message.type === 'success' ? 'Playlist deleted successfully!' : data.message.type;
+        const notificationMessage = data.message.type === 'success' ? 'Playlist deleted successfully!' : data.message.message;
         navigate('/', {state: {notificationMessage: notificationMessage, notificationType: data.message.type}});
     }
     const handleDetailChange = (detailName, detailValue) => {

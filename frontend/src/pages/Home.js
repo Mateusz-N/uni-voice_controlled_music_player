@@ -106,7 +106,7 @@ const Home = (props) => {
     const handleGeneratePlaylist = async (tracks) => {
         const newPlaylistID = await createPlaylist();
         requestGeneratePlaylist(newPlaylistID, tracks, (data) => {
-            const notificationMessage = data.message.type === 'success' ? 'Playlist generated successfully!' : data.message.type;
+            const notificationMessage = data.message.type === 'success' ? 'Playlist generated successfully!' : data.message.message;
             props.onRequestDefaultFormAction(null);
             setIdentifierOfSeedToSelect(null);
             navigate(`/playlist/${newPlaylistID}`, {state: {notificationMessage: notificationMessage, notificationType: data.message.type}});

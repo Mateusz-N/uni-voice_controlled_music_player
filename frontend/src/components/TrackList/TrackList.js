@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Cookies from 'js-cookie';
 
 import { requestGetPlaylists } from 'common/serverRequests';
 
 import TrackListItem from 'components/TrackList/TrackListItem';
 import Loading from 'components/generic/Loading';
+import Toast from 'components/generic/Toast';
 
 import Styles from 'components/TrackList/TrackList.module.scss';
 
@@ -25,6 +27,7 @@ const TrackList = (props) => {
 
     // #region Zmienne stanu (useState Hooks)
     const [userPlaylists, setUserPlaylists] = useState([]);
+    const [notification, setNotification] = useState({});
     // #endregion
 
     // #region Obsługa zdarzeń (Event Handlers)
@@ -78,66 +81,75 @@ const TrackList = (props) => {
     if(props.playlistLoading) {
         loadingIcon = <Loading />
     }
+    let toastNotification = null;
+    if(notification.message) {
+        toastNotification =
+            createPortal(<Toast message = {notification.message} type = {notification.type} onAnimationEnd = {() => setNotification({})} />, document.body);
+    }
     // #endregion
 
     // #region Struktura komponentu (JSX)
     return(
-        <main id = {Styles.trackList_container}>
-            {loadingIcon}
-            <table id = {Styles.trackList}>
-                <thead>
-                    <tr id = {Styles.trackList_header}>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Artist(s)</th>
-                        {thAlbum}
-                        {thYear}
-                        {/* <th>Genre</th> */}{/*   Spotify API obecnie nie dostarcza gatunków utworów w punkcie końcowym pobierania list odtwarzania...
-                                                    Udostępnia je w punkcie końcowym pobierania utworu...
-                                                    Jednak dla dużych list odtwarzania byłoby to bardzo kosztowne */}
-                        <th>Duration</th>
-                        {thAdded}
-                        <th className = {Styles.thKebab}></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tracks.map((track, index) => {
-                        let defaultPlaying = null;
-                        if(defaultPlayingTrack.id != null) {
-                            defaultPlaying = (defaultPlayingTrack.id === track.id && !defaultPlayingTrack.paused && defaultPlayingTrack.playlistID === playlist.id);
-                        }
-                        let defaultDisplayDetails = null;
-                        if(defaultTrackDetailsDisplay.trackID != null) {
-                            defaultDisplayDetails = (defaultTrackDetailsDisplay.trackID === track.id);
-                        }
-                        let defaultPlaylistAction = null;
-                        if(defaultTrackInPlaylistAction.trackID === track.id) {
-                            defaultPlaylistAction = defaultTrackInPlaylistAction;
-                        }
-                        const playing = (playingTrack.id === track.id && !playingTrack.paused && playingTrack.playlistID === playlist.id);
-                        return <TrackListItem
-                            key = {index}
-                            track = {track}
-                            index = {index}
-                            for = {props.for}
-                            playlist = {playlist}
-                            defaultPlaying = {defaultPlaying}
-                            defaultSelectAction = {defaultSelectAction}
-                            defaultFormAction = {defaultFormAction}
-                            defaultPlaylistAction = {defaultPlaylistAction}
-                            defaultDisplayDetails = {defaultDisplayDetails}
-                            playing = {playing}
-                            userPlaylists = {userPlaylists}
-                            onPlaybackToggle = {handleToggleTrackPlayback}
-                            onPlaylistUpdate = {props.onPlaylistUpdate}
-                            onSelectAction = {props.onSelectAction}
-                            onTrackDetailsModalClose = {props.onTrackDetailsModalClose}
-                            onTrackInPlaylistAction = {(props.onTrackInPlaylistAction)}
-                        />
-                    })}
-                </tbody>
-            </table>
-        </main>
+        <>
+            {toastNotification}
+            <main id = {Styles.trackList_container}>
+                {loadingIcon}
+                <table id = {Styles.trackList}>
+                    <thead>
+                        <tr id = {Styles.trackList_header}>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Artist(s)</th>
+                            {thAlbum}
+                            {thYear}
+                            {/* <th>Genre</th> */}{/*   Spotify API obecnie nie dostarcza gatunków utworów w punkcie końcowym pobierania list odtwarzania...
+                                                        Udostępnia je w punkcie końcowym pobierania utworu...
+                                                        Jednak dla dużych list odtwarzania byłoby to bardzo kosztowne */}
+                            <th>Duration</th>
+                            {thAdded}
+                            <th className = {Styles.thKebab}></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tracks.map((track, index) => {
+                            let defaultPlaying = null;
+                            if(defaultPlayingTrack.id != null) {
+                                defaultPlaying = (defaultPlayingTrack.id === track.id && !defaultPlayingTrack.paused && defaultPlayingTrack.playlistID === playlist.id);
+                            }
+                            let defaultDisplayDetails = null;
+                            if(defaultTrackDetailsDisplay.trackID != null) {
+                                defaultDisplayDetails = (defaultTrackDetailsDisplay.trackID === track.id);
+                            }
+                            let defaultPlaylistAction = null;
+                            if(defaultTrackInPlaylistAction.trackID === track.id) {
+                                defaultPlaylistAction = defaultTrackInPlaylistAction;
+                            }
+                            const playing = (playingTrack.id === track.id && !playingTrack.paused && playingTrack.playlistID === playlist.id);
+                            return <TrackListItem
+                                key = {index}
+                                track = {track}
+                                index = {index}
+                                for = {props.for}
+                                playlist = {playlist}
+                                defaultPlaying = {defaultPlaying}
+                                defaultSelectAction = {defaultSelectAction}
+                                defaultFormAction = {defaultFormAction}
+                                defaultPlaylistAction = {defaultPlaylistAction}
+                                defaultDisplayDetails = {defaultDisplayDetails}
+                                playing = {playing}
+                                userPlaylists = {userPlaylists}
+                                onPlaybackToggle = {handleToggleTrackPlayback}
+                                onPlaylistUpdate = {props.onPlaylistUpdate}
+                                onSelectAction = {props.onSelectAction}
+                                onTrackDetailsModalClose = {props.onTrackDetailsModalClose}
+                                onTrackInPlaylistAction = {(props.onTrackInPlaylistAction)}
+                                onNotification = {(notification) => setNotification(notification)}
+                            />
+                        })}
+                    </tbody>
+                </table>
+            </main>
+        </>
     );
     // #endregion
 }

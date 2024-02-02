@@ -89,7 +89,8 @@ const TrackListItem = (props) => {
     }
     const removeTrackFromPlaylist = (playlistID) => {
         requestRemoveTrackFromPlaylist(playlistID, [`spotify:track:${track.id}`], (data) => {
-            setNotification(data.message);
+            const notificationMessage = data.message.type === 'success' ? 'Track removed from playlist successfully!' : data.message.message;
+            props.onNotification({message: notificationMessage, type: data.message.type});
             props.onPlaylistUpdate();
         });
     }
@@ -178,6 +179,7 @@ const TrackListItem = (props) => {
                 onClose = {handleModalClose_addToPlaylist}
                 onPlaylistUpdate = {props.onPlaylistUpdate}
                 onPlaylistSelection = {props.onSelectAction}
+                onNotification = {(notification) => setNotification(notification)}
             />, document.body);
     }
     let modal_trackDetails = null;

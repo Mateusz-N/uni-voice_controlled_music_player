@@ -22,7 +22,6 @@ const AddTrackToPlaylistModal = (props) => {
 
     // #region Zmienne stanu (useState Hooks)
     const [selectedPlaylists, setSelectedPlaylists] = useState([]);
-    const [notification, setNotification] = useState({});
     // #endregion
 
     // #region Obsługa zdarzeń
@@ -30,15 +29,17 @@ const AddTrackToPlaylistModal = (props) => {
         props.onPlaylistSelection();
         setSelectedPlaylists(playlistIDs)
     }
-    const handleSubmitAddToPlaylistForm = (event) => {
+    const handleSubmitAddToPlaylistForm = async (event) => {
         if(event) {
             event.preventDefault();
         }
-        selectedPlaylists.forEach(playlist => addTrackToPlaylist(playlist));
-        props.onClose();
+        for(const playlist of selectedPlaylists) {
+            await addTrackToPlaylist(playlist);
+        }
         if(context === 'playlist') {
             props.onPlaylistUpdate();
         }
+        props.onClose();
     }
     const handleCancelAddToPlaylistForm = () => {
         props.onClose();
@@ -46,9 +47,10 @@ const AddTrackToPlaylistModal = (props) => {
     // #endregion
 
     // #region Funkcje pomocnicze
-    const addTrackToPlaylist = (playlistID) => {
+    const addTrackToPlaylist = async (playlistID) => {
         requestAddTrackToPlaylist(playlistID, [`spotify:track:${track.id}`], (data) => {
-            setNotification(data.message);
+            const notificationMessage = data.message.type === 'success' ? 'Track added to playlist(s) successfully!' : data.message.message;
+            props.onNotification({message: notificationMessage, type: data.message.type});
         });
     }
     // #endregion
@@ -67,18 +69,9 @@ const AddTrackToPlaylistModal = (props) => {
     },[defaultAction]);
     // #endregion
 
-    // #region Przypisanie dynamicznych elementów komponentu
-    let toastNotification = null;
-    if(notification.message) {
-        toastNotification =
-            createPortal(<Toast message = {notification.message} type = {notification.type} onAnimationEnd = {() => setNotification({})} />, document.body);
-    }
-    // #endregion
-
     // #region Struktura komponentu (JSX)
     return(
         <>
-            {toastNotification}
             <Modal key = {track.id} title = 'Add track to playlist(s)...' id = {'trackList_item_addToPlaylist_' + index} onClose = {props.onClose} styles = {Styles}>
                 <form id = {Styles.form_addToPlaylist} onSubmit = {handleSubmitAddToPlaylistForm}>
                     <ListBox
